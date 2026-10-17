@@ -5,11 +5,12 @@
 <title>Graella de classe</title>
 <style>
 :root{font-family:Inter,system-ui,-apple-system,Segoe UI,sans-serif;color:#252b35;background:#f7f8fa}*{box-sizing:border-box}body{margin:0}button,input,textarea{font:inherit}button{cursor:pointer}header{background:white;border-bottom:1px solid #e8ebef;padding:23px max(24px,calc((100vw - 1200px)/2));display:flex;justify-content:space-between;align-items:center}header strong{font-size:21px;letter-spacing:-.6px}header span{color:#8a929f;font-size:13px}main{max-width:1200px;margin:42px auto;padding:0 24px}.top{display:flex;justify-content:space-between;gap:16px;align-items:center;margin-bottom:22px}.top h1{margin:0;font-size:28px;letter-spacing:-.8px}.sub{margin:7px 0 0;color:#87909c;font-size:14px}.layout{display:grid;grid-template-columns:245px minmax(0,1fr);gap:24px}.panel{background:white;border:1px solid #e8ebef;border-radius:14px;overflow:hidden}.side{padding:17px}.side-title{font-size:12px;text-transform:uppercase;letter-spacing:1.1px;color:#8d96a2;font-weight:700;margin:6px 8px 15px}.class-btn{width:100%;display:flex;justify-content:space-between;align-items:center;border:0;background:transparent;padding:12px 13px;border-radius:9px;text-align:left;color:#4b5563;margin-bottom:4px}.class-btn.active{background:#eef2ff;color:#4058a8;font-weight:650}.class-btn:hover:not(.active){background:#f6f7f9}.count{font-size:12px;color:#9ba3ae}.add-side{width:100%;background:white;border:1px dashed #d5dbe4;border-radius:9px;padding:12px;color:#687586;margin-top:13px}.add-side:hover{background:#f8faff}.content-head{padding:23px 25px;display:flex;justify-content:space-between;align-items:center;gap:15px;border-bottom:1px solid #edf0f3}.content-head h2{margin:0;font-size:21px;letter-spacing:-.5px}.hint{color:#9aa2ad;font-size:12px;margin-top:5px}.actions{display:flex;gap:9px;flex-wrap:wrap}button.primary{background:#344d96;color:white;border:1px solid #344d96;padding:10px 14px;border-radius:8px;font-size:13px;font-weight:600}button.secondary{background:white;color:#667181;border:1px solid #e0e5eb;padding:10px 13px;border-radius:8px;font-size:13px}button:hover{filter:brightness(.97)}.table-wrap{overflow-x:auto}table{width:100%;border-collapse:collapse;text-align:left}th{background:#fafbfc;font-size:11px;letter-spacing:.8px;text-transform:uppercase;color:#9ba4b0;font-weight:700;padding:15px 22px;border-bottom:1px solid #edf0f3}td{padding:11px 22px;border-bottom:1px solid #f0f2f5;font-size:14px}tr:last-child td{border-bottom:0}tbody tr:hover{background:#fafbff}.num{color:#a5adba;width:65px}.grade-input{width:94px;min-width:75px;border:1px solid transparent;background:transparent;border-radius:6px;padding:8px 9px;color:#303946;text-align:center}.grade-input:hover{border-color:#e6eaf0}.grade-input:focus{outline:none;border-color:#a4b2e0;background:white}.item-head{display:flex;align-items:center;gap:5px;white-space:nowrap}.item-edit{border:0;background:transparent;color:inherit;font:inherit;text-transform:inherit;letter-spacing:inherit;cursor:pointer;padding:3px}.item-remove{border:0;background:transparent;color:#b0b8c4;font-size:16px;padding:2px 5px}.item-remove:hover{color:#be4b52}.name-input{border:1px solid transparent;border-radius:6px;background:transparent;padding:8px 9px;width:100%;min-width:130px;color:#303946}.name-input:hover{border-color:#e6eaf0}.name-input:focus{outline:none;border-color:#a4b2e0;background:white}.delete{border:0;background:transparent;color:#aab2bd;font-size:18px;border-radius:6px;padding:5px 10px}.delete:hover{color:#be4b52;background:#fff0f1}.empty{padding:65px 20px;text-align:center;color:#9aa3af;font-size:14px}.calculated{font-weight:650;color:#344d96;text-align:center;white-space:nowrap}.calc-tag{font-size:10px;color:#7e8cb6;margin-left:4px}.modal-back{position:fixed;inset:0;background:#17233b66;display:flex;align-items:center;justify-content:center;padding:18px;z-index:10}.modal{background:white;border-radius:15px;padding:25px;width:min(540px,100%);box-shadow:0 18px 60px #1c2b4933}.modal h3{margin:0 0 9px}.modal p{font-size:13px;color:#7d8795}.modal label{font-size:13px;color:#5d6877;display:block;margin:14px 0 6px}.modal input,.modal select{width:100%;padding:10px;border:1px solid #dce2eb;border-radius:8px;background:white}.weight-row{display:grid;grid-template-columns:1fr 110px;gap:12px;align-items:end}.modal-actions{display:flex;justify-content:flex-end;gap:8px;margin-top:22px}.error{color:#bd3d4b!important;min-height:18px} .student-link{border:0;background:transparent;text-align:left;color:#344d96;font-weight:600;padding:7px 3px;cursor:pointer}.student-link:hover{text-decoration:underline}.drag-handle{border:0;background:transparent;color:#a4adba;cursor:grab;font-size:19px;padding:4px 7px}.dragging{opacity:.4}.drop-target{outline:2px solid #8ca0d6;outline-offset:-2px}.sort-bar{padding:12px 22px;border-bottom:1px solid #edf0f3;display:flex;align-items:center;gap:12px;font-size:12px;color:#748092}.sort-bar select{padding:7px;border:1px solid #e0e5eb;border-radius:7px;background:white;color:#526075}.student-notes{width:100%;min-height:170px;resize:vertical;border:1px solid #dce2eb;border-radius:9px;padding:12px;line-height:1.5}.student-notes:focus{outline:none;border-color:#879bd2;box-shadow:0 0 0 3px #e9eeff}.modal input:focus,.modal select:focus{outline:none;border-color:#879bd2;box-shadow:0 0 0 3px #e9eeff}.note-hint{font-size:12px;color:#8b95a3}.grade-input.grade-fail,.calculated.grade-fail{background:#fceced;color:#a3454b;border-radius:7px}.grade-input.grade-pass,.calculated.grade-pass{background:#eaf6ee;color:#337b51;border-radius:7px}.calculated{display:inline-block;min-width:76px;padding:8px 10px}.search-input{padding:8px 11px;border:1px solid #e0e5eb;border-radius:7px;min-width:190px;max-width:100%;font-size:13px;color:#526075}.search-input:focus{outline:none;border-color:#879bd2;box-shadow:0 0 0 3px #e9eeff}.search-count{color:#9aa3af}.footer{margin-top:18px;font-size:12px;color:#9ca5b1;text-align:right}@media(max-width:700px){header{padding:20px 24px}.layout{grid-template-columns:1fr}main{margin:25px auto}.content-head{align-items:flex-start;flex-direction:column}.top h1{font-size:24px}}
+.backup-actions{display:flex;gap:8px;flex-wrap:wrap}.backup-actions button{font-size:12px}.backup-actions input{display:none}@media(max-width:700px){.top{align-items:flex-start;flex-direction:column}}
 </style>
 </head>
 <body>
 <header><strong>Graella<span> · Aula</span></strong><span>Espai de gestió de classes</span></header>
-<main><div class="top"><div><h1>Les meves classes</h1><p class="sub">Organitza els teus grups i alumnes en un sol lloc.</p></div></div><div class="layout"><aside class="panel side"><div class="side-title">Classes</div><div id="classes"></div><button class="add-side" id="addClass">+ Afegir classe</button></aside><section class="panel"><div class="content-head"><div><h2 id="classTitle"></h2><div class="hint" id="classInfo"></div></div><div class="actions"><button class="secondary" id="renameClass">Canviar nom</button><button class="secondary" id="deleteClass">Eliminar classe</button><button class="secondary" id="addItem">+ Afegir ítem</button><button class="primary" id="addStudent">+ Afegir alumne</button></div></div><div id="tableArea"></div></section></div><div class="footer">Les dades es desen automàticament en aquest navegador.</div></main><div id="modalRoot"></div>
+<main><div class="top"><div><h1>Les meves classes</h1><p class="sub">Organitza els teus grups i alumnes en un sol lloc.</p></div><div class="backup-actions"><button class="secondary" id="exportData" type="button">↓ Exportar dades</button><button class="secondary" id="importData" type="button">↑ Importar dades</button><input id="importFile" type="file" accept=".json,application/json"></div></div><div class="layout"><aside class="panel side"><div class="side-title">Classes</div><div id="classes"></div><button class="add-side" id="addClass">+ Afegir classe</button></aside><section class="panel"><div class="content-head"><div><h2 id="classTitle"></h2><div class="hint" id="classInfo"></div></div><div class="actions"><button class="secondary" id="renameClass">Canviar nom</button><button class="secondary" id="deleteClass">Eliminar classe</button><button class="secondary" id="addItem">+ Afegir ítem</button><button class="primary" id="addStudent">+ Afegir alumne</button></div></div><div id="tableArea"></div></section></div><div class="footer">Les dades es desen automàticament en aquest navegador.</div></main><div id="modalRoot"></div>
 <script>
 const KEY='graella-aula-v1';
 const uid=()=>crypto.randomUUID?crypto.randomUUID():String(Date.now()+Math.random());
@@ -56,6 +57,60 @@ function openCalculated(c,item=null){
  if(item?.weights?.length)item.weights.forEach(w=>addRow(w.id,w.percent));else{addRow(available[0]?.id||'',85);addRow(available[1]?.id||'',15)}
  let add=document.createElement('button');add.className='secondary';add.textContent='+ Afegir ponderació';add.style.marginTop='12px';add.onclick=()=>addRow();let actions=document.createElement('div');actions.className='modal-actions';let cancel=document.createElement('button');cancel.className='secondary';cancel.textContent='Cancel·lar';const close=()=>root.replaceChildren();cancel.onclick=close;let ok=document.createElement('button');ok.className='primary';ok.textContent='Desar ítem';ok.onclick=()=>{const nameText=name.value.trim();const parts=[...rows.children].map(row=>({id:row.querySelector('select').value,percent:Number(row.querySelector('input').value)}));if(!nameText){error.textContent='Escriu un nom.';return}if(parts.some(p=>!p.id||!Number.isFinite(p.percent)||p.percent<=0)||new Set(parts.map(p=>p.id)).size!==parts.length){error.textContent='Selecciona ítems diferents i percentatges positius.';return}if(Math.abs(parts.reduce((a,p)=>a+p.percent,0)-100)>0.00001){error.textContent='Els percentatges han de sumar 100 %.';return}if(item){item.name=nameText;item.weights=parts}else c.items.push({id:uid(),name:nameText,type:'calculated',weights:parts});save();close();render()};actions.append(cancel,ok);modal.append(heading,help,nameLabel,name,rows,add,error,actions);back.append(modal);back.onclick=e=>{if(e.target===back)close()};root.append(back);name.focus();
 }
+// Còpies de seguretat: no canvien la clau ni el format intern del localStorage.
+function validBackup(candidate){
+ if(!candidate||typeof candidate!=='object'||Array.isArray(candidate)||!Array.isArray(candidate.classes))return false;
+ if(candidate.classes.length>500)return false;
+ const ids=new Set();
+ for(const c of candidate.classes){
+  if(!c||typeof c!=='object'||typeof c.id!=='string'||!c.id||ids.has(c.id)||typeof c.name!=='string'||!Array.isArray(c.students)||!Array.isArray(c.items||[]))return false;
+  ids.add(c.id);
+  if(c.students.length>10000||(c.items||[]).length>1000)return false;
+  const itemIds=new Set();
+  for(const item of c.items||[]){
+   if(!item||typeof item.id!=='string'||!item.id||itemIds.has(item.id)||typeof item.name!=='string')return false;
+   itemIds.add(item.id);
+   if(item.type==='calculated'&&(!Array.isArray(item.weights)||item.weights.some(w=>!w||typeof w.id!=='string'||!Number.isFinite(Number(w.percent)))))return false;
+  }
+  const studentIds=new Set();
+  for(const student of c.students){
+   if(!student||typeof student.id!=='string'||!student.id||studentIds.has(student.id)||(!('name' in student)&&typeof student.firstName!=='string')|| (student.grades!==undefined&&(!student.grades||typeof student.grades!=='object'||Array.isArray(student.grades))))return false;
+   studentIds.add(student.id);
+  }
+ }
+ return true;
+}
+document.getElementById('exportData').onclick=()=>{
+ try{
+  const payload=JSON.stringify(data,null,2);
+  const blob=new Blob([payload],{type:'application/json;charset=utf-8'});
+  const url=URL.createObjectURL(blob);
+  const link=document.createElement('a');link.href=url;link.download='graella-aula-'+new Date().toLocaleDateString('sv-SE')+'.json';
+  document.body.append(link);link.click();link.remove();setTimeout(()=>URL.revokeObjectURL(url),3000);
+ }catch(e){alert('No s’ha pogut exportar la còpia de seguretat. '+e.message)}
+};
+const backupInput=document.getElementById('importFile');
+document.getElementById('importData').onclick=()=>backupInput.click();
+backupInput.onchange=async()=>{
+ const file=backupInput.files?.[0];backupInput.value='';if(!file)return;
+ if(file.size>20*1024*1024){alert('El fitxer és massa gran (màxim 20 MB).');return}
+ let incoming;
+ try{incoming=JSON.parse(await file.text())}catch{alert('No es pot llegir aquest fitxer. Selecciona una còpia de seguretat JSON vàlida.');return}
+ // Acceptem tant les exportacions directes com els embolcalls amb data.
+ if(incoming&&incoming.format==='graella-aula-backup'&&incoming.data)incoming=incoming.data;
+ if(!validBackup(incoming)){alert('Aquest JSON no té el format compatible amb Graella · Aula. No s’ha modificat cap dada.');return}
+ const count=incoming.classes.reduce((n,c)=>n+c.students.length,0);
+ if(!confirm(`Vols importar ${incoming.classes.length} classes i ${count} alumnes?\n\nATENCIÓ: se substituiran totes les classes, notes i observacions que tens actualment en aquest navegador. Et recomanem exportar abans una còpia de seguretat.`))return;
+ try{
+  const serialized=JSON.stringify(incoming);
+  localStorage.setItem(KEY,serialized);
+  // Només canviem l'estat en memòria després de confirmar el desament.
+  data=incoming;
+  data.classes.forEach(c=>{if(!Array.isArray(c.items))c.items=[];if(!Array.isArray(c.students))c.students=[];c.students.forEach(s=>{if(!s.grades||typeof s.grades!=='object')s.grades={};if(typeof s.firstName!=='string'){const a=String(s.name||'').trim().split(/\s+/);s.firstName=a.shift()||'';s.lastName=a.join(' ')}if(typeof s.notes!=='string')s.notes=''})});
+  if(!data.classes.some(c=>c.id===data.active))data.active=data.classes[0]?.id||null;
+  save();render();alert('Dades importades correctament.');
+ }catch(e){alert('No s’han pogut desar les dades importades: '+e.message)}
+};
 document.getElementById('addItem').onclick=()=>{let c=current();if(!c)return;let type=confirm('Vols crear un ítem calculat amb percentatges?\n\nAcceptar: calculat\nCancel·lar: nota manual');if(type){openCalculated(c);return}let name=prompt('Nom del nou ítem (per exemple, Examen 1):');if(!name?.trim())return;c.items.push({id:uid(),name:name.trim()});save();render()};
 document.getElementById('addClass').onclick=()=>{let name=prompt('Nom de la nova classe:');if(!name?.trim())return;let c={id:uid(),name:name.trim(),students:[],items:[]};data.classes.push(c);data.active=c.id;save();render()};
 document.getElementById('renameClass').onclick=()=>{let c=current();if(!c)return;let name=prompt('Nou nom de la classe:',c.name);if(!name?.trim())return;c.name=name.trim();save();render()};
