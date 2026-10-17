@@ -88,11 +88,14 @@ header .brand-context{font-size:13px;color:#8a929f;text-align:right}
 .incident-editor select,.incident-editor input{width:100%;padding:9px;border:1px solid #dce2eb;border-radius:8px;background:white}
 .incident-editor-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px}
 @media(max-width:540px){.incident-editor-grid{grid-template-columns:1fr}}
+
+/* Horari del professor */
+.schedule-panel{margin-top:18px;padding:22px;overflow:hidden}.schedule-head{display:flex;justify-content:space-between;gap:12px;align-items:center;flex-wrap:wrap;margin-bottom:16px}.schedule-head h2{margin:0;font-size:20px}.schedule-grid-wrap{overflow-x:auto}.schedule-grid{width:100%;min-width:790px;border-collapse:separate;border-spacing:5px;table-layout:fixed}.schedule-grid th{padding:9px;font-size:13px;color:#56647b;text-align:center}.schedule-grid th:first-child{width:115px}.schedule-grid td{padding:0;border:0}.schedule-slot{width:100%;min-height:67px;border:1px solid #dce4ed;border-radius:9px;padding:8px 5px;display:flex;flex-direction:column;justify-content:center;align-items:center;gap:4px;text-align:center;background:#f0f8ed;color:#475569;cursor:pointer;white-space:normal}.schedule-slot:hover{outline:2px solid #7d94c4;outline-offset:1px}.schedule-slot strong{font-size:13px;font-weight:600}.schedule-slot small{font-size:10px;opacity:.75}.schedule-slot.filled{background:#e9effb;border-color:#d1dcef;color:#2e467c}.schedule-slot.break{background:#f0f8ed}.schedule-slot.special{background:#f5f0dc;border-color:#e8dfb4;color:#796327}.schedule-time{width:100%;border:1px solid #e2e7ee;border-radius:6px;padding:6px 3px;font-size:12px;text-align:center;color:#56647b;background:#fff}.schedule-time-label{font-size:10px;color:#8a95a7;text-align:center}.schedule-help{font-size:12px;color:#778397;margin:8px 0 0}.schedule-edit-grid{display:grid;grid-template-columns:1fr 1fr;gap:12px}.schedule-edit-grid select,.schedule-edit-grid input{width:100%}@media(max-width:600px){.schedule-edit-grid{grid-template-columns:1fr}}
 </style>
 </head>
 <body>
 <header class="brand-header"><div class="brand-identity"><div class="brand-logo" aria-hidden="true"><svg viewBox="0 0 48 48" width="35" height="35"><path d="M9 12L24 5L39 12V36L24 43L9 36Z" fill="#344d96"/><path d="M17 32V16H25C36 16 36 28 25 28H17" stroke="white" stroke-width="3.5" stroke-linecap="round" stroke-linejoin="round" fill="none"/></svg></div><div class="brand-copy"><strong>Paideia</strong><span class="brand-subtitle">Plataforma educativa</span><span class="brand-author">Web dissenyada per Gonzalo Bermejo Miranda</span></div></div><span class="brand-context">Espai de gestió de classes</span></header>
-<main><div class="top"><div><h1>Les meves classes</h1><p class="sub">Organitza els teus grups i alumnes en un sol lloc.</p></div><div class="backup-actions"><button class="secondary" id="exportExcel" type="button">↓ Exportar Excel</button><button class="secondary undo-btn" id="undoGrade" type="button" disabled title="Desfer el darrer canvi de notes (Ctrl+Z)">↶ Desfer</button><button class="secondary" id="exportData" type="button">↓ Exportar dades</button><button class="secondary" id="importData" type="button">↑ Importar dades</button><button class="secondary" id="importExcel" type="button">↑ Importar Excel</button><input id="excelFile" type="file" accept=".xlsx,.xls,.xlsm,.csv" style="display:none"><input id="importFile" type="file" accept=".json,application/json"></div></div><div class="layout"><aside class="panel side"><div class="side-title">Classes</div><div id="classes"></div><button class="add-side" id="addClass">+ Afegir classe</button></aside><section class="panel"><div class="content-head"><div><h2 id="classTitle"></h2><div class="class-meta"><div class="hint" id="classInfo"></div><button type="button" class="tutor-edit" id="editTutor" title="Editar el nom del tutor o tutora">Tutor/a: <span id="tutorName">Afegir nom</span> <span class="tutor-pencil">✎</span></button></div></div><div class="actions"><button class="secondary" id="renameClass">Canviar nom</button><button class="secondary" id="deleteClass">Eliminar classe</button><button class="secondary" id="addItem">+ Afegir ítem</button><button class="primary" id="addStudent">+ Afegir alumne</button></div></div><div id="tableArea"></div></section></div><div class="footer"><span>Les dades es desen automàticament en aquest navegador.</span></div></main><div id="modalRoot"></div>
+<main><div class="top"><div><h1>Les meves classes</h1><button type="button" class="secondary" id="toggleSchedule" style="margin-top:10px">▦ El meu horari</button><p class="sub">Organitza els teus grups i alumnes en un sol lloc.</p></div><div class="backup-actions"><button class="secondary" id="exportExcel" type="button">↓ Exportar Excel</button><button class="secondary undo-btn" id="undoGrade" type="button" disabled title="Desfer el darrer canvi de notes (Ctrl+Z)">↶ Desfer</button><button class="secondary" id="exportData" type="button">↓ Exportar dades</button><button class="secondary" id="importData" type="button">↑ Importar dades</button><button class="secondary" id="importExcel" type="button">↑ Importar Excel</button><input id="excelFile" type="file" accept=".xlsx,.xls,.xlsm,.csv" style="display:none"><input id="importFile" type="file" accept=".json,application/json"></div></div><div class="layout"><aside class="panel side"><div class="side-title">Classes</div><div id="classes"></div><button class="add-side" id="addClass">+ Afegir classe</button></aside><section class="panel"><div class="content-head"><div><h2 id="classTitle"></h2><div class="class-meta"><div class="hint" id="classInfo"></div><button type="button" class="tutor-edit" id="editTutor" title="Editar el nom del tutor o tutora">Tutor/a: <span id="tutorName">Afegir nom</span> <span class="tutor-pencil">✎</span></button></div></div><div class="actions"><button class="secondary" id="renameClass">Canviar nom</button><button class="secondary" id="deleteClass">Eliminar classe</button><button class="secondary" id="addItem">+ Afegir ítem</button><button class="primary" id="addStudent">+ Afegir alumne</button></div></div><div id="tableArea"></div></section></div><section class="panel schedule-panel" id="schedulePanel" hidden></section><div class="footer"><span>Les dades es desen automàticament en aquest navegador.</span></div></main><div id="modalRoot"></div>
 <script>
 const KEY='graella-aula-v1';
 const undoStack=[];let applyingUndo=false;
@@ -191,6 +194,7 @@ function openStudent(c,s){const root=document.getElementById('modalRoot');root.r
  const noteLabel=document.createElement('label');noteLabel.textContent='Observacions';const notes=document.createElement('textarea');notes.className='student-notes';notes.placeholder='Anotacions acadèmiques...';notes.value=s.notes||'';const saveField=()=>{s.firstName=first.value;s.lastName=last.value;s.name=displayName(s);s.notes=notes.value;save()};[first,last,notes].forEach(el=>el.addEventListener('input',saveField));const info=document.createElement('p');info.className='note-hint';info.textContent='Evita introduir dades personals sensibles: la informació es guarda en aquest navegador.';const actions=document.createElement('div');actions.className='modal-actions';const closeBtn=document.createElement('button');closeBtn.className='primary';closeBtn.textContent='Tancar';const close=()=>{saveField();root.replaceChildren();render()};closeBtn.onclick=close;back.onclick=e=>{if(e.target===back)close()};actions.append(closeBtn);modal.append(title,hint,firstLabel,first,lastLabel,last,profile,noteLabel,notes,buildIncidentsSection(s),info,actions);back.append(modal);root.append(back);first.focus()}
 function openNewStudent(c){const root=document.getElementById('modalRoot');root.replaceChildren();const back=document.createElement('div');back.className='modal-back';const modal=document.createElement('div');modal.className='modal';const title=document.createElement('h3');title.textContent='Afegir alumne';const label1=document.createElement('label');label1.textContent='Nom';const first=document.createElement('input');first.placeholder='Nom';const label2=document.createElement('label');label2.textContent='Cognoms';const last=document.createElement('input');last.placeholder='Cognoms';const error=document.createElement('p');error.className='error';const actions=document.createElement('div');actions.className='modal-actions';const cancel=document.createElement('button');cancel.className='secondary';cancel.textContent='Cancel·lar';cancel.onclick=()=>root.replaceChildren();const ok=document.createElement('button');ok.className='primary';ok.textContent='Afegir alumne';ok.onclick=()=>{if(!first.value.trim()||!last.value.trim()){error.textContent='Introdueix el nom i els cognoms.';return}const f=first.value.trim(),l=last.value.trim();c.students.push({id:uid(),firstName:f,lastName:l,name:f+' '+l,notes:'',grades:{}});save();root.replaceChildren();render()};last.onkeydown=e=>{if(e.key==='Enter')ok.click()};actions.append(cancel,ok);modal.append(title,label1,first,label2,last,error,actions);back.append(modal);back.onclick=e=>{if(e.target===back)root.replaceChildren()};root.append(back);first.focus()}
 function render(){
+ renderSchedule();
  const list=document.getElementById('classes');list.replaceChildren();
  data.classes.forEach(c=>{let b=document.createElement('button');b.className='class-btn'+(current()?.id===c.id?' active':'');let n=document.createElement('span');n.textContent=c.name;let count=document.createElement('span');count.className='count';count.textContent=c.students.length;b.append(n,count);b.onclick=()=>{data.active=c.id;save();render()};list.append(b)});
  let c=current();if(c&&!Array.isArray(c.items))c.items=[];document.getElementById('classTitle').textContent=c?.name||'Cap classe';document.getElementById('classInfo').textContent=c?`${c.students.length} alumnes`:'Crea una classe per començar';document.getElementById('editTutor').hidden=!c;document.getElementById('tutorName').textContent=c?.tutor?.trim()||'Afegir nom';['renameClass','deleteClass','addStudent','addItem'].forEach(id=>document.getElementById(id).disabled=!c);
@@ -459,6 +463,65 @@ function excelExtract(cfg){
  });
  return {name:cfg.name.value.trim(),items:cols.map(({id,name})=>({id,name})),students};
 }
+
+
+// Horari editable. Les 8 files reprodueixen la distribució del document proporcionat.
+const SCHEDULE_DAYS=['Dilluns','Dimarts','Dimecres','Dijous','Divendres'];
+const INITIAL_SCHEDULE=[
+ ['', '', 'Tecno 1A','Tecno 1B','Proyecto 1'],
+ ['Tecno 3B','Tecno 1B','Robótica 1','Proyecto 3','Tecno 4'],
+ ['', '', '', 'Lavabos',''],
+ ['Tecno 4','Proyecto 3','Mates 2A','Tecno 3A','Tecno 1A'],
+ ['Proyecto 3','Recerca 4','Tecno 3B','Mates 2A',''],
+ ['', '', '', '', ''],
+ ['Tecno 1B','Robótica 2','Tecno 4','',''],
+ ['Mates 2A','Tecno 1A','Empren. 3','Tecno 3A','']
+];
+let scheduleVisible=false;
+function ensureSchedule(){
+ if(!data.schedule||!Array.isArray(data.schedule.rows)){
+  data.schedule={rows:INITIAL_SCHEDULE.map((line,i)=>({time:'',cells:line.map((title,j)=>({title,classId:''}))}))};
+  save();
+ }
+ return data.schedule;
+}
+function scheduleClassGuess(title){
+ const normalize=x=>String(x||'').normalize('NFD').replace(/[\u0300-\u036f]/g,'').toLowerCase().replace(/[^a-z0-9]/g,'');
+ const t=normalize(title);
+ const equivalents={'tecno1a':'1erESO A','tecno1b':'1erESO B','tecno3a':'3erESO A','tecno3b':'3erESO B','mates2a':'2onESO A','robotica1':'Robòtica i Programació 1r','robotica2':'Robòtica i Programació 2n','empren3':'Emprenedoria 3r','tecno4':'Tecnologia i Digitalització 4t','recerca4':'Projecte de Recerca 4t'};
+ const target=normalize(equivalents[t]||'');
+ return data.classes.find(c=>normalize(c.name)===target)?.id||'';
+}
+function editScheduleCell(rowIndex,dayIndex){
+ const slot=ensureSchedule().rows[rowIndex].cells[dayIndex];
+ simpleModal('Editar sessió',SCHEDULE_DAYS[dayIndex]+' · Franja '+(rowIndex+1),(modal,close)=>{
+  const grid=document.createElement('div');grid.className='schedule-edit-grid';
+  const a=document.createElement('div'),b=document.createElement('div');
+  const l=document.createElement('label');l.textContent='Matèria, activitat o anotació';const name=document.createElement('input');name.value=slot.title||'';name.placeholder='Ex.: Tecnologia, guàrdia, pati...';a.append(l,name);
+  const l2=document.createElement('label');l2.textContent='Grup vinculat (opcional)';const select=document.createElement('select');
+  select.add(new Option('Cap grup vinculat',''));data.classes.forEach(c=>select.add(new Option(c.name,c.id)));
+  select.value=slot.classId||scheduleClassGuess(slot.title);b.append(l2,select);grid.append(a,b);
+  const hint=document.createElement('p');hint.textContent='Si vincules un grup, podràs obrir-lo des de l’horari. El text pot ser diferent del nom del grup.';
+  const actions=document.createElement('div');actions.className='modal-actions';const cancel=document.createElement('button');cancel.className='secondary';cancel.textContent='Cancel·lar';cancel.onclick=close;
+  const clear=document.createElement('button');clear.className='secondary';clear.textContent='Buidar';clear.onclick=()=>{slot.title='';slot.classId='';save();close();renderSchedule()};
+  const ok=document.createElement('button');ok.className='primary';ok.textContent='Desar';ok.onclick=()=>{slot.title=name.value.trim();slot.classId=select.value;save();close();renderSchedule()};
+  actions.append(cancel,clear,ok);modal.append(grid,hint,actions);name.focus();
+ });
+}
+function renderSchedule(){
+ const panel=document.getElementById('schedulePanel');panel.hidden=!scheduleVisible;
+ const toggle=document.getElementById('toggleSchedule');toggle.textContent=scheduleVisible?'▦ Amagar horari':'▦ El meu horari';
+ if(!scheduleVisible)return;
+ const schedule=ensureSchedule();panel.replaceChildren();
+ const head=document.createElement('div');head.className='schedule-head';const title=document.createElement('h2');title.textContent='El meu horari';
+ const tools=document.createElement('div');tools.className='actions';const add=document.createElement('button');add.className='secondary';add.textContent='+ Afegir franja';add.onclick=()=>{schedule.rows.push({time:'',cells:SCHEDULE_DAYS.map(()=>({title:'',classId:''}))});save();renderSchedule()};
+ const reset=document.createElement('button');reset.className='secondary';reset.textContent='Restablir horari inicial';reset.onclick=()=>{if(confirm('Vols substituir tot l’horari actual pel del PDF original?')){delete data.schedule;ensureSchedule();renderSchedule()}};tools.append(add,reset);head.append(title,tools);panel.append(head);
+ const wrap=document.createElement('div');wrap.className='schedule-grid-wrap';const table=document.createElement('table');table.className='schedule-grid';const thead=document.createElement('thead');const tr=document.createElement('tr');['Franja',...SCHEDULE_DAYS].forEach(x=>{const th=document.createElement('th');th.textContent=x;tr.append(th)});thead.append(tr);table.append(thead);const tbody=document.createElement('tbody');
+ schedule.rows.forEach((row,i)=>{const tr=document.createElement('tr');const td=document.createElement('td');const input=document.createElement('input');input.className='schedule-time';input.type='text';input.placeholder='Hora (opcional)';input.value=row.time||'';input.setAttribute('aria-label','Hora de la franja '+(i+1));input.onchange=()=>{row.time=input.value.trim();save()};const label=document.createElement('div');label.className='schedule-time-label';label.textContent='Franja '+(i+1);td.append(input,label);tr.append(td);
+  row.cells.forEach((cell,j)=>{const td=document.createElement('td');const button=document.createElement('button');button.type='button';button.className='schedule-slot'+(cell.title?' filled':'')+(/^(pati|lavabos|guàrdia|guardia|reunió|reunion)$/i.test(cell.title||'')?' special':'')+(!cell.title?' break':'');const strong=document.createElement('strong');strong.textContent=cell.title||'+';button.append(strong);const linked=data.classes.find(c=>c.id===(cell.classId||scheduleClassGuess(cell.title)));if(linked){const small=document.createElement('small');small.textContent='Obrir grup ↗';button.append(small)}button.title=linked?'Obrir grup o editar sessió':'Editar sessió';button.onclick=()=>{if(linked){simpleModal('Sessió · '+(cell.title||linked.name),SCHEDULE_DAYS[j]+' · Franja '+(i+1),(modal,close)=>{const actions=document.createElement('div');actions.className='modal-actions';const edit=document.createElement('button');edit.className='secondary';edit.textContent='Editar sessió';edit.onclick=()=>{close();editScheduleCell(i,j)};const go=document.createElement('button');go.className='primary';go.textContent='Obrir '+linked.name;go.onclick=()=>{close();data.active=linked.id;save();scheduleVisible=false;render();window.scrollTo({top:0,behavior:'smooth'})};actions.append(edit,go);modal.append(actions)})}else editScheduleCell(i,j)};td.append(button);tr.append(td)});tbody.append(tr)});table.append(tbody);wrap.append(table);panel.append(wrap);
+ const help=document.createElement('p');help.className='schedule-help';help.textContent='Clica qualsevol casella per editar-la. Si està vinculada a un grup, també podràs obrir-lo. Les hores es poden escriure lliurement.';panel.append(help);
+}
+document.getElementById('toggleSchedule').onclick=()=>{scheduleVisible=!scheduleVisible;renderSchedule();if(scheduleVisible)document.getElementById('schedulePanel').scrollIntoView({behavior:'smooth',block:'start'})};
 
 save();render();
 </script>
