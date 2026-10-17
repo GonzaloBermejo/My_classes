@@ -21,11 +21,14 @@
 
 /* Edició, comentaris i estadístiques */
 .grade-input.has-comment{outline:2px solid #e6d5a4;outline-offset:1px}.comment-dot{border:0;background:transparent;color:#b18a39;padding:3px;cursor:pointer;font-size:15px}.grade-cell{display:flex;align-items:center;gap:3px}.stats-btn{border:0;background:transparent;color:#788bb0;font-size:15px;cursor:pointer;padding:4px}.stats-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:12px;margin-top:18px}.stats-tile{background:#f7f9fc;border-radius:9px;padding:14px}.stats-tile strong{display:block;font-size:21px;color:#344d96;margin-top:6px}.stats-tile span{font-size:12px;color:#778397}.undo-btn:disabled{opacity:.45;cursor:default}.comment-area{width:100%;min-height:110px;border:1px solid #dce2eb;border-radius:9px;padding:12px;resize:vertical}.paste-hint{font-size:12px;color:#8b95a3;margin:9px 0}.item-head{min-width:150px}.table-wrap th:not(:first-child):not(:nth-child(2)){min-width:150px}
+
+/* Importador d'Excel */
+.excel-modal{width:min(940px,100%);max-height:92vh;overflow:auto}.excel-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(170px,1fr));gap:12px}.excel-grid label{margin:0}.excel-grid select,.excel-grid input{margin-top:5px}.excel-sheet{border:1px solid #e4e8ef;border-radius:10px;margin:12px 0;padding:14px}.excel-sheet-head{display:flex;align-items:center;gap:10px;flex-wrap:wrap}.excel-sheet-head input{width:auto}.excel-sheet-head strong{font-size:14px}.excel-preview{overflow:auto;max-height:240px;border:1px solid #e8ebef;border-radius:8px;margin-top:12px}.excel-preview table{width:100%;font-size:12px}.excel-preview td,.excel-preview th{padding:7px 10px;white-space:nowrap;max-width:250px;overflow:hidden;text-overflow:ellipsis}.excel-preview th{position:sticky;top:0;z-index:1}.excel-help{font-size:12px;color:#718096}.excel-warning{color:#9a641e;background:#fff7e8;border-radius:8px;padding:9px 12px;font-size:12px}.excel-footer{position:sticky;bottom:-25px;background:white;border-top:1px solid #edf0f3;padding-top:12px}.excel-sheet[aria-disabled="true"]{opacity:.58}
 </style>
 </head>
 <body>
 <header><strong>Graella<span> · Aula</span></strong><span>Espai de gestió de classes</span></header>
-<main><div class="top"><div><h1>Les meves classes</h1><p class="sub">Organitza els teus grups i alumnes en un sol lloc.</p></div><div class="backup-actions"><button class="secondary" id="exportExcel" type="button">↓ Exportar Excel</button><button class="secondary undo-btn" id="undoGrade" type="button" disabled title="Desfer el darrer canvi de notes (Ctrl+Z)">↶ Desfer</button><button class="secondary" id="exportData" type="button">↓ Exportar dades</button><button class="secondary" id="importData" type="button">↑ Importar dades</button><input id="importFile" type="file" accept=".json,application/json"></div></div><div class="layout"><aside class="panel side"><div class="side-title">Classes</div><div id="classes"></div><button class="add-side" id="addClass">+ Afegir classe</button></aside><section class="panel"><div class="content-head"><div><h2 id="classTitle"></h2><div class="hint" id="classInfo"></div></div><div class="actions"><button class="secondary" id="renameClass">Canviar nom</button><button class="secondary" id="deleteClass">Eliminar classe</button><button class="secondary" id="addItem">+ Afegir ítem</button><button class="primary" id="addStudent">+ Afegir alumne</button></div></div><div id="tableArea"></div></section></div><div class="footer">Les dades es desen automàticament en aquest navegador.</div></main><div id="modalRoot"></div>
+<main><div class="top"><div><h1>Les meves classes</h1><p class="sub">Organitza els teus grups i alumnes en un sol lloc.</p></div><div class="backup-actions"><button class="secondary" id="exportExcel" type="button">↓ Exportar Excel</button><button class="secondary undo-btn" id="undoGrade" type="button" disabled title="Desfer el darrer canvi de notes (Ctrl+Z)">↶ Desfer</button><button class="secondary" id="exportData" type="button">↓ Exportar dades</button><button class="secondary" id="importData" type="button">↑ Importar dades</button><button class="secondary" id="importExcel" type="button">↑ Importar Excel</button><input id="excelFile" type="file" accept=".xlsx,.xls,.xlsm,.csv" style="display:none"><input id="importFile" type="file" accept=".json,application/json"></div></div><div class="layout"><aside class="panel side"><div class="side-title">Classes</div><div id="classes"></div><button class="add-side" id="addClass">+ Afegir classe</button></aside><section class="panel"><div class="content-head"><div><h2 id="classTitle"></h2><div class="hint" id="classInfo"></div></div><div class="actions"><button class="secondary" id="renameClass">Canviar nom</button><button class="secondary" id="deleteClass">Eliminar classe</button><button class="secondary" id="addItem">+ Afegir ítem</button><button class="primary" id="addStudent">+ Afegir alumne</button></div></div><div id="tableArea"></div></section></div><div class="footer">Les dades es desen automàticament en aquest navegador.</div></main><div id="modalRoot"></div>
 <script>
 const KEY='graella-aula-v1';
 const undoStack=[];let applyingUndo=false;
@@ -188,6 +191,154 @@ document.getElementById('addClass').onclick=()=>{let name=prompt('Nom de la nova
 document.getElementById('renameClass').onclick=()=>{let c=current();if(!c)return;let name=prompt('Nou nom de la classe:',c.name);if(!name?.trim())return;c.name=name.trim();save();render()};
 document.getElementById('deleteClass').onclick=()=>{let c=current();if(!c||!confirm(`Vols eliminar la classe "${c.name}" i tots els seus alumnes?`))return;data.classes=data.classes.filter(x=>x.id!==c.id);data.active=data.classes[0]?.id||null;save();render()};
 document.getElementById('addStudent').onclick=()=>{let c=current();if(c)openNewStudent(c)};
+
+// Importació de fulls de càlcul. La biblioteca es carrega només quan es necessita.
+let excelLibraryPromise=null;
+function loadExcelLibrary(){
+ if(window.XLSX)return Promise.resolve(window.XLSX);
+ if(excelLibraryPromise)return excelLibraryPromise;
+ excelLibraryPromise=new Promise((resolve,reject)=>{
+  const script=document.createElement('script');script.src='https://cdn.jsdelivr.net/npm/xlsx@0.18.5/dist/xlsx.full.min.js';
+  script.onload=()=>window.XLSX?resolve(window.XLSX):reject(Error('Biblioteca Excel no disponible'));
+  script.onerror=()=>reject(Error('No es pot carregar el lector d’Excel. Comprova la connexió a Internet.'));
+  document.head.append(script);
+ }).catch(e=>{excelLibraryPromise=null;throw e});return excelLibraryPromise;
+}
+const excelFileInput=document.getElementById('excelFile');
+document.getElementById('importExcel').onclick=()=>excelFileInput.click();
+excelFileInput.onchange=async()=>{
+ const file=excelFileInput.files?.[0];excelFileInput.value='';if(!file)return;
+ if(file.size>15*1024*1024){alert('El fitxer supera el límit de 15 MB.');return}
+ const button=document.getElementById('importExcel');button.disabled=true;button.textContent='Llegint Excel…';
+ try{
+  const XLSX=await loadExcelLibrary();const buf=await file.arrayBuffer();
+  const book=XLSX.read(buf,{type:'array',cellFormula:true,cellDates:false,cellNF:false});
+  const sheets=book.SheetNames.map(name=>{
+   const sheet=book.Sheets[name];const range=XLSX.utils.decode_range(sheet['!ref']||'A1');
+   const endRow=Math.min(range.e.r,10009),endCol=Math.min(range.e.c,99);
+   const rows=[];let formulaCount=0;
+   for(let r=range.s.r;r<=endRow;r++){
+    const line=[];let nonempty=false;
+    for(let col=range.s.c;col<=endCol;col++){
+     const cell=sheet[XLSX.utils.encode_cell({r,c:col})];
+     if(cell?.f)formulaCount++;
+     let value=cell?.v??'';
+     if(value instanceof Date)value=value.toLocaleDateString('ca-ES');
+     if(typeof value==='number'&&Number.isFinite(value))value=String(Number(value.toPrecision(12)));
+     value=String(value).trim();line.push(value);if(value)nonempty=true;
+    }
+    rows.push(line);
+   }
+   return {name,rows,formulaCount,offset:range.s.r};
+  });
+  showExcelImporter(sheets,file.name);
+ }catch(e){alert('No s’ha pogut obrir el full de càlcul: '+e.message)}
+ finally{button.disabled=false;button.textContent='↑ Importar Excel'}
+};
+function excelNorm(v){return String(v??'').normalize('NFD').replace(/[\u0300-\u036f]/g,'').trim().toLowerCase()}
+function excelNumber(v){const raw=String(v??'').trim().replace(/\s/g,'');if(!raw)return null;let n=raw;if(/^[-+]?\d{1,3}(\.\d{3})+,\d+$/.test(n))n=n.replace(/\./g,'').replace(',','.');else if(n.includes(',')&&!n.includes('.'))n=n.replace(',','.');if(!/^[-+]?(?:\d+(?:\.\d*)?|\.\d+)$/.test(n))return null;const num=Number(n);return Number.isFinite(num)?num:null}
+function excelGuess(sheet){
+ const rows=sheet.rows;let best={score:-Infinity,header:0,nameCol:0};
+ for(let r=0;r<Math.min(20,rows.length);r++)for(let col=0;col<Math.min(12,rows[r].length);col++){
+  const v=excelNorm(rows[r][col]);let score=0;
+  if(/^(nom|nombre)( i cognoms| y apellidos| complet| completo)?$/.test(v))score+=16;
+  else if(v.includes('cognoms')||v.includes('apellidos')||v.includes('alumne')||v.includes('alumno'))score+=10;
+  else if(v==='nom'||v==='nombre')score+=12;
+  if(/^(llista|lista|n[uú]m|num|nº|#)$/.test(v))score-=12;
+  const below=rows.slice(r+1,r+Math.min(rows.length-r,10)).filter(x=>{
+   const t=String(x[col]||'').trim();return t.length>=3&&/[A-Za-zÀ-ÿ]/.test(t)&&!/^grupo?\s*\d+$/i.test(t)
+  }).length;
+  score+=below*1.2;if(v)score+=1;
+  if(score>best.score)best={score,header:r,nameCol:col};
+ }
+ if(!rows.length)return {header:0,nameCol:0,columns:[]};
+ const {header,nameCol}=best;
+ const headers=rows[header]||[];
+ const columns=headers.map((v,i)=>({i,name:String(v||'').trim()})).filter(x=>x.i!==nameCol&&x.name&&!/^(llista|lista|n[uú]m|num|nº|#|classe|clase|grupo|grup)$/i.test(excelNorm(x.name)));
+ return {header,nameCol,columns};
+}
+function excelCandidateRow(row,nameCol){
+ const name=String(row?.[nameCol]??'').trim();const norm=excelNorm(name);
+ return name.length>=2&&/[A-Za-zÀ-ÿ]/.test(name)&&!/^\d+$/.test(name)&&!/^grup(o)?\s*\d+$/i.test(name)&&!/(^nom$|^nombre$|^alumn|^total$|^mitjana$|^media$)/i.test(norm)&&name.length<140;
+}
+function showExcelImporter(sheets,filename){
+ const root=document.getElementById('modalRoot');root.replaceChildren();
+ const back=document.createElement('div');back.className='modal-back';const modal=document.createElement('div');modal.className='modal excel-modal';
+ modal.setAttribute('role','dialog');modal.setAttribute('aria-modal','true');
+ const title=document.createElement('h3');title.textContent='Importar classes des d’Excel';
+ const intro=document.createElement('p');intro.textContent=filename+' · Selecciona els fulls i comprova la vista prèvia. Es crearan classes noves; no es modificarà cap classe existent.';
+ const warning=document.createElement('div');warning.className='excel-warning';warning.textContent='Les fórmules s’importen com a valors guardats al fitxer, no com a ponderacions automàtiques. Revisa les columnes i els noms compostos abans de confirmar.';
+ modal.append(title,intro,warning);
+ const configs=[];
+ sheets.forEach(sheet=>{
+  if(!sheet.rows.length)return;
+  const guess=excelGuess(sheet);const panel=document.createElement('section');panel.className='excel-sheet';
+  const heading=document.createElement('div');heading.className='excel-sheet-head';
+  const enabled=document.createElement('input');enabled.type='checkbox';enabled.checked=sheet.rows.length>=3&&guess.columns.length>0&&/^(nom|nombre)/i.test(String(sheet.rows[guess.header]?.[guess.nameCol]||''));
+  const name=document.createElement('input');name.value=sheet.name;name.style.width='175px';name.setAttribute('aria-label','Nom de la classe nova');
+  const sheetLabel=document.createElement('strong');sheetLabel.textContent='Full: '+sheet.name;
+  const count=document.createElement('span');count.className='excel-help';
+  heading.append(enabled,sheetLabel,name,count);panel.append(heading);
+  const controls=document.createElement('div');controls.className='excel-grid';
+  const headerLabel=document.createElement('label');headerLabel.textContent='Fila de capçaleres';const headerSelect=document.createElement('select');
+  for(let i=0;i<Math.min(30,sheet.rows.length);i++){const option=document.createElement('option');option.value=i;option.textContent='Fila '+(sheet.offset+i+1);headerSelect.append(option)}headerSelect.value=Math.min(guess.header,29);headerLabel.append(headerSelect);
+  const nameLabel=document.createElement('label');nameLabel.textContent='Columna dels noms';const nameSelect=document.createElement('select');
+  const maxCols=Math.max(1,...sheet.rows.slice(0,30).map(r=>r.length));
+  for(let i=0;i<maxCols;i++){const opt=document.createElement('option');opt.value=i;opt.textContent='Columna '+(i+1)+' · '+String(sheet.rows[guess.header]?.[i]||'').slice(0,35);nameSelect.append(opt)}nameSelect.value=guess.nameCol;nameLabel.append(nameSelect);
+  const modeLabel=document.createElement('label');modeLabel.textContent='Columnes a importar';const modeSelect=document.createElement('select');
+  [['all','Amb capçalera (notes i altres camps)'],['numeric','Només columnes amb notes (0–10)'],['none','Només alumnes']].forEach(([v,t])=>{const o=document.createElement('option');o.value=v;o.textContent=t;modeSelect.append(o)});
+  modeSelect.value=guess.columns.length?'numeric':'none';modeLabel.append(modeSelect);
+  controls.append(headerLabel,nameLabel,modeLabel);panel.append(controls);
+  const preview=document.createElement('div');preview.className='excel-preview';panel.append(preview);
+  const hint=document.createElement('p');hint.className='excel-help';panel.append(hint);
+  const cfg={sheet,enabled,name,headerSelect,nameSelect,modeSelect,preview,count,hint,panel};configs.push(cfg);
+  const refresh=()=>{
+   const result=excelExtract(cfg);count.textContent=result.students.length+' alumnes · '+result.items.length+' columnes';
+   panel.setAttribute('aria-disabled',enabled.checked?'false':'true');
+   const tbl=document.createElement('table');const thead=document.createElement('thead');const hr=document.createElement('tr');
+   ['Nom detectat',...result.items.map(i=>i.name)].forEach(t=>{const th=document.createElement('th');th.textContent=t;hr.append(th)});thead.append(hr);tbl.append(thead);
+   const tbody=document.createElement('tbody');result.students.slice(0,5).forEach(st=>{const tr=document.createElement('tr');[st.name,...result.items.map(i=>st.grades[i.id]??'—')].forEach(t=>{const td=document.createElement('td');td.textContent=t;tr.append(td)});tbody.append(tr)});tbl.append(tbody);preview.replaceChildren(tbl);
+   hint.textContent=(sheet.formulaCount?'El full conté '+sheet.formulaCount+' cel·les amb fórmules. ':'')+'Vista prèvia: màxim 5 alumnes. Les notes fora de 0–10 s’ignoren en mode «Només columnes amb notes».';
+  };
+  [enabled,name,headerSelect,nameSelect,modeSelect].forEach(el=>el.addEventListener('change',refresh));refresh();modal.append(panel);
+ });
+ const footer=document.createElement('div');footer.className='modal-actions excel-footer';const cancel=document.createElement('button');cancel.className='secondary';cancel.textContent='Cancel·lar';const close=()=>root.replaceChildren();cancel.onclick=close;
+ const importBtn=document.createElement('button');importBtn.className='primary';importBtn.textContent='Importar fulls seleccionats';
+ importBtn.onclick=()=>{
+  const selected=configs.filter(c=>c.enabled.checked).map(excelExtract).filter(x=>x.students.length);
+  if(!selected.length){alert('Selecciona almenys un full amb alumnes detectats.');return}
+  const n=selected.reduce((sum,x)=>sum+x.students.length,0);
+  if(!confirm(`S’importaran ${selected.length} classes noves i ${n} alumnes. Les classes existents es conservaran. Vols continuar?`))return;
+  const existing=new Set(data.classes.map(c=>c.name.toLocaleLowerCase('ca')));
+  const created=selected.map(x=>{let name=x.name||'Classe importada';let suffix=2;const base=name;while(existing.has(name.toLocaleLowerCase('ca')))name=base+' (importada '+suffix+++')';existing.add(name.toLocaleLowerCase('ca'));return {id:uid(),name,students:x.students,items:x.items}});
+  const previousActive=data.active;data.classes.push(...created);data.active=created[0].id;
+  try{save()}catch(e){data.classes.splice(-created.length,created.length);data.active=previousActive;alert('No s’ha pogut desar la importació. '+e.message);return}
+  close();render();alert(`Importació completada: ${created.length} classes i ${n} alumnes. Revisa les dades abans d’utilitzar-les.`);
+ };
+ footer.append(cancel,importBtn);modal.append(footer);back.append(modal);back.onclick=e=>{if(e.target===back)close()};root.append(back);
+}
+function excelExtract(cfg){
+ const {sheet}=cfg,header=Number(cfg.headerSelect.value),nameCol=Number(cfg.nameSelect.value),mode=cfg.modeSelect.value;
+ const rows=sheet.rows;const headings=rows[header]||[];
+ const candidates=rows.slice(header+1).filter(row=>excelCandidateRow(row,nameCol));
+ const cols=[];
+ if(mode!=='none')for(let col=0;col<Math.max(...rows.slice(0,30).map(r=>r.length),0);col++){
+  if(col===nameCol)continue;
+  let heading=String(headings[col]||'').trim();
+  if(!heading||/^(llista|lista|n[uú]m|num|nº|#|classe|clase|grup|grupo)$/i.test(excelNorm(heading)))continue;
+  const vals=candidates.map(row=>String(row[col]??'').trim()).filter(Boolean);
+  const nums=vals.filter(v=>{const n=excelNumber(v);return n!==null&&n>=0&&n<=10});
+  if(mode==='numeric'&&(!nums.length||nums.length/Math.max(1,vals.length)<.7))continue;
+  cols.push({index:col,id:uid(),name:heading});
+ }
+ const students=candidates.map(row=>{
+  const full=String(row[nameCol]).trim().replace(/\s+/g,' ');const parts=full.split(' ');const firstName=parts.shift()||'';const lastName=parts.join(' ');
+  const grades={};cols.forEach(col=>{const raw=String(row[col.index]??'').trim();const n=excelNumber(raw);if(n!==null&&n>=0&&n<=10)grades[col.id]=String(n)});
+  return {id:uid(),name:full,firstName,lastName,grades,notes:''};
+ });
+ return {name:cfg.name.value.trim(),items:cols.map(({id,name})=>({id,name})),students};
+}
+
 save();render();
 </script>
 </body></html>
