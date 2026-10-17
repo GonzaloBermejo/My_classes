@@ -71,6 +71,23 @@ header .brand-copy .brand-author{font-size:11px;line-height:1.4;color:#8994a5}
 header .brand-context{font-size:13px;color:#8a929f;text-align:right}
 .footer{justify-content:flex-end}
 @media(max-width:600px){.brand-header{align-items:flex-start;flex-direction:column}.brand-context{display:none}.brand-logo{width:46px;height:46px;flex-basis:46px}header .brand-copy .brand-author{font-size:10px}}
+
+/* Registre d'incidències per alumne */
+.incidents-section{border-top:1px solid #edf0f3;margin-top:20px;padding-top:16px}
+.incidents-heading{display:flex;align-items:center;justify-content:space-between;gap:12px;flex-wrap:wrap}
+.incidents-heading h4{margin:0;font-size:14px;color:#3f4b60}
+.incident-empty{font-size:12px;color:#8b95a3;margin:12px 0}
+.incident-card{border:1px solid #e6eaf1;border-radius:10px;padding:12px;margin-top:10px;background:#fafbfe}
+.incident-card.positive{background:#f3faf5;border-color:#deeee2}
+.incident-meta{font-size:12px;color:#718096;display:flex;gap:8px;align-items:center;flex-wrap:wrap}
+.incident-description{white-space:pre-wrap;overflow-wrap:anywhere;margin:8px 0;color:#344054;font-size:13px;line-height:1.5}
+.incident-actions{display:flex;gap:8px;justify-content:flex-end}
+.incident-actions button{padding:5px 9px;font-size:12px}
+.incident-editor{margin-top:12px;padding:14px;background:#f7f9ff;border:1px solid #e1e8f6;border-radius:10px}
+.incident-editor textarea{width:100%;min-height:100px;padding:10px;border:1px solid #dce2eb;border-radius:8px;resize:vertical}
+.incident-editor select,.incident-editor input{width:100%;padding:9px;border:1px solid #dce2eb;border-radius:8px;background:white}
+.incident-editor-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+@media(max-width:540px){.incident-editor-grid{grid-template-columns:1fr}}
 </style>
 </head>
 <body>
@@ -105,6 +122,62 @@ function gradeColor(el,raw){const str=String(raw??'').trim();const value=str==='
 function refreshCalculated(c){document.querySelectorAll('[data-calc]').forEach(el=>{const student=c.students.find(s=>s.id===el.dataset.student);const item=c.items.find(x=>x.id===el.dataset.calc);if(!student||!item)return;const value=calcValue(c,student,item);el.textContent=value===null?'—':value.toFixed(2).replace('.',',');gradeColor(el,value===null?'':value)})}
 function displayName(s){return [s.firstName,s.lastName].filter(Boolean).join(' ')||s.name||''}
 function orderedStudents(c){const a=[...c.students];if(c.orderMode!=='manual')a.sort((x,y)=>(x.lastName||'').localeCompare(y.lastName||'','ca',{sensitivity:'base'})||(x.firstName||'').localeCompare(y.firstName||'','ca',{sensitivity:'base'}));return a}
+function buildIncidentsSection(s){
+ const section=document.createElement('section');section.className='incidents-section';
+ const heading=document.createElement('div');heading.className='incidents-heading';
+ const title=document.createElement('h4');title.textContent='Incidències i reconeixements';
+ const add=document.createElement('button');add.type='button';add.className='secondary';add.textContent='+ Nova incidència';
+ const editor=document.createElement('div');editor.className='incident-editor';editor.hidden=true;
+ const history=document.createElement('div');
+ heading.append(title,add);section.append(heading,editor,history);
+ const entries=()=>Array.isArray(s.incidents)?s.incidents:(s.incidents=[]);
+ const dateInputValue=(date)=>{const d=new Date(date);if(Number.isNaN(d.getTime()))return '';const local=new Date(d.getTime()-d.getTimezoneOffset()*60000);return local.toISOString().slice(0,16)};
+ const readableDate=(date)=>{const d=new Date(date);return Number.isNaN(d.getTime())?'Data desconeguda':new Intl.DateTimeFormat('ca-ES',{dateStyle:'medium',timeStyle:'short'}).format(d)};
+ const openEditor=(entry=null)=>{
+  editor.replaceChildren();editor.hidden=false;add.hidden=true;
+  const heading=document.createElement('strong');heading.textContent=entry?'Editar incidència':'Registrar incidència';
+  const grid=document.createElement('div');grid.className='incident-editor-grid';
+  const typeWrap=document.createElement('div');const typeLabel=document.createElement('label');typeLabel.textContent='Tipus';
+  const type=document.createElement('select');[['comportament','Comportament inadequat'],['respecte','Falta de respecte'],['expulsio','Expulsió de classe'],['tasques','Tasques / material'],['positiva','Reconeixement positiu'],['altres','Altres']].forEach(([value,text])=>{const option=document.createElement('option');option.value=value;option.textContent=text;type.append(option)});
+  type.value=entry?.type||'comportament';typeWrap.append(typeLabel,type);
+  const dateWrap=document.createElement('div');const dateLabel=document.createElement('label');dateLabel.textContent='Data i hora';
+  const date=document.createElement('input');date.type='datetime-local';date.value=dateInputValue(entry?.occurredAt||new Date().toISOString());dateWrap.append(dateLabel,date);
+  grid.append(typeWrap,dateWrap);
+  const descLabel=document.createElement('label');descLabel.textContent='Descripció';
+  const desc=document.createElement('textarea');desc.placeholder='Descriu els fets de manera objectiva...';desc.value=entry?.description||'';
+  const error=document.createElement('p');error.className='error';
+  const buttons=document.createElement('div');buttons.className='modal-actions';
+  const cancel=document.createElement('button');cancel.type='button';cancel.className='secondary';cancel.textContent='Cancel·lar';cancel.onclick=()=>{editor.hidden=true;editor.replaceChildren();add.hidden=false};
+  const ok=document.createElement('button');ok.type='button';ok.className='primary';ok.textContent=entry?'Desar canvis':'Desar incidència';
+  ok.onclick=()=>{
+   const description=desc.value.trim();const occurredAt=new Date(date.value);
+   if(!description){error.textContent='Escriu una descripció.';return}
+   if(!date.value||Number.isNaN(occurredAt.getTime())){error.textContent='Introdueix una data i hora vàlides.';return}
+   if(entry){entry.type=type.value;entry.description=description;entry.occurredAt=occurredAt.toISOString();entry.updatedAt=new Date().toISOString()}
+   else entries().push({id:uid(),type:type.value,description,occurredAt:occurredAt.toISOString(),createdAt:new Date().toISOString()});
+   try{save()}catch(e){error.textContent='No s’ha pogut desar: '+e.message;return}
+   cancel.click();draw();
+  };
+  buttons.append(cancel,ok);editor.append(heading,grid,descLabel,desc,error,buttons);desc.focus();
+ };
+ const draw=()=>{
+  history.replaceChildren();const all=[...entries()].sort((a,b)=>new Date(b.occurredAt||0)-new Date(a.occurredAt||0));
+  if(!all.length){const empty=document.createElement('p');empty.className='incident-empty';empty.textContent='Encara no hi ha incidències registrades.';history.append(empty);return}
+  const labels={comportament:'Comportament inadequat',respecte:'Falta de respecte',expulsio:'Expulsió de classe',tasques:'Tasques / material',positiva:'Reconeixement positiu',altres:'Altres'};
+  all.forEach(entry=>{
+   const card=document.createElement('article');card.className='incident-card'+(entry.type==='positiva'?' positive':'');
+   const meta=document.createElement('div');meta.className='incident-meta';
+   const kind=document.createElement('strong');kind.textContent=labels[entry.type]||'Incidència';const when=document.createElement('span');when.textContent='· '+readableDate(entry.occurredAt);meta.append(kind,when);
+   const description=document.createElement('p');description.className='incident-description';description.textContent=entry.description||'';
+   const actions=document.createElement('div');actions.className='incident-actions';
+   const edit=document.createElement('button');edit.type='button';edit.className='secondary';edit.textContent='Editar';edit.onclick=()=>openEditor(entry);
+   const remove=document.createElement('button');remove.type='button';remove.className='secondary';remove.textContent='Eliminar';remove.onclick=()=>{if(!confirm('Vols eliminar aquesta incidència?'))return;s.incidents=entries().filter(x=>x.id!==entry.id);save();draw()};
+   actions.append(edit,remove);card.append(meta,description,actions);history.append(card);
+  });
+ };
+ add.onclick=()=>openEditor();draw();return section;
+}
+
 function openStudent(c,s){const root=document.getElementById('modalRoot');root.replaceChildren();const back=document.createElement('div');back.className='modal-back';const modal=document.createElement('div');modal.className='modal';const title=document.createElement('h3');title.textContent='Fitxa de l’alumne';const hint=document.createElement('p');hint.textContent=c.name+' · Les modificacions es desen automàticament';const firstLabel=document.createElement('label');firstLabel.textContent='Nom';const first=document.createElement('input');first.value=s.firstName||'';const lastLabel=document.createElement('label');lastLabel.textContent='Cognoms';const last=document.createElement('input');last.value=s.lastName||'';const profile=document.createElement('section');profile.className='profile-section';
  const ph=document.createElement('h4');ph.textContent='Informació acadèmica';profile.append(ph);
  const makeChoice=(text,key)=>{const row=document.createElement('div');row.className='profile-row';const label=document.createElement('label');label.textContent=text;const select=document.createElement('select');[['no','No'],['si','Sí']].forEach(([v,t])=>{const o=document.createElement('option');o.value=v;o.textContent=t;select.append(o)});select.value=s[key]==='si'?'si':'no';select.onchange=()=>{s[key]=select.value;save();if(key==='siblingsAtSchool')siblingArea.hidden=select.value!=='si'};row.append(label,select);profile.append(row);return select};
@@ -115,7 +188,7 @@ function openStudent(c,s){const root=document.getElementById('modalRoot');root.r
  const addSibling=document.createElement('button');addSibling.type='button';addSibling.className='secondary';addSibling.textContent='+ Afegir germà/ana';addSibling.onclick=()=>{siblingList().push({name:'',course:''});save();drawSiblings()};siblingArea.append(addSibling);profile.append(siblingArea);siblingArea.hidden=siblingChoice.value!=='si';drawSiblings();
  const joinedLabel=document.createElement('label');joinedLabel.textContent='Data d’incorporació (opcional)';const joined=document.createElement('input');joined.type='date';joined.value=s.joinedDate||'';joined.onchange=()=>{s.joinedDate=joined.value;save()};profile.append(joinedLabel,joined);
  const pendingLabel=document.createElement('label');pendingLabel.textContent='Matèries pendents (opcional)';const pending=document.createElement('input');pending.placeholder='Ex.: Matemàtiques de 1r';pending.value=s.pendingSubjects||'';pending.oninput=()=>{s.pendingSubjects=pending.value;save()};profile.append(pendingLabel,pending);
- const noteLabel=document.createElement('label');noteLabel.textContent='Observacions';const notes=document.createElement('textarea');notes.className='student-notes';notes.placeholder='Anotacions acadèmiques...';notes.value=s.notes||'';const saveField=()=>{s.firstName=first.value;s.lastName=last.value;s.name=displayName(s);s.notes=notes.value;save()};[first,last,notes].forEach(el=>el.addEventListener('input',saveField));const info=document.createElement('p');info.className='note-hint';info.textContent='Evita introduir dades personals sensibles: la informació es guarda en aquest navegador.';const actions=document.createElement('div');actions.className='modal-actions';const closeBtn=document.createElement('button');closeBtn.className='primary';closeBtn.textContent='Tancar';const close=()=>{saveField();root.replaceChildren();render()};closeBtn.onclick=close;back.onclick=e=>{if(e.target===back)close()};actions.append(closeBtn);modal.append(title,hint,firstLabel,first,lastLabel,last,profile,noteLabel,notes,info,actions);back.append(modal);root.append(back);first.focus()}
+ const noteLabel=document.createElement('label');noteLabel.textContent='Observacions';const notes=document.createElement('textarea');notes.className='student-notes';notes.placeholder='Anotacions acadèmiques...';notes.value=s.notes||'';const saveField=()=>{s.firstName=first.value;s.lastName=last.value;s.name=displayName(s);s.notes=notes.value;save()};[first,last,notes].forEach(el=>el.addEventListener('input',saveField));const info=document.createElement('p');info.className='note-hint';info.textContent='Evita introduir dades personals sensibles: la informació es guarda en aquest navegador.';const actions=document.createElement('div');actions.className='modal-actions';const closeBtn=document.createElement('button');closeBtn.className='primary';closeBtn.textContent='Tancar';const close=()=>{saveField();root.replaceChildren();render()};closeBtn.onclick=close;back.onclick=e=>{if(e.target===back)close()};actions.append(closeBtn);modal.append(title,hint,firstLabel,first,lastLabel,last,profile,noteLabel,notes,buildIncidentsSection(s),info,actions);back.append(modal);root.append(back);first.focus()}
 function openNewStudent(c){const root=document.getElementById('modalRoot');root.replaceChildren();const back=document.createElement('div');back.className='modal-back';const modal=document.createElement('div');modal.className='modal';const title=document.createElement('h3');title.textContent='Afegir alumne';const label1=document.createElement('label');label1.textContent='Nom';const first=document.createElement('input');first.placeholder='Nom';const label2=document.createElement('label');label2.textContent='Cognoms';const last=document.createElement('input');last.placeholder='Cognoms';const error=document.createElement('p');error.className='error';const actions=document.createElement('div');actions.className='modal-actions';const cancel=document.createElement('button');cancel.className='secondary';cancel.textContent='Cancel·lar';cancel.onclick=()=>root.replaceChildren();const ok=document.createElement('button');ok.className='primary';ok.textContent='Afegir alumne';ok.onclick=()=>{if(!first.value.trim()||!last.value.trim()){error.textContent='Introdueix el nom i els cognoms.';return}const f=first.value.trim(),l=last.value.trim();c.students.push({id:uid(),firstName:f,lastName:l,name:f+' '+l,notes:'',grades:{}});save();root.replaceChildren();render()};last.onkeydown=e=>{if(e.key==='Enter')ok.click()};actions.append(cancel,ok);modal.append(title,label1,first,label2,last,error,actions);back.append(modal);back.onclick=e=>{if(e.target===back)root.replaceChildren()};root.append(back);first.focus()}
 function render(){
  const list=document.getElementById('classes');list.replaceChildren();
