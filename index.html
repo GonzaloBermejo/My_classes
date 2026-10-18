@@ -91,11 +91,14 @@ header .brand-context{font-size:13px;color:#8a929f;text-align:right}
 
 /* Horari del professor */
 .schedule-panel{margin-top:18px;padding:22px;overflow:hidden}.schedule-head{display:flex;justify-content:space-between;gap:12px;align-items:center;flex-wrap:wrap;margin-bottom:16px}.schedule-head h2{margin:0;font-size:20px}.schedule-grid-wrap{overflow-x:auto}.schedule-grid{width:100%;min-width:790px;border-collapse:separate;border-spacing:5px;table-layout:fixed}.schedule-grid th{padding:9px;font-size:13px;color:#56647b;text-align:center}.schedule-grid th:first-child{width:115px}.schedule-grid td{padding:0;border:0}.schedule-slot{width:100%;min-height:67px;border:1px solid #dce4ed;border-radius:9px;padding:8px 5px;display:flex;flex-direction:column;justify-content:center;align-items:center;gap:4px;text-align:center;background:#f0f8ed;color:#475569;cursor:pointer;white-space:normal}.schedule-slot:hover{outline:2px solid #7d94c4;outline-offset:1px}.schedule-slot strong{font-size:13px;font-weight:600}.schedule-slot small{font-size:10px;opacity:.75}.schedule-slot.filled{background:#e9effb;border-color:#d1dcef;color:#2e467c}.schedule-slot.break{background:#f0f8ed}.schedule-slot.special{background:#f5f0dc;border-color:#e8dfb4;color:#796327}.schedule-time{width:100%;border:1px solid #e2e7ee;border-radius:6px;padding:6px 3px;font-size:12px;text-align:center;color:#56647b;background:#fff}.schedule-time-label{font-size:10px;color:#8a95a7;text-align:center}.schedule-help{font-size:12px;color:#778397;margin:8px 0 0}.schedule-edit-grid{display:grid;grid-template-columns:1fr 1fr;gap:12px}.schedule-edit-grid select,.schedule-edit-grid input{width:100%}@media(max-width:600px){.schedule-edit-grid{grid-template-columns:1fr}}
+
+/* El meu centre */
+.centre-panel{margin-top:18px;padding:24px}.centre-head{display:flex;align-items:center;justify-content:space-between;gap:12px;flex-wrap:wrap}.centre-head h2{margin:0;font-size:21px}.centre-section{border-top:1px solid #edf0f3;margin-top:22px;padding-top:18px}.centre-section h3{font-size:16px;margin:0 0 14px;color:#40506a}.centre-fields{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:14px}.centre-fields label{display:flex;flex-direction:column;gap:6px;font-size:12px;color:#687586}.centre-fields input,.centre-role input{width:100%;min-width:0;padding:10px;border:1px solid #dce2eb;border-radius:8px;background:white;color:#303946}.centre-role{display:grid;grid-template-columns:minmax(150px,1fr) minmax(150px,1.4fr) auto;gap:9px;align-items:center;margin-bottom:9px}.centre-actions{display:flex;flex-wrap:wrap;gap:9px;align-items:center}.centre-note{font-size:12px;color:#778397;line-height:1.6}.centre-status{font-size:13px;color:#526075}.centre-file{display:none}@media(max-width:650px){.centre-fields{grid-template-columns:1fr}.centre-role{grid-template-columns:1fr 1fr auto}.centre-panel{padding:16px}}
 </style>
 </head>
 <body>
 <header class="brand-header"><div class="brand-identity"><div class="brand-logo" aria-hidden="true"><svg viewBox="0 0 48 48" width="35" height="35"><path d="M9 12L24 5L39 12V36L24 43L9 36Z" fill="#344d96"/><path d="M17 32V16H25C36 16 36 28 25 28H17" stroke="white" stroke-width="3.5" stroke-linecap="round" stroke-linejoin="round" fill="none"/></svg></div><div class="brand-copy"><strong>Paideia</strong><span class="brand-subtitle">Plataforma educativa</span><span class="brand-author">Web dissenyada per Gonzalo Bermejo Miranda</span></div></div><span class="brand-context">Espai de gestió de classes</span></header>
-<main><div class="top"><div><h1>Les meves classes</h1><button type="button" class="secondary" id="toggleSchedule" style="margin-top:10px">▦ El meu horari</button><p class="sub">Organitza els teus grups i alumnes en un sol lloc.</p></div><div class="backup-actions"><button class="secondary" id="exportExcel" type="button">↓ Exportar Excel</button><button class="secondary undo-btn" id="undoGrade" type="button" disabled title="Desfer el darrer canvi de notes (Ctrl+Z)">↶ Desfer</button><button class="secondary" id="exportData" type="button">↓ Exportar dades</button><button class="secondary" id="importData" type="button">↑ Importar dades</button><button class="secondary" id="importExcel" type="button">↑ Importar Excel</button><input id="excelFile" type="file" accept=".xlsx,.xls,.xlsm,.csv" style="display:none"><input id="importFile" type="file" accept=".json,application/json"></div></div><div class="layout"><aside class="panel side"><div class="side-title">Classes</div><div id="classes"></div><button class="add-side" id="addClass">+ Afegir classe</button></aside><section class="panel"><div class="content-head"><div><h2 id="classTitle"></h2><div class="class-meta"><div class="hint" id="classInfo"></div><button type="button" class="tutor-edit" id="editTutor" title="Editar el nom del tutor o tutora">Tutor/a: <span id="tutorName">Afegir nom</span> <span class="tutor-pencil">✎</span></button></div></div><div class="actions"><button class="secondary" id="renameClass">Canviar nom</button><button class="secondary" id="deleteClass">Eliminar classe</button><button class="secondary" id="addItem">+ Afegir ítem</button><button class="primary" id="addStudent">+ Afegir alumne</button></div></div><div id="tableArea"></div></section></div><section class="panel schedule-panel" id="schedulePanel" hidden></section><div class="footer"><span>Les dades es desen automàticament en aquest navegador.</span></div></main><div id="modalRoot"></div>
+<main><div class="top"><div><h1>Les meves classes</h1><button type="button" class="secondary" id="toggleSchedule" style="margin-top:10px">▦ El meu horari</button> <button type="button" class="secondary" id="toggleCentre" style="margin-top:10px">⌂ El meu centre</button><p class="sub">Organitza els teus grups i alumnes en un sol lloc.</p></div><div class="backup-actions"><button class="secondary" id="exportExcel" type="button">↓ Exportar Excel</button><button class="secondary undo-btn" id="undoGrade" type="button" disabled title="Desfer el darrer canvi de notes (Ctrl+Z)">↶ Desfer</button><button class="secondary" id="exportData" type="button">↓ Exportar dades</button><button class="secondary" id="importData" type="button">↑ Importar dades</button><button class="secondary" id="importExcel" type="button">↑ Importar Excel</button><input id="excelFile" type="file" accept=".xlsx,.xls,.xlsm,.csv" style="display:none"><input id="importFile" type="file" accept=".json,application/json"></div></div><div class="layout"><aside class="panel side"><div class="side-title">Classes</div><div id="classes"></div><button class="add-side" id="addClass">+ Afegir classe</button></aside><section class="panel"><div class="content-head"><div><h2 id="classTitle"></h2><div class="class-meta"><div class="hint" id="classInfo"></div><button type="button" class="tutor-edit" id="editTutor" title="Editar el nom del tutor o tutora">Tutor/a: <span id="tutorName">Afegir nom</span> <span class="tutor-pencil">✎</span></button></div></div><div class="actions"><button class="secondary" id="renameClass">Canviar nom</button><button class="secondary" id="deleteClass">Eliminar classe</button><button class="secondary" id="addItem">+ Afegir ítem</button><button class="primary" id="addStudent">+ Afegir alumne</button></div></div><div id="tableArea"></div></section></div><section class="panel schedule-panel" id="schedulePanel" hidden></section><section class="panel centre-panel" id="centrePanel" hidden></section><div class="footer"><span>Les dades es desen automàticament en aquest navegador.</span></div></main><div id="modalRoot"></div>
 <script>
 const KEY='graella-aula-v1';
 const undoStack=[];let applyingUndo=false;
@@ -276,9 +279,11 @@ function validBackup(candidate){
  }
  return true;
 }
-document.getElementById('exportData').onclick=()=>{
+document.getElementById('exportData').onclick=async()=>{
  try{
-  const payload=JSON.stringify(data,null,2);
+  const pdf=await readCentrePdf();
+  const backup=pdf?{format:'graella-aula-backup',data,centrePdf:{name:pdf.name,base64:await blobToBase64(pdf.blob)}}:data;
+  const payload=JSON.stringify(backup,null,2);
   const blob=new Blob([payload],{type:'application/json;charset=utf-8'});
   const url=URL.createObjectURL(blob);
   const link=document.createElement('a');link.href=url;link.download='graella-aula-'+new Date().toLocaleDateString('sv-SE')+'.json';
@@ -289,10 +294,11 @@ const backupInput=document.getElementById('importFile');
 document.getElementById('importData').onclick=()=>backupInput.click();
 backupInput.onchange=async()=>{
  const file=backupInput.files?.[0];backupInput.value='';if(!file)return;
- if(file.size>20*1024*1024){alert('El fitxer és massa gran (màxim 20 MB).');return}
+ if(file.size>40*1024*1024){alert('El fitxer és massa gran (màxim 40 MB).');return}
  let incoming;
  try{incoming=JSON.parse(await file.text())}catch{alert('No es pot llegir aquest fitxer. Selecciona una còpia de seguretat JSON vàlida.');return}
  // Acceptem tant les exportacions directes com els embolcalls amb data.
+ const incomingPdf=incoming?.format==='graella-aula-backup'?incoming.centrePdf:undefined;
  if(incoming&&incoming.format==='graella-aula-backup'&&incoming.data)incoming=incoming.data;
  if(!validBackup(incoming)){alert('Aquest JSON no té el format compatible amb Graella · Aula. No s’ha modificat cap dada.');return}
  const count=incoming.classes.reduce((n,c)=>n+c.students.length,0);
@@ -304,7 +310,10 @@ backupInput.onchange=async()=>{
   data=incoming;undoStack.length=0;updateUndoButton();
   data.classes.forEach(c=>{if(!Array.isArray(c.items))c.items=[];if(!Array.isArray(c.students))c.students=[];c.students.forEach(s=>{if(!s.grades||typeof s.grades!=='object')s.grades={};if(typeof s.firstName!=='string'){const a=String(s.name||'').trim().split(/\s+/);s.firstName=a.shift()||'';s.lastName=a.join(' ')}if(typeof s.notes!=='string')s.notes=''})});
   if(!data.classes.some(c=>c.id===data.active))data.active=data.classes[0]?.id||null;
-  save();render();alert('Dades importades correctament.');
+  save();
+  if(incomingPdf?.base64){await storeCentrePdf(incomingPdf.name||'Calendari escolar.pdf',base64ToBlob(incomingPdf.base64));}
+  else if(incomingPdf===null){await deleteCentrePdf();}
+  render();renderCentre();alert('Dades importades correctament.');
  }catch(e){alert('No s’han pogut desar les dades importades: '+e.message)}
 };
 document.getElementById('undoGrade').onclick=undoGrade;
@@ -522,6 +531,74 @@ function renderSchedule(){
  const help=document.createElement('p');help.className='schedule-help';help.textContent='Clica qualsevol casella per editar-la. Si està vinculada a un grup, també podràs obrir-lo. Les hores es poden escriure lliurement.';panel.append(help);
 }
 document.getElementById('toggleSchedule').onclick=()=>{scheduleVisible=!scheduleVisible;renderSchedule();if(scheduleVisible)document.getElementById('schedulePanel').scrollIntoView({behavior:'smooth',block:'start'})};
+
+
+// Informació del centre i calendari escolar. El PDF es guarda a IndexedDB,
+// independentment del límit reduït de localStorage, i s'inclou a la còpia JSON.
+let centreVisible=false;
+function ensureCentre(){
+ if(!data.centre||typeof data.centre!=='object')data.centre={};
+ const c=data.centre;
+ if(typeof c.name!=='string')c.name='Franciscanes Poble Nou';
+ for(const key of ['address','phone','email','website'])if(typeof c[key]!=='string')c[key]='';
+ if(!Array.isArray(c.roles))c.roles=[
+  {id:uid(),title:'Director/a',person:''},{id:uid(),title:'Cap d’estudis',person:''},
+  {id:uid(),title:'Coordinador/a pedagògic/a',person:''},{id:uid(),title:'Secretaria',person:''},
+  {id:uid(),title:'Tutor/a',person:''}
+ ];
+ return c;
+}
+function centreDB(){return new Promise((resolve,reject)=>{
+ const req=indexedDB.open('paideia-centre-files',1);
+ req.onupgradeneeded=()=>{if(!req.result.objectStoreNames.contains('files'))req.result.createObjectStore('files')};
+ req.onsuccess=()=>resolve(req.result);req.onerror=()=>reject(req.error);
+})}
+async function centreFileAction(mode,value){const db=await centreDB();try{return await new Promise((resolve,reject)=>{
+ const tx=db.transaction('files',mode==='get'?'readonly':'readwrite');const store=tx.objectStore('files');
+ const req=mode==='get'?store.get('calendar'):mode==='delete'?store.delete('calendar'):store.put(value,'calendar');
+ req.onsuccess=()=>resolve(req.result);req.onerror=()=>reject(req.error);tx.onerror=()=>reject(tx.error);
+})}finally{db.close()}}
+const readCentrePdf=()=>centreFileAction('get');
+const storeCentrePdf=(name,blob)=>centreFileAction('put',{name,blob,updatedAt:new Date().toISOString()});
+const deleteCentrePdf=()=>centreFileAction('delete');
+function blobToBase64(blob){return new Promise((resolve,reject)=>{const r=new FileReader();r.onload=()=>resolve(String(r.result).split(',')[1]);r.onerror=()=>reject(r.error);r.readAsDataURL(blob)})}
+function base64ToBlob(base64){const binary=atob(base64),parts=[];for(let i=0;i<binary.length;i+=32768){const part=binary.slice(i,i+32768);parts.push(Uint8Array.from(part,c=>c.charCodeAt(0)))}return new Blob(parts,{type:'application/pdf'})}
+function downloadCentrePdf(pdf){const url=URL.createObjectURL(pdf.blob);const a=document.createElement('a');a.href=url;a.download=pdf.name;a.click();setTimeout(()=>URL.revokeObjectURL(url),10000)}
+function renderCentre(){
+ const panel=document.getElementById('centrePanel');panel.hidden=!centreVisible;
+ document.getElementById('toggleCentre').textContent=centreVisible?'⌂ Amagar el centre':'⌂ El meu centre';
+ if(!centreVisible)return;
+ const centre=ensureCentre();panel.replaceChildren();
+ const head=document.createElement('div');head.className='centre-head';const h=document.createElement('h2');h.textContent='El meu centre';const sub=document.createElement('span');sub.className='centre-note';sub.textContent='Informació del centre i calendari escolar';head.append(h,sub);panel.append(head);
+ const details=document.createElement('section');details.className='centre-section';const title=document.createElement('h3');title.textContent='Dades del centre';details.append(title);
+ const fields=document.createElement('div');fields.className='centre-fields';
+ [['name','Nom del centre'],['address','Adreça'],['phone','Telèfon'],['email','Correu electrònic'],['website','Pàgina web']].forEach(([key,label])=>{
+  const wrap=document.createElement('label');wrap.textContent=label;const input=document.createElement('input');input.type=key==='email'?'email':key==='website'?'url':key==='phone'?'tel':'text';input.value=centre[key];input.placeholder=label;
+  input.oninput=()=>{centre[key]=input.value;save()};wrap.append(input);fields.append(wrap)
+ });details.append(fields);panel.append(details);
+ const roles=document.createElement('section');roles.className='centre-section';const rh=document.createElement('h3');rh.textContent='Càrrecs i responsables';roles.append(rh);
+ const list=document.createElement('div');roles.append(list);
+ const drawRoles=()=>{list.replaceChildren();centre.roles.forEach((role,index)=>{
+  const row=document.createElement('div');row.className='centre-role';const title=document.createElement('input');title.placeholder='Càrrec';title.value=role.title||'';title.setAttribute('aria-label','Càrrec '+(index+1));title.oninput=()=>{role.title=title.value;save()};
+  const person=document.createElement('input');person.placeholder='Nom del responsable';person.value=role.person||'';person.setAttribute('aria-label','Responsable '+(index+1));person.oninput=()=>{role.person=person.value;save()};
+  const del=document.createElement('button');del.type='button';del.className='secondary';del.textContent='×';del.title='Eliminar càrrec';del.onclick=()=>{if((role.title||role.person)&&!confirm('Eliminar aquest càrrec?'))return;centre.roles.splice(index,1);save();drawRoles()};row.append(title,person,del);list.append(row)
+ })};drawRoles();const add=document.createElement('button');add.type='button';add.className='secondary';add.textContent='+ Afegir càrrec';add.onclick=()=>{centre.roles.push({id:uid(),title:'',person:''});save();drawRoles();list.lastElementChild?.querySelector('input')?.focus()};roles.append(add);panel.append(roles);
+ const calendar=document.createElement('section');calendar.className='centre-section';const ch=document.createElement('h3');ch.textContent='Calendari escolar 2026–2027';calendar.append(ch);
+ const actions=document.createElement('div');actions.className='centre-actions';const upload=document.createElement('button');upload.type='button';upload.className='secondary';upload.textContent='↑ Pujar calendari PDF';
+ const file=document.createElement('input');file.type='file';file.accept='.pdf,application/pdf';file.className='centre-file';const status=document.createElement('div');status.className='centre-status';status.textContent='Comprovant el calendari...';
+ const view=document.createElement('button');view.type='button';view.className='secondary';view.textContent='↗ Obrir PDF';view.hidden=true;
+ const download=document.createElement('button');download.type='button';download.className='secondary';download.textContent='↓ Descarregar PDF';download.hidden=true;
+ const remove=document.createElement('button');remove.type='button';remove.className='secondary';remove.textContent='Eliminar PDF';remove.hidden=true;
+ let stored=null;
+ const refresh=async()=>{try{stored=await readCentrePdf();status.textContent=stored?'Calendari desat: '+stored.name:'Encara no has pujat cap calendari.';view.hidden=download.hidden=remove.hidden=!stored}catch(e){status.textContent='No es pot accedir a l’emmagatzematge de fitxers: '+e.message}};
+ upload.onclick=()=>file.click();file.onchange=async()=>{const selected=file.files?.[0];file.value='';if(!selected)return;if(selected.type!=='application/pdf'&&!/\.pdf$/i.test(selected.name)){alert('Selecciona un fitxer PDF.');return}if(selected.size>15*1024*1024){alert('El PDF supera el límit de 15 MB.');return}try{await storeCentrePdf(selected.name,selected);await refresh()}catch(e){alert('No s’ha pogut guardar el PDF: '+e.message)}};
+ view.onclick=()=>{if(!stored)return;const url=URL.createObjectURL(stored.blob);const tab=window.open(url,'_blank');if(!tab)alert('El navegador ha bloquejat la finestra. Pots descarregar el PDF.');setTimeout(()=>URL.revokeObjectURL(url),60000)};
+ download.onclick=()=>stored&&downloadCentrePdf(stored);
+ remove.onclick=async()=>{if(!confirm('Vols eliminar el calendari escolar desat?'))return;try{await deleteCentrePdf();await refresh()}catch(e){alert('No s’ha pogut eliminar: '+e.message)}};
+ actions.append(upload,file,view,download,remove);calendar.append(actions,status);
+ const note=document.createElement('p');note.className='centre-note';note.textContent='El PDF es conserva en aquest navegador (IndexedDB) i s’inclou a «Exportar dades» en format JSON. Si esborres les dades del navegador, també es pot perdre: fes còpies de seguretat periòdiques. El PDF no se sincronitza automàticament entre dispositius.';calendar.append(note);panel.append(calendar);refresh();
+}
+document.getElementById('toggleCentre').onclick=()=>{centreVisible=!centreVisible;renderCentre();if(centreVisible)document.getElementById('centrePanel').scrollIntoView({behavior:'smooth',block:'start'})};
 
 save();render();
 </script>
