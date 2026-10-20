@@ -143,6 +143,7 @@ const form=document.getElementById('paideiaAuthForm');
 const msg=document.getElementById('paAuthMessage');
 const btn=document.getElementById('paAuthSubmit');
 let token=null;
+window.paideiaReadCloudStudents=async()=>{if(!token)throw Error('Cal iniciar sessió.');return request('/rest/v1/alumnes?select=id,nom,cognoms&order=nom.asc&limit=100',{headers:{Authorization:'Bearer '+token}})};
 async function request(path,opts={}){
  const r=await fetch(URL+path,{...opts,headers:{apikey:KEY,'Content-Type':'application/json',...(opts.headers||{})}});
  const text=await r.text();let value;try{value=JSON.parse(text)}catch{value=text}
@@ -937,12 +938,43 @@ function assignRegistryStudent(c){
     };buttons.append(cancel,ok);m.append(a,f,b,l,error,buttons);f.focus();
    });
   };
+  // Importació explícita des del núvol: mai no modifica les dades fins que el professor confirma.
+  const cloud=document.createElement('button');cloud.className='secondary';cloud.type='button';cloud.textContent='☁ Cercar a Supabase';
+  cloud.onclick=async()=>{
+   cloud.disabled=true;err.textContent='Consultant alumnes de Supabase…';
+   try{
+    const rows=await window.paideiaReadCloudStudents();
+    if(!Array.isArray(rows))throw Error('Resposta inesperada del servidor.');
+    const candidates=rows.filter(r=>r.nom?.trim()&&r.cognoms?.trim());
+    if(!candidates.length){err.textContent='No hi ha alumnes disponibles a Supabase.';return}
+    close();simpleModal('Afegir alumne des de Supabase','Selecciona un alumne i confirma la incorporació a '+c.name+'. Aquesta prova només el copia al navegador.',(m,done)=>{
+     const label=document.createElement('label');label.textContent='Alumnes del núvol';
+     const picker=document.createElement('select');picker.className='registry-select';picker.size=Math.min(7,Math.max(2,candidates.length));
+     candidates.forEach((r,i)=>{const option=document.createElement('option');option.value=String(i);option.textContent=r.nom+' '+r.cognoms;picker.append(option)});picker.selectedIndex=0;
+     const info=document.createElement('p');info.className='error';
+     const buttons=document.createElement('div');buttons.className='modal-actions';
+     const back=document.createElement('button');back.className='secondary';back.textContent='Cancel·lar';back.onclick=done;
+     const add=document.createElement('button');add.className='primary';add.textContent='Afegir a la classe';add.onclick=()=>{
+      const r=candidates[Number(picker.value)];if(!r){info.textContent='Selecciona un alumne.';return}
+      const first=r.nom.trim(),last=r.cognoms.trim();
+      if(c.students.some(st=>(st.firstName+' '+st.lastName).localeCompare(first+' '+last,'ca',{sensitivity:'base'})===0)){info.textContent='Aquest alumne ja és a la classe.';return}
+      let entry=data.studentRegistry.find(st=>(st.firstName+' '+st.lastName).localeCompare(first+' '+last,'ca',{sensitivity:'base'})===0);
+      const created=!entry;if(!entry)entry={id:uid(),firstName:first,lastName:last};
+      const student={id:uid(),registryId:entry.id,firstName:first,lastName:last,name:first+' '+last,notes:'',grades:{}};
+      if(created)data.studentRegistry.push(entry);c.students.push(student);
+      try{save()}catch(e){c.students.pop();if(created)data.studentRegistry.pop();info.textContent=e.message;return}
+      done();render();renderRegistry();
+     };buttons.append(back,add);m.append(label,picker,info,buttons);
+    });
+   }catch(e){err.textContent='No s’ha pogut consultar Supabase: '+e.message}
+   finally{cloud.disabled=false}
+  };
   const cancel=document.createElement('button');cancel.className='secondary';cancel.textContent='Cancel·lar';cancel.onclick=close;
   const ok=document.createElement('button');ok.className='primary';ok.textContent='Afegir a la classe';ok.onclick=()=>{
    const r=data.studentRegistry.find(x=>x.id===select.value);if(!r){err.textContent='Selecciona un alumne.';return}
    const student={id:uid(),registryId:r.id,firstName:r.firstName,lastName:r.lastName,name:r.firstName+' '+r.lastName,notes:'',grades:{}};
    c.students.push(student);try{save()}catch(e){c.students.pop();err.textContent=e.message;return}close();render();renderRegistry();
-  };actions.append(create,cancel,ok);modal.append(label,search,select,err,actions);search.focus();
+  };actions.append(create,cloud,cancel,ok);modal.append(label,search,select,err,actions);search.focus();
  });
 }
 function registrySortMode(){return ['alphabetical','manual','course'].includes(data.registrySortMode)?data.registrySortMode:'alphabetical'}
