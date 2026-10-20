@@ -886,8 +886,14 @@ function registrySortMode(){return ['alphabetical','manual','course'].includes(d
 function registryCourseKey(r){
  const groups=registryMembership(r.id);
  if(!groups.length)return 999;
- const levels=groups.map(g=>{const m=String(g).match(/^\s*([1-4])\s*(?:r|er|n|on|t|rt)?\b/i);return m?Number(m[1]):999});
- return Math.min(...levels);
+ // Ordre de grups: 1r A, 1r B, 2n A, 2n B, 3r A, 3r B, 4t A, 4t B.
+ const keys=groups.map(group=>{
+  const name=String(group).trim();
+  const match=name.match(/^([1-4])\s*(?:r|er|n|on|t|rt)?\s*(?:ESO)?\s*([AB])\b/i);
+  if(!match)return 998;
+  return (Number(match[1])-1)*2+(match[2].toUpperCase()==='B'?1:0);
+ });
+ return Math.min(...keys);
 }
 function registrySortedEntries(){
  const collator=new Intl.Collator('ca',{sensitivity:'base',numeric:true});
