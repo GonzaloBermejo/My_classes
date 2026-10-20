@@ -100,6 +100,8 @@ header .brand-context{font-size:13px;color:#8a929f;text-align:right}
 /* Comunicats: preparació local, sense enviament real */
 .comms-panel{margin-top:18px;padding:22px}.comms-head{display:flex;align-items:center;justify-content:space-between;gap:12px;flex-wrap:wrap}.comms-head h2{margin:0;font-size:20px}.comms-muted{font-size:12px;color:#7a8799;line-height:1.5}.comms-list{display:grid;gap:10px;margin-top:16px}.comms-entry{border:1px solid #e3e8f0;border-radius:10px;padding:14px;display:flex;justify-content:space-between;gap:12px;align-items:center}.comms-entry strong{font-size:14px}.comms-editor{width:min(700px,100%)}.comms-editor textarea{width:100%;min-height:170px;padding:11px;border:1px solid #dce2eb;border-radius:8px;resize:vertical}.comms-editor select{width:100%;padding:10px;border:1px solid #dce2eb;border-radius:8px}.comms-students{border:1px solid #e2e7ef;border-radius:8px;max-height:170px;overflow:auto;padding:8px}.comms-students label{display:flex;align-items:center;gap:8px;margin:4px 0;padding:5px}.comms-students input{width:auto}.comms-actions{display:flex;gap:8px;flex-wrap:wrap}.comms-tag{font-size:11px;color:#765e2b;background:#fff5dc;padding:4px 8px;border-radius:6px}
 
+/* Registre central d'alumnat */
+.registry-toolbar{display:flex;gap:10px;align-items:center;flex-wrap:wrap;margin:18px 0}.registry-toolbar input{flex:1;min-width:200px;max-width:420px;padding:10px;border:1px solid #dce2eb;border-radius:8px}.registry-table th,.registry-table td{padding:11px 13px}.registry-table td:last-child{text-align:right}.registry-note{font-size:12px;color:#778397;line-height:1.6}.registry-select{width:100%;padding:10px;border:1px solid #dce2eb;border-radius:8px;background:#fff}.registry-buttons{display:flex;gap:8px;flex-wrap:wrap;justify-content:flex-end}
 /* Confirmació visible després de desar o actualitzar l'assistència */
 .attendance-feedback{margin:14px 0 0;padding:12px 15px;border:1px solid #cce6d5;border-radius:9px;background:#edf8f0;color:#286b43;font-size:13px;font-weight:600}
 .attendance-feedback.attendance-feedback-error{background:#fff0f1;border-color:#f1c9cf;color:#a3454b}
@@ -114,7 +116,7 @@ header .brand-context{font-size:13px;color:#8a929f;text-align:right}
 </head>
 <body>
 <header class="brand-header"><div class="brand-identity"><div class="brand-logo" aria-hidden="true"><svg viewBox="0 0 48 48" width="35" height="35"><path d="M9 12L24 5L39 12V36L24 43L9 36Z" fill="#344d96"/><path d="M17 32V16H25C36 16 36 28 25 28H17" stroke="white" stroke-width="3.5" stroke-linecap="round" stroke-linejoin="round" fill="none"/></svg></div><div class="brand-copy"><strong>Paideia</strong><span class="brand-subtitle">Plataforma educativa</span><span class="brand-author">Web dissenyada per Gonzalo Bermejo Miranda</span></div></div><span class="brand-context">Espai de gestió de classes</span></header>
-<main><div class="top"><div><h1>Les meves classes</h1><button type="button" class="secondary" id="toggleSchedule" style="margin-top:10px">▦ El meu horari</button> <button type="button" class="secondary" id="toggleGroupSchedules" style="margin-top:10px">▦ Horari de grups classe</button> <button type="button" class="secondary" id="toggleCentre" style="margin-top:10px">⌂ El meu centre</button> <button type="button" class="secondary" id="toggleComms" style="margin-top:10px">✉ Comunicats</button> <button type="button" class="secondary" id="toggleAttendance" style="margin-top:10px">✓ Passar llista</button><p class="sub">Organitza els teus grups i alumnes en un sol lloc.</p></div><div class="backup-actions"><button class="secondary" id="exportExcel" type="button">↓ Exportar Excel</button><button class="secondary undo-btn" id="undoGrade" type="button" disabled title="Desfer el darrer canvi de notes (Ctrl+Z)">↶ Desfer</button><button class="secondary" id="exportData" type="button">↓ Exportar dades</button><button class="secondary" id="importData" type="button">↑ Importar dades</button><button class="secondary" id="importExcel" type="button">↑ Importar Excel</button><input id="excelFile" type="file" accept=".xlsx,.xls,.xlsm,.csv" style="display:none"><input id="importFile" type="file" accept=".json,application/json"></div></div><div class="layout"><aside class="panel side"><div class="side-title">Classes</div><div id="classes"></div><button class="add-side" id="addClass">+ Afegir classe</button></aside><section class="panel"><div class="content-head"><div><h2 id="classTitle"></h2><div class="class-meta"><div class="hint" id="classInfo"></div><button type="button" class="tutor-edit" id="editTutor" title="Editar el nom del tutor o tutora">Tutor/a: <span id="tutorName">Afegir nom</span> <span class="tutor-pencil">✎</span></button></div></div><div class="actions"><button class="secondary" id="renameClass">Canviar nom</button><button class="secondary" id="deleteClass">Eliminar classe</button><button class="secondary" id="addItem">+ Afegir ítem</button><button class="primary" id="addStudent">+ Afegir alumne</button></div></div><div id="tableArea"></div></section></div><section class="panel schedule-panel" id="schedulePanel" hidden></section><section class="panel schedule-panel" id="groupSchedulesPanel" hidden></section><section class="panel centre-panel" id="centrePanel" hidden></section><section class="panel comms-panel" id="commsPanel" hidden></section><section class="panel attendance-panel" id="attendancePanel" hidden></section><div class="footer"><span>Les dades es desen automàticament en aquest navegador.</span></div></main><div id="modalRoot"></div>
+<main><div class="top"><div><h1>Les meves classes</h1><button type="button" class="secondary" id="toggleSchedule" style="margin-top:10px">▦ El meu horari</button> <button type="button" class="secondary" id="toggleGroupSchedules" style="margin-top:10px">▦ Horari de grups classe</button> <button type="button" class="secondary" id="toggleRegistry" style="margin-top:10px">♙ Alumnat del centre</button> <button type="button" class="secondary" id="toggleCentre" style="margin-top:10px">⌂ El meu centre</button> <button type="button" class="secondary" id="toggleComms" style="margin-top:10px">✉ Comunicats</button> <button type="button" class="secondary" id="toggleAttendance" style="margin-top:10px">✓ Passar llista</button><p class="sub">Organitza els teus grups i alumnes en un sol lloc.</p></div><div class="backup-actions"><button class="secondary" id="exportExcel" type="button">↓ Exportar Excel</button><button class="secondary undo-btn" id="undoGrade" type="button" disabled title="Desfer el darrer canvi de notes (Ctrl+Z)">↶ Desfer</button><button class="secondary" id="exportData" type="button">↓ Exportar dades</button><button class="secondary" id="importData" type="button">↑ Importar dades</button><button class="secondary" id="importExcel" type="button">↑ Importar Excel</button><input id="excelFile" type="file" accept=".xlsx,.xls,.xlsm,.csv" style="display:none"><input id="importFile" type="file" accept=".json,application/json"></div></div><div class="layout"><aside class="panel side"><div class="side-title">Classes</div><div id="classes"></div><button class="add-side" id="addClass">+ Afegir classe</button></aside><section class="panel"><div class="content-head"><div><h2 id="classTitle"></h2><div class="class-meta"><div class="hint" id="classInfo"></div><button type="button" class="tutor-edit" id="editTutor" title="Editar el nom del tutor o tutora">Tutor/a: <span id="tutorName">Afegir nom</span> <span class="tutor-pencil">✎</span></button></div></div><div class="actions"><button class="secondary" id="renameClass">Canviar nom</button><button class="secondary" id="deleteClass">Eliminar classe</button><button class="secondary" id="addItem">+ Afegir ítem</button><button class="primary" id="addStudent">+ Afegir alumne</button></div></div><div id="tableArea"></div></section></div><section class="panel schedule-panel" id="schedulePanel" hidden></section><section class="panel schedule-panel" id="groupSchedulesPanel" hidden></section><section class="panel centre-panel" id="registryPanel" hidden></section><section class="panel centre-panel" id="centrePanel" hidden></section><section class="panel comms-panel" id="commsPanel" hidden></section><section class="panel attendance-panel" id="attendancePanel" hidden></section><div class="footer"><span>Les dades es desen automàticament en aquest navegador.</span></div></main><div id="modalRoot"></div>
 <script>
 const KEY='graella-aula-v1';
 const undoStack=[];let applyingUndo=false;
@@ -127,7 +129,21 @@ const uid=()=>crypto.randomUUID?crypto.randomUUID():String(Date.now()+Math.rando
 let data;try{data=JSON.parse(localStorage.getItem(KEY))}catch{}
 if(!data||!Array.isArray(data.classes)){data={classes:[{id:uid(),name:'1r ESO A',students:[]}],active:null};data.active=data.classes[0].id}
 data.classes.forEach(c=>{if(!Array.isArray(c.items))c.items=[];if(!Array.isArray(c.students))c.students=[];c.students.forEach(s=>{if(!s.grades||typeof s.grades!=='object')s.grades={};if(typeof s.firstName!=='string'){const a=String(s.name||'').trim().split(/\s+/);s.firstName=a.shift()||'';s.lastName=a.join(' ')};if(typeof s.notes!=='string')s.notes=''})});
+function ensureRegistry(){
+ if(!Array.isArray(data.studentRegistry))data.studentRegistry=[];
+ const used=new Set(data.studentRegistry.map(r=>r.id));
+ data.classes.forEach(c=>(c.students||[]).forEach(s=>{
+  let entry=data.studentRegistry.find(r=>r.id===s.registryId);
+  if(!entry){const id=uid();entry={id,firstName:s.firstName||'',lastName:s.lastName||''};data.studentRegistry.push(entry);s.registryId=id;used.add(id)}
+ }));
+}
+function registryMembership(id){return data.classes.filter(c=>(c.students||[]).some(s=>s.registryId===id)).map(c=>c.name)}
+function updateRegistryIdentity(entry,first,last){
+ entry.firstName=first;entry.lastName=last;
+ data.classes.forEach(c=>c.students.forEach(s=>{if(s.registryId===entry.id){s.firstName=first;s.lastName=last;s.name=[first,last].filter(Boolean).join(' ')}}));
+}
 function save(){localStorage.setItem(KEY,JSON.stringify(data))}
+ensureRegistry();
 function current(){const c=data.classes.find(c=>c.id===data.active)||data.classes[0];if(c){if(!Array.isArray(c.items))c.items=[];if(!Array.isArray(c.students))c.students=[];c.students.forEach(s=>{if(!s.grades||typeof s.grades!=='object')s.grades={};if(typeof s.firstName!=='string'){const a=String(s.name||'').trim().split(/\s+/);s.firstName=a.shift()||'';s.lastName=a.join(' ')};if(typeof s.notes!=='string')s.notes=''})}return c}
 function calcValue(c,s,item,seen=new Set()){
  if(seen.has(item.id))return null;
@@ -210,7 +226,7 @@ function openStudent(c,s){const root=document.getElementById('modalRoot');root.r
  const addSibling=document.createElement('button');addSibling.type='button';addSibling.className='secondary';addSibling.textContent='+ Afegir germà/ana';addSibling.onclick=()=>{siblingList().push({name:'',course:''});save();drawSiblings()};siblingArea.append(addSibling);profile.append(siblingArea);siblingArea.hidden=siblingChoice.value!=='si';drawSiblings();
  const joinedLabel=document.createElement('label');joinedLabel.textContent='Data d’incorporació (opcional)';const joined=document.createElement('input');joined.type='date';joined.value=s.joinedDate||'';joined.onchange=()=>{s.joinedDate=joined.value;save()};profile.append(joinedLabel,joined);
  const pendingLabel=document.createElement('label');pendingLabel.textContent='Matèries pendents (opcional)';const pending=document.createElement('input');pending.placeholder='Ex.: Matemàtiques de 1r';pending.value=s.pendingSubjects||'';pending.oninput=()=>{s.pendingSubjects=pending.value;save()};profile.append(pendingLabel,pending);
- const noteLabel=document.createElement('label');noteLabel.textContent='Observacions';const notes=document.createElement('textarea');notes.className='student-notes';notes.placeholder='Anotacions acadèmiques...';notes.value=s.notes||'';const saveField=()=>{s.firstName=first.value;s.lastName=last.value;s.name=displayName(s);s.notes=notes.value;save()};[first,last,notes].forEach(el=>el.addEventListener('input',saveField));const info=document.createElement('p');info.className='note-hint';info.textContent='Evita introduir dades personals sensibles: la informació es guarda en aquest navegador.';const actions=document.createElement('div');actions.className='modal-actions';const closeBtn=document.createElement('button');closeBtn.className='primary';closeBtn.textContent='Tancar';const close=()=>{saveField();root.replaceChildren();render()};closeBtn.onclick=close;back.onclick=e=>{if(e.target===back)close()};actions.append(closeBtn);modal.append(title,hint,firstLabel,first,lastLabel,last,profile,noteLabel,notes,buildIncidentsSection(s),buildStudentAttendanceSection(c,s),info,actions);back.append(modal);root.append(back);first.focus()}
+ const noteLabel=document.createElement('label');noteLabel.textContent='Observacions';const notes=document.createElement('textarea');notes.className='student-notes';notes.placeholder='Anotacions acadèmiques...';notes.value=s.notes||'';const saveField=()=>{s.firstName=first.value;s.lastName=last.value;s.name=displayName(s);s.notes=notes.value;const entry=data.studentRegistry?.find(r=>r.id===s.registryId);if(entry)updateRegistryIdentity(entry,s.firstName,s.lastName);save()};[first,last,notes].forEach(el=>el.addEventListener('input',saveField));const info=document.createElement('p');info.className='note-hint';info.textContent='Evita introduir dades personals sensibles: la informació es guarda en aquest navegador.';const actions=document.createElement('div');actions.className='modal-actions';const closeBtn=document.createElement('button');closeBtn.className='primary';closeBtn.textContent='Tancar';const close=()=>{saveField();root.replaceChildren();render()};closeBtn.onclick=close;back.onclick=e=>{if(e.target===back)close()};actions.append(closeBtn);modal.append(title,hint,firstLabel,first,lastLabel,last,profile,noteLabel,notes,buildIncidentsSection(s),buildStudentAttendanceSection(c,s),info,actions);back.append(modal);root.append(back);first.focus()}
 function openNewStudent(c){const root=document.getElementById('modalRoot');root.replaceChildren();const back=document.createElement('div');back.className='modal-back';const modal=document.createElement('div');modal.className='modal';const title=document.createElement('h3');title.textContent='Afegir alumne';const label1=document.createElement('label');label1.textContent='Nom';const first=document.createElement('input');first.placeholder='Nom';const label2=document.createElement('label');label2.textContent='Cognoms';const last=document.createElement('input');last.placeholder='Cognoms';const error=document.createElement('p');error.className='error';const actions=document.createElement('div');actions.className='modal-actions';const cancel=document.createElement('button');cancel.className='secondary';cancel.textContent='Cancel·lar';cancel.onclick=()=>root.replaceChildren();const ok=document.createElement('button');ok.className='primary';ok.textContent='Afegir alumne';ok.onclick=()=>{if(!first.value.trim()||!last.value.trim()){error.textContent='Introdueix el nom i els cognoms.';return}const f=first.value.trim(),l=last.value.trim();c.students.push({id:uid(),firstName:f,lastName:l,name:f+' '+l,notes:'',grades:{}});save();root.replaceChildren();render()};last.onkeydown=e=>{if(e.key==='Enter')ok.click()};actions.append(cancel,ok);modal.append(title,label1,first,label2,last,error,actions);back.append(modal);back.onclick=e=>{if(e.target===back)root.replaceChildren()};root.append(back);first.focus()}
 function render(){
  renderSchedule();
@@ -323,13 +339,13 @@ backupInput.onchange=async()=>{
   const serialized=JSON.stringify(incoming);
   localStorage.setItem(KEY,serialized);
   // Només canviem l'estat en memòria després de confirmar el desament.
-  data=incoming;undoStack.length=0;updateUndoButton();
+  data=incoming;ensureRegistry();undoStack.length=0;updateUndoButton();
   data.classes.forEach(c=>{if(!Array.isArray(c.items))c.items=[];if(!Array.isArray(c.students))c.students=[];c.students.forEach(s=>{if(!s.grades||typeof s.grades!=='object')s.grades={};if(typeof s.firstName!=='string'){const a=String(s.name||'').trim().split(/\s+/);s.firstName=a.shift()||'';s.lastName=a.join(' ')}if(typeof s.notes!=='string')s.notes=''})});
   if(!data.classes.some(c=>c.id===data.active))data.active=data.classes[0]?.id||null;
   save();
   if(incomingPdf?.base64){await storeCentrePdf(incomingPdf.name||'Calendari escolar.pdf',base64ToBlob(incomingPdf.base64));}
   else if(incomingPdf===null){await deleteCentrePdf();}
-  render();renderCentre();renderGroupSchedules();alert('Dades importades correctament.');
+  render();renderCentre();renderGroupSchedules();renderRegistry();alert('Dades importades correctament.');
  }catch(e){alert('No s’han pogut desar les dades importades: '+e.message)}
 };
 document.getElementById('undoGrade').onclick=undoGrade;
@@ -797,6 +813,89 @@ function buildStudentAttendanceSection(c,s){const section=document.createElement
 }
 document.getElementById('toggleAttendance').onclick=()=>{if(attendanceVisible){attendanceVisible=false;renderAttendance()}else openAttendance(data.active)};
 
-save();render();
+
+// Registre central: fitxes mestres d'identitat; les dades acadèmiques continuen a cada grup.
+let registryVisible=false;
+function addRegistryStudent(){
+ simpleModal('Nou alumne al centre','L’alumne quedarà al registre general. Després el podràs assignar a una classe.',(modal,close)=>{
+  const l1=document.createElement('label');l1.textContent='Nom';const first=document.createElement('input');
+  const l2=document.createElement('label');l2.textContent='Cognoms';const last=document.createElement('input');
+  const err=document.createElement('p');err.className='error';const actions=document.createElement('div');actions.className='modal-actions';
+  const cancel=document.createElement('button');cancel.className='secondary';cancel.textContent='Cancel·lar';cancel.onclick=close;
+  const ok=document.createElement('button');ok.className='primary';ok.textContent='Afegir al registre';ok.onclick=()=>{
+   const f=first.value.trim(),l=last.value.trim();if(!f||!l){err.textContent='Introdueix nom i cognoms.';return}
+   const dup=data.studentRegistry.find(r=>(r.firstName+' '+r.lastName).localeCompare(f+' '+l,'ca',{sensitivity:'base'})===0);
+   if(dup&&!confirm('Ja hi ha un alumne amb aquest nom. Vols crear una altra fitxa?'))return;
+   data.studentRegistry.push({id:uid(),firstName:f,lastName:l});try{save()}catch(e){data.studentRegistry.pop();err.textContent=e.message;return}close();renderRegistry();
+  };actions.append(cancel,ok);modal.append(l1,first,l2,last,err,actions);first.focus();
+ });
+}
+function editRegistryStudent(entry){
+ simpleModal('Editar alumne','El canvi de nom s’aplicarà també a les classes on figura.',(modal,close)=>{
+  const l1=document.createElement('label');l1.textContent='Nom';const first=document.createElement('input');first.value=entry.firstName;
+  const l2=document.createElement('label');l2.textContent='Cognoms';const last=document.createElement('input');last.value=entry.lastName;
+  const err=document.createElement('p');err.className='error';const actions=document.createElement('div');actions.className='modal-actions';
+  const cancel=document.createElement('button');cancel.className='secondary';cancel.textContent='Cancel·lar';cancel.onclick=close;
+  const ok=document.createElement('button');ok.className='primary';ok.textContent='Desar canvis';ok.onclick=()=>{
+   const f=first.value.trim(),l=last.value.trim();if(!f||!l){err.textContent='Introdueix nom i cognoms.';return}
+   const previous=JSON.stringify(data);updateRegistryIdentity(entry,f,l);try{save()}catch(e){data=JSON.parse(previous);err.textContent=e.message;return}close();render();renderRegistry();
+  };actions.append(cancel,ok);modal.append(l1,first,l2,last,err,actions);
+ });
+}
+function assignRegistryStudent(c){
+ ensureRegistry();
+ simpleModal('Afegir alumne a '+c.name,'Selecciona un alumne del registre general o crea’n un de nou.',(modal,close)=>{
+  const label=document.createElement('label');label.textContent='Alumne del centre';const search=document.createElement('input');search.placeholder='Cerca per nom o cognoms...';
+  const select=document.createElement('select');select.className='registry-select';select.size=7;
+  const err=document.createElement('p');err.className='error';
+  const refresh=()=>{
+   select.replaceChildren();const q=search.value.toLocaleLowerCase('ca');
+   const available=data.studentRegistry.filter(r=>!c.students.some(s=>s.registryId===r.id)).filter(r=>(r.firstName+' '+r.lastName).toLocaleLowerCase('ca').includes(q)).sort((a,b)=>(a.lastName+' '+a.firstName).localeCompare(b.lastName+' '+b.firstName,'ca'));
+   available.forEach(r=>{const opt=document.createElement('option');opt.value=r.id;opt.textContent=r.firstName+' '+r.lastName+(registryMembership(r.id).length?' · '+registryMembership(r.id).join(', '):'');select.append(opt)});
+   if(available.length)select.selectedIndex=0;else err.textContent='No hi ha alumnes disponibles amb aquesta cerca.';
+  };search.oninput=()=>{err.textContent='';refresh()};refresh();
+  const actions=document.createElement('div');actions.className='modal-actions';
+  const create=document.createElement('button');create.className='secondary';create.textContent='+ Crear alumne nou';create.onclick=()=>{
+   close();simpleModal('Crear i afegir alumne',c.name,(m,done)=>{
+    const a=document.createElement('label');a.textContent='Nom';const f=document.createElement('input');const b=document.createElement('label');b.textContent='Cognoms';const l=document.createElement('input');const error=document.createElement('p');error.className='error';const buttons=document.createElement('div');buttons.className='modal-actions';
+    const cancel=document.createElement('button');cancel.className='secondary';cancel.textContent='Cancel·lar';cancel.onclick=done;
+    const ok=document.createElement('button');ok.className='primary';ok.textContent='Crear i afegir';ok.onclick=()=>{
+     const first=f.value.trim(),last=l.value.trim();if(!first||!last){error.textContent='Introdueix nom i cognoms.';return}
+     if(data.studentRegistry.some(r=>(r.firstName+' '+r.lastName).localeCompare(first+' '+last,'ca',{sensitivity:'base'})===0)&&!confirm('Ja existeix un alumne amb aquest nom. Vols crear una altra fitxa?'))return;
+     const entry={id:uid(),firstName:first,lastName:last};const student={id:uid(),registryId:entry.id,firstName:first,lastName:last,name:first+' '+last,notes:'',grades:{}};
+     data.studentRegistry.push(entry);c.students.push(student);try{save()}catch(e){c.students.pop();data.studentRegistry.pop();error.textContent=e.message;return}done();render();renderRegistry();
+    };buttons.append(cancel,ok);m.append(a,f,b,l,error,buttons);f.focus();
+   });
+  };
+  const cancel=document.createElement('button');cancel.className='secondary';cancel.textContent='Cancel·lar';cancel.onclick=close;
+  const ok=document.createElement('button');ok.className='primary';ok.textContent='Afegir a la classe';ok.onclick=()=>{
+   const r=data.studentRegistry.find(x=>x.id===select.value);if(!r){err.textContent='Selecciona un alumne.';return}
+   const student={id:uid(),registryId:r.id,firstName:r.firstName,lastName:r.lastName,name:r.firstName+' '+r.lastName,notes:'',grades:{}};
+   c.students.push(student);try{save()}catch(e){c.students.pop();err.textContent=e.message;return}close();render();renderRegistry();
+  };actions.append(create,cancel,ok);modal.append(label,search,select,err,actions);search.focus();
+ });
+}
+function renderRegistry(){
+ const panel=document.getElementById('registryPanel');panel.hidden=!registryVisible;if(!registryVisible)return;
+ const previous=panel.querySelector('.registry-toolbar input')?.value||'';panel.replaceChildren();
+ const head=document.createElement('div');head.className='centre-head';const title=document.createElement('h2');title.textContent='Alumnat del centre';
+ const add=document.createElement('button');add.className='primary';add.textContent='+ Afegir alumne';add.onclick=addRegistryStudent;head.append(title,add);panel.append(head);
+ const note=document.createElement('p');note.className='registry-note';note.textContent='Registre únic d’alumnes. Les notes, assistències i incidències continuen associades a cada classe. Aquest registre es desa localment i s’inclou a les còpies JSON.';panel.append(note);
+ const toolbar=document.createElement('div');toolbar.className='registry-toolbar';const search=document.createElement('input');search.type='search';search.placeholder='Cerca per nom o cognoms...';search.value=previous;const count=document.createElement('span');count.className='hint';toolbar.append(search,count);panel.append(toolbar);
+ const wrap=document.createElement('div');wrap.className='table-wrap registry-table';const table=document.createElement('table');table.innerHTML='<thead><tr><th>Nom i cognoms</th><th>Grups de Paideia</th><th>Accions</th></tr></thead>';const body=document.createElement('tbody');table.append(body);wrap.append(table);panel.append(wrap);
+ const draw=()=>{body.replaceChildren();const q=search.value.trim().toLocaleLowerCase('ca');const entries=[...data.studentRegistry].filter(r=>(r.firstName+' '+r.lastName).toLocaleLowerCase('ca').includes(q)).sort((a,b)=>(a.lastName+' '+a.firstName).localeCompare(b.lastName+' '+b.firstName,'ca'));count.textContent=entries.length+' / '+data.studentRegistry.length+' alumnes';entries.forEach(r=>{
+  const tr=document.createElement('tr');const name=document.createElement('td');name.textContent=r.firstName+' '+r.lastName;const groups=document.createElement('td');groups.textContent=registryMembership(r.id).join(', ')||'Sense grup';
+  const actions=document.createElement('td');const edit=document.createElement('button');edit.className='secondary';edit.textContent='Editar';edit.onclick=()=>editRegistryStudent(r);
+  const del=document.createElement('button');del.className='secondary';del.style.marginLeft='6px';del.textContent='Eliminar';del.onclick=()=>{
+   if(registryMembership(r.id).length){alert('Aquest alumne està assignat a una classe. Per evitar perdre la vinculació, primer cal desvincular-lo de totes les classes.');return}
+   if(!confirm('Eliminar '+r.firstName+' '+r.lastName+' del registre del centre?'))return;
+   data.studentRegistry=data.studentRegistry.filter(x=>x.id!==r.id);save();renderRegistry();
+  };actions.append(edit,del);tr.append(name,groups,actions);body.append(tr);
+ })};search.oninput=draw;draw();
+}
+document.getElementById('toggleRegistry').onclick=()=>{registryVisible=!registryVisible;renderRegistry();if(registryVisible)document.getElementById('registryPanel').scrollIntoView({behavior:'smooth',block:'start'})};
+document.getElementById('addStudent').onclick=()=>{const c=current();if(c)assignRegistryStudent(c)};
+
+ensureRegistry();save();render();
 </script>
 </body></html>
