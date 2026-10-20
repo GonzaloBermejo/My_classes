@@ -135,10 +135,21 @@ body.paideia-authenticated #paideiaAuth{display:none}
 <body>
 <div id="paideiaAuth"><form id="paideiaAuthForm" class="pa-auth-card"><h1>Paideia</h1><p>Accés del professorat · Inicia sessió per entrar a la plataforma educativa.</p><label for="paAuthEmail">Correu electrònic</label><input id="paAuthEmail" type="email" required autocomplete="username"><label for="paAuthPass">Contrasenya</label><input id="paAuthPass" type="password" required autocomplete="current-password"><button id="paAuthSubmit" type="submit">Entrar a Paideia</button><div id="paAuthMessage" class="pa-auth-msg" role="status" aria-live="polite"></div><small>Primera fase: inici de sessió amb Supabase. Les classes, notes i assistències encara es desen en aquest navegador, no al núvol. Utilitza un dispositiu de confiança.</small></form></div>
 <script id="paideia-auth-script">
-(()=>{
+document.addEventListener('DOMContentLoaded',()=>{
 'use strict';
 const URL='https://yvcamtsaqaeruqasjgqg.supabase.co';
 const KEY='sb_publishable_VzoTvAZW5KZx6TSI0rU1lQ_oiyBN5os';
+const form=document.getElementById('paideiaAuthForm');
+const msg=document.getElementById('paAuthMessage');
+const btn=document.getElementById('paAuthSubmit');
+let token=null;
+async function request(path,opts={}){
+ const r=await fetch(URL+path,{...opts,headers:{apikey:KEY,'Content-Type':'application/json',...(opts.headers||{})}});
+ const text=await r.text();let value;try{value=JSON.parse(text)}catch{value=text}
+ if(!r.ok)throw new Error(value?.msg||value?.error_description||value?.message||('HTTP '+r.status));
+ return value;
+}
+function enter(){document.body.classList.add('paideia-authenticated');const header=document.querySelector('body > header');if(header&&!document.getElementById('paideiaLogout')){const b=document.createElement('button');b.id='paideiaLogout';b.type='button';b.textContent='Tancar sessió';b.addEventListener('click',()=>{token=null;cloudList.replaceChildren();cloudPanel.hidden=true;cloudStatus.textContent='Prem el botó per consultar les dades.';document.body.classList.remove('paideia-authenticated');document.getElementById('paAuthPass').value='';msg.textContent='Sessió tancada.'});header.appendChild(b)}}
  const cloudToggle=document.getElementById('toggleCloudTest');
  const cloudPanel=document.getElementById('cloudTestPanel');
  const cloudRead=document.getElementById('cloudTestRead');
@@ -157,17 +168,7 @@ const KEY='sb_publishable_VzoTvAZW5KZx6TSI0rU1lQ_oiyBN5os';
   }catch(err){cloudStatus.textContent='No s’ha pogut consultar Supabase: '+err.message}
   finally{cloudRead.disabled=false}
  });
-const form=document.getElementById('paideiaAuthForm');
-const msg=document.getElementById('paAuthMessage');
-const btn=document.getElementById('paAuthSubmit');
-let token=null;
-async function request(path,opts={}){
- const r=await fetch(URL+path,{...opts,headers:{apikey:KEY,'Content-Type':'application/json',...(opts.headers||{})}});
- const text=await r.text();let value;try{value=JSON.parse(text)}catch{value=text}
- if(!r.ok)throw new Error(value?.msg||value?.error_description||value?.message||('HTTP '+r.status));
- return value;
-}
-function enter(){document.body.classList.add('paideia-authenticated');const header=document.querySelector('body > header');if(header&&!document.getElementById('paideiaLogout')){const b=document.createElement('button');b.id='paideiaLogout';b.type='button';b.textContent='Tancar sessió';b.addEventListener('click',()=>{token=null;cloudList.replaceChildren();cloudPanel.hidden=true;cloudStatus.textContent='Prem el botó per consultar les dades.';document.body.classList.remove('paideia-authenticated');document.getElementById('paAuthPass').value='';msg.textContent='Sessió tancada.'});header.appendChild(b)}}
+
 form.addEventListener('submit',async e=>{
  e.preventDefault();btn.disabled=true;msg.textContent='Comprovant les credencials…';
  try{
@@ -181,7 +182,7 @@ form.addEventListener('submit',async e=>{
  }catch(err){token=null;msg.textContent='No s’ha pogut entrar: '+err.message}
  finally{btn.disabled=false}
 });
-})();
+});
 </script>
 
 <header class="brand-header"><div class="brand-identity"><div class="brand-logo" aria-hidden="true"><svg viewBox="0 0 48 48" width="35" height="35"><path d="M9 12L24 5L39 12V36L24 43L9 36Z" fill="#344d96"/><path d="M17 32V16H25C36 16 36 28 25 28H17" stroke="white" stroke-width="3.5" stroke-linecap="round" stroke-linejoin="round" fill="none"/></svg></div><div class="brand-copy"><strong>Paideia</strong><span class="brand-subtitle">Plataforma educativa</span><span class="brand-author">Web dissenyada per Gonzalo Bermejo Miranda</span></div></div><span class="brand-context">Espai de gestió de classes</span></header>
