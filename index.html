@@ -120,8 +120,50 @@ header .brand-context{font-size:13px;color:#8a929f;text-align:right}
 .registry-table tr[draggable="true"]:active{cursor:grabbing}
 .registry-toolbar{flex-wrap:wrap}
 </style>
+
+<style id="paideia-auth-style">
+body:not(.paideia-authenticated) > header,body:not(.paideia-authenticated) > main,body:not(.paideia-authenticated) > #modalRoot{display:none!important}
+#paideiaAuth{position:fixed;inset:0;background:#f7f8fa;z-index:999999;display:flex;align-items:center;justify-content:center;padding:20px;overflow:auto}
+body.paideia-authenticated #paideiaAuth{display:none}
+.pa-auth-card{width:min(100%,440px);background:white;border:1px solid #e5e9f0;border-radius:18px;padding:34px;box-shadow:0 12px 45px #1b2b4d12}
+.pa-auth-card h1{font-size:29px;color:#344d96;margin:0 0 5px}.pa-auth-card p{color:#758196;font-size:14px;line-height:1.55;margin:0 0 22px}.pa-auth-card label{display:block;margin:15px 0 6px;font-size:13px;font-weight:600}.pa-auth-card input{width:100%;border:1px solid #d5ddea;border-radius:9px;padding:12px;font-size:15px}.pa-auth-card button{width:100%;background:#344d96;color:white;border:0;border-radius:9px;padding:13px;margin-top:20px;font-weight:650}.pa-auth-card button:disabled{opacity:.6}.pa-auth-msg{font-size:13px;margin-top:14px;line-height:1.5;color:#a23d47}.pa-auth-card small{display:block;color:#7a8495;line-height:1.5;margin-top:16px}
+#paideiaLogout{margin-left:12px;border:1px solid #d8deea;background:white;color:#344d96;padding:7px 11px;border-radius:8px;font-size:12px}
+</style>
 </head>
 <body>
+<div id="paideiaAuth"><form id="paideiaAuthForm" class="pa-auth-card"><h1>Paideia</h1><p>Accés del professorat · Inicia sessió per entrar a la plataforma educativa.</p><label for="paAuthEmail">Correu electrònic</label><input id="paAuthEmail" type="email" required autocomplete="username"><label for="paAuthPass">Contrasenya</label><input id="paAuthPass" type="password" required autocomplete="current-password"><button id="paAuthSubmit" type="submit">Entrar a Paideia</button><div id="paAuthMessage" class="pa-auth-msg" role="status" aria-live="polite"></div><small>Primera fase: inici de sessió amb Supabase. Les classes, notes i assistències encara es desen en aquest navegador, no al núvol. Utilitza un dispositiu de confiança.</small></form></div>
+<script id="paideia-auth-script">
+(()=>{
+'use strict';
+const URL='https://yvcamtsaqaeruqasjgqg.supabase.co';
+const KEY='sb_publishable_VzoTvAZW5KZx6TSI0rU1lQ_oiyBN5os';
+const form=document.getElementById('paideiaAuthForm');
+const msg=document.getElementById('paAuthMessage');
+const btn=document.getElementById('paAuthSubmit');
+let token=null;
+async function request(path,opts={}){
+ const r=await fetch(URL+path,{...opts,headers:{apikey:KEY,'Content-Type':'application/json',...(opts.headers||{})}});
+ const text=await r.text();let value;try{value=JSON.parse(text)}catch{value=text}
+ if(!r.ok)throw new Error(value?.msg||value?.error_description||value?.message||('HTTP '+r.status));
+ return value;
+}
+function enter(){document.body.classList.add('paideia-authenticated');const header=document.querySelector('body > header');if(header&&!document.getElementById('paideiaLogout')){const b=document.createElement('button');b.id='paideiaLogout';b.type='button';b.textContent='Tancar sessió';b.addEventListener('click',()=>{token=null;document.body.classList.remove('paideia-authenticated');document.getElementById('paAuthPass').value='';msg.textContent='Sessió tancada.'});header.appendChild(b)}}
+form.addEventListener('submit',async e=>{
+ e.preventDefault();btn.disabled=true;msg.textContent='Comprovant les credencials…';
+ try{
+  const auth=await request('/auth/v1/token?grant_type=password',{method:'POST',body:JSON.stringify({email:document.getElementById('paAuthEmail').value.trim(),password:document.getElementById('paAuthPass').value})});
+  if(!auth.access_token)throw Error('No s’ha rebut cap token de sessió.');
+  token=auth.access_token;
+  await request('/auth/v1/user',{headers:{Authorization:'Bearer '+token}});
+  // Check that the database policy permits the authenticated account to query students.
+  await request('/rest/v1/alumnes?select=id&limit=1',{headers:{Authorization:'Bearer '+token}});
+  document.getElementById('paAuthPass').value='';msg.textContent='';enter();
+ }catch(err){token=null;msg.textContent='No s’ha pogut entrar: '+err.message}
+ finally{btn.disabled=false}
+});
+})();
+</script>
+
 <header class="brand-header"><div class="brand-identity"><div class="brand-logo" aria-hidden="true"><svg viewBox="0 0 48 48" width="35" height="35"><path d="M9 12L24 5L39 12V36L24 43L9 36Z" fill="#344d96"/><path d="M17 32V16H25C36 16 36 28 25 28H17" stroke="white" stroke-width="3.5" stroke-linecap="round" stroke-linejoin="round" fill="none"/></svg></div><div class="brand-copy"><strong>Paideia</strong><span class="brand-subtitle">Plataforma educativa</span><span class="brand-author">Web dissenyada per Gonzalo Bermejo Miranda</span></div></div><span class="brand-context">Espai de gestió de classes</span></header>
 <main><div class="top"><div><h1>Les meves classes</h1><button type="button" class="secondary" id="toggleSchedule" style="margin-top:10px">▦ El meu horari</button> <button type="button" class="secondary" id="toggleGroupSchedules" style="margin-top:10px">▦ Horari de grups classe</button> <button type="button" class="secondary" id="toggleRegistry" style="margin-top:10px">♙ Alumnat del centre</button> <button type="button" class="secondary" id="toggleCentre" style="margin-top:10px">⌂ El meu centre</button> <button type="button" class="secondary" id="toggleComms" style="margin-top:10px">✉ Comunicats</button> <button type="button" class="secondary" id="toggleAttendance" style="margin-top:10px">✓ Passar llista</button><p class="sub">Organitza els teus grups i alumnes en un sol lloc.</p></div><div class="backup-actions"><button class="secondary" id="exportExcel" type="button">↓ Exportar Excel</button><button class="secondary undo-btn" id="undoGrade" type="button" disabled title="Desfer el darrer canvi de notes (Ctrl+Z)">↶ Desfer</button><button class="secondary" id="exportData" type="button">↓ Exportar dades</button><button class="secondary" id="importData" type="button">↑ Importar dades</button><button class="secondary" id="importExcel" type="button">↑ Importar Excel</button><input id="excelFile" type="file" accept=".xlsx,.xls,.xlsm,.csv" style="display:none"><input id="importFile" type="file" accept=".json,application/json"></div></div><div class="layout"><aside class="panel side"><div class="side-title">Classes</div><div id="classes"></div><button class="add-side" id="addClass">+ Afegir classe</button></aside><section class="panel"><div class="content-head"><div><h2 id="classTitle"></h2><div class="class-meta"><div class="hint" id="classInfo"></div><button type="button" class="tutor-edit" id="editTutor" title="Editar el nom del tutor o tutora">Tutor/a: <span id="tutorName">Afegir nom</span> <span class="tutor-pencil">✎</span></button></div></div><div class="actions"><button class="secondary" id="renameClass">Canviar nom</button><button class="secondary" id="deleteClass">Eliminar classe</button><button class="secondary" id="addItem">+ Afegir ítem</button><button class="primary" id="addStudent">+ Afegir alumne</button></div></div><div id="tableArea"></div></section></div><section class="panel schedule-panel" id="schedulePanel" hidden></section><section class="panel schedule-panel" id="groupSchedulesPanel" hidden></section><section class="panel centre-panel" id="registryPanel" hidden></section><section class="panel centre-panel" id="centrePanel" hidden></section><section class="panel comms-panel" id="commsPanel" hidden></section><section class="panel attendance-panel" id="attendancePanel" hidden></section><div class="footer"><span>Les dades es desen automàticament en aquest navegador.</span></div></main><div id="modalRoot"></div>
 <script>
