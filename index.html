@@ -112,6 +112,13 @@ header .brand-context{font-size:13px;color:#8a929f;text-align:right}
 .group-schedule-controls select{border:1px solid #dce2eb;border-radius:8px;padding:10px 14px;background:#fff;color:#344054;min-width:160px}
 .group-schedule-note{font-size:12px;color:#778397;line-height:1.5}
 .group-schedule-cell small{white-space:pre-line;line-height:1.4}
+/* Ordenació del registre general */
+.registry-sort-label{display:flex;align-items:center;gap:8px;font-size:12px;color:#69768b;white-space:nowrap}
+.registry-sort{padding:9px 10px;border:1px solid #dce2eb;border-radius:8px;background:white;color:#46536b;font:inherit;font-size:13px}
+.registry-grip{display:inline-block;color:#8998b0;cursor:grab;font-size:17px;margin-right:12px;vertical-align:middle}
+.registry-table tr[draggable="true"]{cursor:grab}
+.registry-table tr[draggable="true"]:active{cursor:grabbing}
+.registry-toolbar{flex-wrap:wrap}
 </style>
 </head>
 <body>
@@ -875,23 +882,61 @@ function assignRegistryStudent(c){
   };actions.append(create,cancel,ok);modal.append(label,search,select,err,actions);search.focus();
  });
 }
+function registrySortMode(){return ['alphabetical','manual','course'].includes(data.registrySortMode)?data.registrySortMode:'alphabetical'}
+function registryCourseKey(r){
+ const groups=registryMembership(r.id);
+ if(!groups.length)return 999;
+ const levels=groups.map(g=>{const m=String(g).match(/^\s*([1-4])\s*(?:r|er|n|on|t|rt)?\b/i);return m?Number(m[1]):999});
+ return Math.min(...levels);
+}
+function registrySortedEntries(){
+ const collator=new Intl.Collator('ca',{sensitivity:'base',numeric:true});
+ const byName=(a,b)=>collator.compare(a.lastName||'',b.lastName||'')||collator.compare(a.firstName||'',b.firstName||'');
+ const entries=[...data.studentRegistry];const mode=registrySortMode();
+ if(mode==='manual'){
+  const order=Array.isArray(data.registryManualOrder)?data.registryManualOrder:[];
+  const positions=new Map(order.map((id,i)=>[id,i]));
+  return entries.sort((a,b)=>(positions.get(a.id)??Number.MAX_SAFE_INTEGER)-(positions.get(b.id)??Number.MAX_SAFE_INTEGER)||byName(a,b));
+ }
+ if(mode==='course')return entries.sort((a,b)=>registryCourseKey(a)-registryCourseKey(b)||byName(a,b));
+ return entries.sort(byName);
+}
 function renderRegistry(){
  const panel=document.getElementById('registryPanel');panel.hidden=!registryVisible;if(!registryVisible)return;
  const previous=panel.querySelector('.registry-toolbar input')?.value||'';panel.replaceChildren();
  const head=document.createElement('div');head.className='centre-head';const title=document.createElement('h2');title.textContent='Alumnat del centre';
  const add=document.createElement('button');add.className='primary';add.textContent='+ Afegir alumne';add.onclick=addRegistryStudent;head.append(title,add);panel.append(head);
  const note=document.createElement('p');note.className='registry-note';note.textContent='Registre únic d’alumnes. Les notes, assistències i incidències continuen associades a cada classe. Aquest registre es desa localment i s’inclou a les còpies JSON.';panel.append(note);
- const toolbar=document.createElement('div');toolbar.className='registry-toolbar';const search=document.createElement('input');search.type='search';search.placeholder='Cerca per nom o cognoms...';search.value=previous;const count=document.createElement('span');count.className='hint';toolbar.append(search,count);panel.append(toolbar);
+ const toolbar=document.createElement('div');toolbar.className='registry-toolbar';const search=document.createElement('input');search.type='search';search.placeholder='Cerca per nom o cognoms...';search.value=previous;
+ const sortLabel=document.createElement('label');sortLabel.textContent='Ordenació';sortLabel.className='registry-sort-label';
+ const sort=document.createElement('select');sort.className='registry-sort';sort.setAttribute('aria-label','Ordenació de l’alumnat');
+ [['alphabetical','Alfabètica per cognoms'],['manual','Manual · arrossegar'],['course','Per curs']].forEach(([value,text])=>{const opt=document.createElement('option');opt.value=value;opt.textContent=text;sort.append(opt)});sort.value=registrySortMode();
+ const count=document.createElement('span');count.className='hint';sortLabel.append(sort);toolbar.append(search,sortLabel,count);panel.append(toolbar);
  const wrap=document.createElement('div');wrap.className='table-wrap registry-table';const table=document.createElement('table');table.innerHTML='<thead><tr><th>Nom i cognoms</th><th>Grups de Paideia</th><th>Accions</th></tr></thead>';const body=document.createElement('tbody');table.append(body);wrap.append(table);panel.append(wrap);
- const draw=()=>{body.replaceChildren();const q=search.value.trim().toLocaleLowerCase('ca');const entries=[...data.studentRegistry].filter(r=>(r.firstName+' '+r.lastName).toLocaleLowerCase('ca').includes(q)).sort((a,b)=>(a.lastName+' '+a.firstName).localeCompare(b.lastName+' '+b.firstName,'ca'));count.textContent=entries.length+' / '+data.studentRegistry.length+' alumnes';entries.forEach(r=>{
-  const tr=document.createElement('tr');const name=document.createElement('td');name.textContent=r.firstName+' '+r.lastName;const groups=document.createElement('td');groups.textContent=registryMembership(r.id).join(', ')||'Sense grup';
+ const draw=()=>{body.replaceChildren();const q=search.value.trim().toLocaleLowerCase('ca');const mode=registrySortMode();const entries=registrySortedEntries().filter(r=>(r.firstName+' '+r.lastName).toLocaleLowerCase('ca').includes(q));count.textContent=entries.length+' / '+data.studentRegistry.length+' alumnes';entries.forEach(r=>{
+  const tr=document.createElement('tr');tr.dataset.registryId=r.id;const name=document.createElement('td');name.textContent=r.firstName+' '+r.lastName;
+  if(mode==='manual'){
+   tr.draggable=true;tr.title='Arrossega aquesta fila per canviar l’ordre';
+   const handle=document.createElement('span');handle.className='registry-grip';handle.textContent='⠿';handle.title='Arrossega per ordenar';name.prepend(handle);
+   tr.ondragstart=e=>{e.dataTransfer.setData('application/x-paideia-registry',r.id);e.dataTransfer.effectAllowed='move';tr.classList.add('dragging')};
+   tr.ondragend=()=>{tr.classList.remove('dragging');body.querySelectorAll('.drop-target').forEach(el=>el.classList.remove('drop-target'))};
+   tr.ondragover=e=>{if(e.dataTransfer.types.includes('application/x-paideia-registry')){e.preventDefault();tr.classList.add('drop-target')}};
+   tr.ondragleave=()=>tr.classList.remove('drop-target');
+   tr.ondrop=e=>{const source=e.dataTransfer.getData('application/x-paideia-registry');if(!source)return;e.preventDefault();tr.classList.remove('drop-target');if(source===r.id)return;
+    const all=registrySortedEntries().map(x=>x.id);const from=all.indexOf(source),to=all.indexOf(r.id);if(from<0||to<0)return;
+    all.splice(from,1);all.splice(to,0,source);data.registryManualOrder=all;save();draw();
+   };
+  }
+  const groups=document.createElement('td');groups.textContent=registryMembership(r.id).join(', ')||'Sense grup';
   const actions=document.createElement('td');const edit=document.createElement('button');edit.className='secondary';edit.textContent='Editar';edit.onclick=()=>editRegistryStudent(r);
   const del=document.createElement('button');del.className='secondary';del.style.marginLeft='6px';del.textContent='Eliminar';del.onclick=()=>{
    if(registryMembership(r.id).length){alert('Aquest alumne està assignat a una classe. Per evitar perdre la vinculació, primer cal desvincular-lo de totes les classes.');return}
    if(!confirm('Eliminar '+r.firstName+' '+r.lastName+' del registre del centre?'))return;
    data.studentRegistry=data.studentRegistry.filter(x=>x.id!==r.id);save();renderRegistry();
   };actions.append(edit,del);tr.append(name,groups,actions);body.append(tr);
- })};search.oninput=draw;draw();
+ })};
+ sort.onchange=()=>{if(sort.value==='manual'&&!Array.isArray(data.registryManualOrder))data.registryManualOrder=registrySortedEntries().map(r=>r.id);data.registrySortMode=sort.value;save();draw()};
+ search.oninput=draw;draw();
 }
 document.getElementById('toggleRegistry').onclick=()=>{registryVisible=!registryVisible;renderRegistry();if(registryVisible)document.getElementById('registryPanel').scrollIntoView({behavior:'smooth',block:'start'})};
 document.getElementById('addStudent').onclick=()=>{const c=current();if(c)assignRegistryStudent(c)};
