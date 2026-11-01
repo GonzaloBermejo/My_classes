@@ -2,7 +2,7 @@
 <html lang="ca">
 <head>
 <meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Paideia · Plataforma educativa · V21 (gestió de comunicats)</title>
+<title>Paideia · Plataforma educativa · V23 (horaris d’assignatures)</title>
 <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='14' fill='%23344d96'/%3E%3Cpath d='M22 47V17h13c18 0 18 24 0 24H22' fill='none' stroke='white' stroke-width='6' stroke-linejoin='round'/%3E%3C/svg%3E">
 <style>
 :root{font-family:Inter,system-ui,-apple-system,Segoe UI,sans-serif;color:#252b35;background:#f7f8fa}*{box-sizing:border-box}body{margin:0}button,input,textarea{font:inherit}button{cursor:pointer}header{background:white;border-bottom:1px solid #e8ebef;padding:23px max(24px,calc((100vw - 1200px)/2));display:flex;justify-content:space-between;align-items:center}header strong{font-size:21px;letter-spacing:-.6px}header span{color:#8a929f;font-size:13px}main{max-width:1200px;margin:42px auto;padding:0 24px}.top{display:flex;justify-content:space-between;gap:16px;align-items:center;margin-bottom:22px}.top h1{margin:0;font-size:28px;letter-spacing:-.8px}.sub{margin:7px 0 0;color:#87909c;font-size:14px}.layout{display:grid;grid-template-columns:295px minmax(0,1fr);gap:24px}.panel{background:white;border:1px solid #e8ebef;border-radius:14px;overflow:hidden}.side{padding:17px}.side-title{font-size:12px;text-transform:uppercase;letter-spacing:1.1px;color:#8d96a2;font-weight:700;margin:6px 8px 15px}.class-btn{white-space:nowrap;font-size:13px;width:100%;display:flex;justify-content:space-between;align-items:center;border:0;background:transparent;padding:12px 13px;border-radius:9px;text-align:left;color:#4b5563;margin-bottom:4px}.class-btn.active{background:#eef2ff;color:#4058a8;font-weight:650}.class-btn:hover:not(.active){background:#f6f7f9}.count{font-size:12px;color:#9ba3ae}.add-side{width:100%;background:white;border:1px dashed #d5dbe4;border-radius:9px;padding:12px;color:#687586;margin-top:13px}.add-side:hover{background:#f8faff}.content-head{padding:23px 25px;display:flex;justify-content:space-between;align-items:center;gap:15px;border-bottom:1px solid #edf0f3}.content-head h2{margin:0;font-size:21px;letter-spacing:-.5px}.hint{color:#9aa2ad;font-size:12px;margin-top:5px}.actions{display:flex;gap:9px;flex-wrap:wrap}button.primary{background:#344d96;color:white;border:1px solid #344d96;padding:10px 14px;border-radius:8px;font-size:13px;font-weight:600}button.secondary{background:white;color:#667181;border:1px solid #e0e5eb;padding:10px 13px;border-radius:8px;font-size:13px}button:hover{filter:brightness(.97)}.table-wrap{overflow-x:auto}table{width:100%;border-collapse:collapse;text-align:left}th{background:#fafbfc;font-size:11px;letter-spacing:.8px;text-transform:uppercase;color:#9ba4b0;font-weight:700;padding:15px 22px;border-bottom:1px solid #edf0f3}td{padding:11px 22px;border-bottom:1px solid #f0f2f5;font-size:14px}tr:last-child td{border-bottom:0}tbody tr:hover{background:#fafbff}.num{color:#a5adba;width:65px}.grade-input{width:94px;min-width:75px;border:1px solid transparent;background:transparent;border-radius:6px;padding:8px 9px;color:#303946;text-align:center}.grade-input:hover{border-color:#e6eaf0}.grade-input:focus{outline:none;border-color:#a4b2e0;background:white}.item-head{display:flex;align-items:center;gap:5px;white-space:nowrap}.item-edit{border:0;background:transparent;color:inherit;font:inherit;text-transform:inherit;letter-spacing:inherit;cursor:pointer;padding:3px}.item-remove{border:0;background:transparent;color:#b0b8c4;font-size:16px;padding:2px 5px}.item-remove:hover{color:#be4b52}.name-input{border:1px solid transparent;border-radius:6px;background:transparent;padding:8px 9px;width:100%;min-width:130px;color:#303946}.name-input:hover{border-color:#e6eaf0}.name-input:focus{outline:none;border-color:#a4b2e0;background:white}.delete{border:0;background:transparent;color:#aab2bd;font-size:18px;border-radius:6px;padding:5px 10px}.delete:hover{color:#be4b52;background:#fff0f1}.empty{padding:65px 20px;text-align:center;color:#9aa3af;font-size:14px}.calculated{font-weight:650;color:#344d96;text-align:center;white-space:nowrap}.calc-tag{font-size:10px;color:#7e8cb6;margin-left:4px}.modal-back{position:fixed;inset:0;background:#17233b66;display:flex;align-items:center;justify-content:center;padding:18px;z-index:10}.modal{background:white;border-radius:15px;padding:25px;width:min(540px,100%);box-shadow:0 18px 60px #1c2b4933}.modal h3{margin:0 0 9px}.modal p{font-size:13px;color:#7d8795}.modal label{font-size:13px;color:#5d6877;display:block;margin:14px 0 6px}.modal input,.modal select{width:100%;padding:10px;border:1px solid #dce2eb;border-radius:8px;background:white}.weight-row{display:grid;grid-template-columns:1fr 110px;gap:12px;align-items:end}.modal-actions{display:flex;justify-content:flex-end;gap:8px;margin-top:22px}.error{color:#bd3d4b!important;min-height:18px} .student-link{border:0;background:transparent;text-align:left;color:#344d96;font-weight:600;padding:7px 3px;cursor:pointer}.student-link:hover{text-decoration:underline}.drag-handle{border:0;background:transparent;color:#a4adba;cursor:grab;font-size:19px;padding:4px 7px}.dragging{opacity:.4}.drop-target{outline:2px solid #8ca0d6;outline-offset:-2px}.sort-bar{padding:12px 22px;border-bottom:1px solid #edf0f3;display:flex;align-items:center;gap:12px;font-size:12px;color:#748092}.sort-bar select{padding:7px;border:1px solid #e0e5eb;border-radius:7px;background:white;color:#526075}.student-notes{width:100%;min-height:170px;resize:vertical;border:1px solid #dce2eb;border-radius:9px;padding:12px;line-height:1.5}.student-notes:focus{outline:none;border-color:#879bd2;box-shadow:0 0 0 3px #e9eeff}.modal input:focus,.modal select:focus{outline:none;border-color:#879bd2;box-shadow:0 0 0 3px #e9eeff}.note-hint{font-size:12px;color:#8b95a3}.grade-input.grade-fail,.calculated.grade-fail{background:#fceced;color:#a3454b;border-radius:7px}.grade-input.grade-pass,.calculated.grade-pass{background:#eaf6ee;color:#337b51;border-radius:7px}.calculated{display:inline-block;min-width:76px;padding:8px 10px}.search-input{padding:8px 11px;border:1px solid #e0e5eb;border-radius:7px;min-width:190px;max-width:100%;font-size:13px;color:#526075}.search-input:focus{outline:none;border-color:#879bd2;box-shadow:0 0 0 3px #e9eeff}.search-count{color:#9aa3af}.footer{margin-top:18px;font-size:12px;color:#9ca5b1;text-align:right}@media(max-width:700px){header{padding:20px 24px}.layout{grid-template-columns:1fr}main{margin:25px auto}.content-head{align-items:flex-start;flex-direction:column}.top h1{font-size:24px}}
@@ -413,6 +413,10 @@ body.paideia-authenticated > header, body.paideia-authenticated > main {display:
 .v9-modal .pa-v22-hours{display:block;width:100%;max-width:390px;padding:11px;border:1px solid #dce2eb;border-radius:9px;background:#fff;color:#344054;font:inherit}
 .v9-modal h4{margin:0 0 8px;color:#344054}
 @media(max-width:550px){.pa-v22-subject-meta{grid-template-columns:1fr}}
+</style>
+
+<style id="pa-v23-subject-style">
+.pa-v23-session-list{display:grid;gap:8px;margin:12px 0}.pa-v23-session-row{display:flex;align-items:center;justify-content:space-between;gap:12px;padding:11px 13px;border:1px solid #e2e8f2;background:#f8faff;border-radius:9px;font-size:13px;color:#344054}.pa-v23-session-row button{flex-shrink:0;font-size:12px}.pa-v23-session-actions{display:grid;gap:12px;justify-items:start}.pa-v23-session-editor{width:100%;display:grid;grid-template-columns:1fr 1fr;gap:11px;padding:15px;background:#f5f7fc;border:1px solid #dfe6f2;border-radius:11px}.pa-v23-session-editor label{display:grid;gap:5px;font-size:12px;color:#5e6c83}.pa-v23-session-editor label:nth-child(3){grid-column:1/-1}.pa-v23-select{width:100%;min-width:0;padding:10px;border:1px solid #d5deed;border-radius:8px;background:white;color:#344054}.pa-v23-session-editor button{font-size:12px}@media(max-width:550px){.pa-v23-session-editor{grid-template-columns:1fr}.pa-v23-session-editor label:nth-child(3){grid-column:auto}.pa-v23-session-row{flex-wrap:wrap}}
 </style>
 </head>
 <body>
@@ -1206,24 +1210,82 @@ $('jediAdminButton').addEventListener('click',async()=>{
   const infoBody=document.createElement('div');infoBody.style.cssText='padding:23px 26px 27px;display:grid;gap:19px';infoModal.append(infoHead,infoBody);infoOverlay.append(infoModal);document.body.append(infoOverlay);
   const closeInfo=()=>{infoOverlay.hidden=true};infoClose.onclick=closeInfo;
   infoOverlay.addEventListener('click',e=>{if(e.target===infoOverlay)closeInfo()});
-  const centreFranges=[['1a hora','09:00–09:55'],['2a hora','10:00–10:45'],['Pati','10:50–11:20'],['3a hora','11:25–12:05'],['4a hora','12:10–12:50'],['Dinar','13:00–15:00'],['5a hora','15:00–15:55'],['6a hora','16:00–16:50']];
+  // V23: sessions setmanals reals, compartides amb els horaris de professorat i grups.
   async function openSubjectInfo(c){
    infoTitle.textContent=c.nom;infoBody.replaceChildren();infoOverlay.hidden=false;
    const meta=document.createElement('div');meta.className='pa-v22-subject-meta';
    for(const [label,value] of [['Curs',({1:'1r ESO',2:'2n ESO',3:'3r ESO',4:'4t ESO'})[c.curs]||String(c.curs)],['Grup de referència',subjectGroupName(c.grup_id)],['Tipus',typeLabel(c)]]){const box=document.createElement('div');const small=document.createElement('small');small.textContent=label;const strong=document.createElement('strong');strong.textContent=value;box.append(small,strong);meta.append(box)}
    const staffSection=document.createElement('section');const staffTitle=document.createElement('h4');staffTitle.textContent='Professorat assignat';const staffText=document.createElement('p');staffText.className='note-hint';staffText.textContent='Carregant professorat…';staffSection.append(staffTitle,staffText);
-   const hoursSection=document.createElement('section');const hoursTitle=document.createElement('h4');hoursTitle.textContent='Franges horàries del centre';
-   const hoursHint=document.createElement('p');hoursHint.className='note-hint';hoursHint.textContent='Consulta les franges generals del centre. No són l’horari assignat a aquesta assignatura.';
-   const hoursSelect=document.createElement('select');hoursSelect.className='pa-v22-hours';hoursSelect.setAttribute('aria-label','Consultar franja horària');hoursSelect.add(new Option('Selecciona una franja…',''));
-   for(const [name,time] of centreFranges)hoursSelect.add(new Option(name+' · '+time,name));
-   hoursSection.append(hoursTitle,hoursHint,hoursSelect);infoBody.append(meta,staffSection,hoursSection);
+   const hoursSection=document.createElement('section');const hoursTitle=document.createElement('h4');hoursTitle.textContent='Horari setmanal de l’assignatura';
+   const hoursHint=document.createElement('p');hoursHint.className='note-hint';hoursHint.textContent='Sessions vinculades als horaris del professorat i dels grups classe.';
+   const hoursList=document.createElement('div');hoursList.className='pa-v23-session-list';
+   const hoursActions=document.createElement('div');hoursActions.className='pa-v23-session-actions';
+   const hoursStatus=document.createElement('p');hoursStatus.className='note-hint';hoursStatus.setAttribute('role','status');
+   hoursSection.append(hoursTitle,hoursHint,hoursList,hoursActions,hoursStatus);infoBody.append(meta,staffSection,hoursSection);
    try{
-    const assignments=await api('/rest/v1/professors_classes?select=professor_id&classe_id=eq.'+encodeURIComponent(c.id)+'&limit=1000');
+    const [assignments,slots,allSessions]=await Promise.all([
+     api('/rest/v1/professors_classes?select=professor_id&classe_id=eq.'+encodeURIComponent(c.id)+'&limit=1000'),
+     api('/rest/v1/franjes_horaries?select=*&order=ordre.asc'),
+     api('/rest/v1/sessions_horari?select=*&limit=3000')
+    ]);
     if(infoOverlay.hidden||infoTitle.textContent!==c.nom)return;
     const ids=new Set(assignments.map(a=>String(a.professor_id)));
-    const names=teachers.filter(t=>ids.has(String(t.id))).map(t=>t.nom).sort((a,b)=>a.localeCompare(b,'ca'));
-    staffText.textContent=names.length?names.join(' · '):ids.size?'Hi ha professorat assignat, però no es poden mostrar els noms.':'No hi ha professorat assignat.';
-   }catch(err){staffText.textContent='No s’ha pogut consultar el professorat: '+err.message}
+    const assignedTeachers=teachers.filter(t=>ids.has(String(t.id))).sort((a,b)=>a.nom.localeCompare(b.nom,'ca'));
+    staffText.textContent=assignedTeachers.length?assignedTeachers.map(t=>t.nom).join(' · '):ids.size?'Hi ha professorat assignat, però no es poden mostrar els noms.':'No hi ha professorat assignat.';
+    const teachingSlots=slots.filter(x=>x.tipus==='classe');
+    const days=['Dilluns','Dimarts','Dimecres','Dijous','Divendres'];
+    let sessions=allSessions.filter(x=>String(x.classe_id)===String(c.id));
+    const makeSelect=(options,value)=>{const el=document.createElement('select');el.className='pa-v23-select';for(const [id,label] of options)el.add(new Option(label,String(id)));if(value!==undefined&&value!==null)el.value=String(value);return el};
+    const setStatus=(message,error=false)=>{hoursStatus.textContent=message;hoursStatus.style.color=error?'#a3454b':'#286b43'};
+    const render=()=>{
+     hoursList.replaceChildren();hoursActions.replaceChildren();
+     const ordered=[...sessions].sort((a,b)=>a.dia-b.dia||Number(a.franja_id)-Number(b.franja_id));
+     if(!ordered.length){const empty=document.createElement('p');empty.className='note-hint';empty.textContent='Encara no hi ha cap sessió assignada.';hoursList.append(empty)}
+     for(const record of ordered){
+      const row=document.createElement('div');row.className='pa-v23-session-row';
+      const slot=slots.find(x=>String(x.id)===String(record.franja_id));
+      const teacher=teachers.find(t=>String(t.id)===String(record.professor_id));
+      const label=document.createElement('span');label.textContent=(days[Number(record.dia)-1]||'Dia '+record.dia)+' · '+(slot?slot.nom+' ('+String(slot.inici).slice(0,5)+'–'+String(slot.fi).slice(0,5)+')':'Franja '+record.franja_id)+(teacher?' · '+teacher.nom:'');
+      row.append(label);
+      if(isAdmin){const remove=document.createElement('button');remove.type='button';remove.className='secondary';remove.textContent='Eliminar';remove.onclick=async()=>{
+       if(!confirm('Eliminar aquesta sessió de l’horari del centre? També desapareixerà dels horaris de professorat i grup.'))return;
+       remove.disabled=true;
+       try{await api('/rest/v1/sessions_horari?id=eq.'+encodeURIComponent(record.id),accessToken,{method:'DELETE'});sessions=sessions.filter(x=>String(x.id)!==String(record.id));const oldIndex=allSessions.findIndex(x=>String(x.id)===String(record.id));if(oldIndex>=0)allSessions.splice(oldIndex,1);render();setStatus('Sessió eliminada correctament.')}catch(e){remove.disabled=false;setStatus('No s’ha pogut eliminar: '+e.message,true)}
+      };row.append(remove)}
+      hoursList.append(row)
+     }
+     if(!isAdmin)return;
+     const add=document.createElement('button');add.type='button';add.className='secondary';add.textContent='+ Afegir franja horària';hoursActions.append(add);
+     add.onclick=()=>{
+      add.disabled=true;const editor=document.createElement('div');editor.className='pa-v23-session-editor';
+      const day=makeSelect(days.map((d,i)=>[i+1,d]),1);
+      const slot=makeSelect(teachingSlots.map(x=>[x.id,x.nom+' · '+String(x.inici).slice(0,5)+'–'+String(x.fi).slice(0,5)]));
+      const teacher=makeSelect([['','— Sense professor —'],...assignedTeachers.map(t=>[t.id,t.nom])],assignedTeachers[0]?.id||'');
+      const field=(label,control)=>{const wrap=document.createElement('label');wrap.textContent=label;wrap.append(control);return wrap};
+      editor.append(field('Dia',day),field('Franja',slot),field('Professor/a',teacher));
+      const save=document.createElement('button');save.type='button';save.className='primary';save.textContent='Desar sessió';
+      const cancel=document.createElement('button');cancel.type='button';cancel.className='secondary';cancel.textContent='Cancel·lar';cancel.onclick=()=>{editor.remove();add.disabled=false};
+      editor.append(save,cancel);hoursActions.append(editor);
+      save.onclick=async()=>{
+       if(!slot.value){setStatus('No hi ha franges lectives disponibles.',true);return}
+       if(!teacher.value&&!c.grup_id){setStatus('Cal indicar un professor o un grup.',true);return}
+       if(sessions.some(x=>Number(x.dia)===Number(day.value)&&String(x.franja_id)===slot.value)){setStatus('Aquesta assignatura ja té una sessió en aquesta franja.',true);return}
+       // Evita sobreescriure o duplicar sessions d'altres assignatures.
+       const conflict=allSessions.find(x=>Number(x.dia)===Number(day.value)&&String(x.franja_id)===slot.value&&String(x.classe_id)!==String(c.id)&&((teacher.value&&String(x.professor_id)===teacher.value)||(c.grup_id&&String(x.grup_id)===String(c.grup_id))));
+       if(conflict){setStatus('Franja ocupada: el professor o el grup ja té una altra sessió.',true);return}
+       save.disabled=true;
+       try{
+        const payload={dia:Number(day.value),franja_id:Number(slot.value),professor_id:teacher.value||null,grup_id:c.grup_id||null,classe_id:c.id,etiqueta:c.nom};
+        const created=await api('/rest/v1/sessions_horari',accessToken,{method:'POST',headers:{'Content-Type':'application/json',Prefer:'return=representation'},body:JSON.stringify(payload)});
+        if(!created?.[0]?.id)throw Error('No s’ha rebut confirmació de la sessió. Revisa l’horari abans de repetir.');
+        sessions.push(created[0]);allSessions.push(created[0]);render();setStatus('Sessió desada a Supabase correctament.');
+       }catch(e){save.disabled=false;setStatus('No s’ha pogut desar: '+e.message,true)}
+      }
+     }
+    };
+    render();
+    if(!isAdmin)hoursHint.textContent+=' Només administració pot modificar-les.';
+   }catch(err){staffText.textContent='No s’han pogut carregar totes les dades.';hoursList.textContent='Error de consulta: '+err.message}
   }
   const overlay=document.createElement('div');overlay.className='v9-modal-back';overlay.hidden=true;
   const modal=document.createElement('div');modal.className='v9-modal';modal.setAttribute('role','dialog');modal.setAttribute('aria-modal','true');modal.setAttribute('aria-label','Editar assignatura');
