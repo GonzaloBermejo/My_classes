@@ -2461,8 +2461,33 @@ async function showClass(c){
    th.append(head);heading.append(th);
   }
   if(hierarchy){
-   for(const unit of hierarchy.units){const th=document.createElement('th');th.className='jedi-hierarchy-heading';th.textContent='∑ '+unit.name;th.title='Nota ponderada de la unitat (càlcul local)';heading.append(th)}
-   const th=document.createElement('th');th.className='jedi-hierarchy-heading jedi-hierarchy-final';th.textContent='∑ Nota avaluació';th.title='Nota ponderada de l’avaluació (càlcul local)';heading.append(th);
+   // Les columnes de jerarquia són derivades de la configuració, no ítems de qualificació.
+   // La paperera actualitza la configuració a Supabase i després refresca la taula.
+   const removeHierarchy=async(unitIndex)=>{
+    const all=unitIndex===null;
+    const target=all?'Nota avaluació':hierarchy.units[unitIndex].name;
+    const warning=all
+     ?'S’eliminaran totes les unitats i el càlcul de la nota de l’avaluació. Les notes originals dels exàmens NO s’eliminaran.'
+     :'S’eliminarà aquesta unitat i es recalcularà la nota de l’avaluació. Les notes originals NO s’eliminaran.';
+    if(!confirm('Vols eliminar «'+target+'»?\n\n'+warning))return;
+    const updated=all?[]:hierarchy.units.filter((_,i)=>i!==unitIndex);
+    try{
+     await jediSaveHierarchy(c,activeEvaluation,updated);
+     localStorage.setItem('paideia-hierarchy-prototype:'+profile.id+':'+c.id+':'+activeEvaluation,JSON.stringify(updated));
+     await showClass(c);
+     status('✓ «'+target+'» eliminada de la configuració de ponderacions.');
+    }catch(err){alert('No s’ha pogut eliminar «'+target+'»: '+err.message)}
+   };
+   const hierarchyHeading=(label,unitIndex,isFinal=false)=>{
+    const th=document.createElement('th');th.className='jedi-hierarchy-heading'+(isFinal?' jedi-hierarchy-final':'');
+    const head=document.createElement('div');head.className='jedi-col-title';
+    const name=document.createElement('span');name.textContent='∑ '+label;head.append(name);
+    const remove=document.createElement('button');remove.type='button';remove.className='jedi-delete-column';remove.textContent='🗑';
+    remove.title='Eliminar '+label;remove.setAttribute('aria-label','Eliminar '+label);
+    remove.onclick=()=>removeHierarchy(unitIndex);head.append(remove);th.append(head);return th;
+   };
+   hierarchy.units.forEach((unit,i)=>heading.append(hierarchyHeading(unit.name,i)));
+   heading.append(hierarchyHeading('Nota avaluació',null,true));
    const finalHead=document.createElement('th');finalHead.textContent='Nota final avaluació';finalHead.title='Nota definitiva: automàtica o ajustada manualment, desable a Supabase';heading.append(finalHead);
   }
   const obsTh=document.createElement('th');obsTh.textContent='Observacions de l’avaluació';heading.append(obsTh);const addTh=document.createElement('th');addTh.textContent='Altres notes';heading.append(addTh);thead.append(heading);table.append(thead);
