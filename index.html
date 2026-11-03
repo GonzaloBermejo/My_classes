@@ -2,7 +2,7 @@
 <html lang="ca">
 <head>
 <meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Paideia · Plataforma educativa · V25.6 (Observacions i comptadors)</title>
+<title>Paideia · Plataforma educativa · V25.7 (Professorat a editar assignatura)</title>
 <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='14' fill='%23344d96'/%3E%3Cpath d='M22 47V17h13c18 0 18 24 0 24H22' fill='none' stroke='white' stroke-width='6' stroke-linejoin='round'/%3E%3C/svg%3E">
 <style>
 :root{font-family:Inter,system-ui,-apple-system,Segoe UI,sans-serif;color:#252b35;background:#f7f8fa}*{box-sizing:border-box}body{margin:0}button,input,textarea{font:inherit}button{cursor:pointer}header{background:white;border-bottom:1px solid #e8ebef;padding:23px max(24px,calc((100vw - 1200px)/2));display:flex;justify-content:space-between;align-items:center}header strong{font-size:21px;letter-spacing:-.6px}header span{color:#8a929f;font-size:13px}main{max-width:1200px;margin:42px auto;padding:0 24px}.top{display:flex;justify-content:space-between;gap:16px;align-items:center;margin-bottom:22px}.top h1{margin:0;font-size:28px;letter-spacing:-.8px}.sub{margin:7px 0 0;color:#87909c;font-size:14px}.layout{display:grid;grid-template-columns:295px minmax(0,1fr);gap:24px}.panel{background:white;border:1px solid #e8ebef;border-radius:14px;overflow:hidden}.side{padding:17px}.side-title{font-size:12px;text-transform:uppercase;letter-spacing:1.1px;color:#8d96a2;font-weight:700;margin:6px 8px 15px}.class-btn{white-space:nowrap;font-size:13px;width:100%;display:flex;justify-content:space-between;align-items:center;border:0;background:transparent;padding:12px 13px;border-radius:9px;text-align:left;color:#4b5563;margin-bottom:4px}.class-btn.active{background:#eef2ff;color:#4058a8;font-weight:650}.class-btn:hover:not(.active){background:#f6f7f9}.count{font-size:12px;color:#9ba3ae}.add-side{width:100%;background:white;border:1px dashed #d5dbe4;border-radius:9px;padding:12px;color:#687586;margin-top:13px}.add-side:hover{background:#f8faff}.content-head{padding:23px 25px;display:flex;justify-content:space-between;align-items:center;gap:15px;border-bottom:1px solid #edf0f3}.content-head h2{margin:0;font-size:21px;letter-spacing:-.5px}.hint{color:#9aa2ad;font-size:12px;margin-top:5px}.actions{display:flex;gap:9px;flex-wrap:wrap}button.primary{background:#344d96;color:white;border:1px solid #344d96;padding:10px 14px;border-radius:8px;font-size:13px;font-weight:600}button.secondary{background:white;color:#667181;border:1px solid #e0e5eb;padding:10px 13px;border-radius:8px;font-size:13px}button:hover{filter:brightness(.97)}.table-wrap{overflow-x:auto}table{width:100%;border-collapse:collapse;text-align:left}th{background:#fafbfc;font-size:11px;letter-spacing:.8px;text-transform:uppercase;color:#9ba4b0;font-weight:700;padding:15px 22px;border-bottom:1px solid #edf0f3}td{padding:11px 22px;border-bottom:1px solid #f0f2f5;font-size:14px}tr:last-child td{border-bottom:0}tbody tr:hover{background:#fafbff}.num{color:#a5adba;width:65px}.grade-input{width:94px;min-width:75px;border:1px solid transparent;background:transparent;border-radius:6px;padding:8px 9px;color:#303946;text-align:center}.grade-input:hover{border-color:#e6eaf0}.grade-input:focus{outline:none;border-color:#a4b2e0;background:white}.item-head{display:flex;align-items:center;gap:5px;white-space:nowrap}.item-edit{border:0;background:transparent;color:inherit;font:inherit;text-transform:inherit;letter-spacing:inherit;cursor:pointer;padding:3px}.item-remove{border:0;background:transparent;color:#b0b8c4;font-size:16px;padding:2px 5px}.item-remove:hover{color:#be4b52}.name-input{border:1px solid transparent;border-radius:6px;background:transparent;padding:8px 9px;width:100%;min-width:130px;color:#303946}.name-input:hover{border-color:#e6eaf0}.name-input:focus{outline:none;border-color:#a4b2e0;background:white}.delete{border:0;background:transparent;color:#aab2bd;font-size:18px;border-radius:6px;padding:5px 10px}.delete:hover{color:#be4b52;background:#fff0f1}.empty{padding:65px 20px;text-align:center;color:#9aa3af;font-size:14px}.calculated{font-weight:650;color:#344d96;text-align:center;white-space:nowrap}.calc-tag{font-size:10px;color:#7e8cb6;margin-left:4px}.modal-back{position:fixed;inset:0;background:#17233b66;display:flex;align-items:center;justify-content:center;padding:18px;z-index:10}.modal{background:white;border-radius:15px;padding:25px;width:min(540px,100%);box-shadow:0 18px 60px #1c2b4933}.modal h3{margin:0 0 9px}.modal p{font-size:13px;color:#7d8795}.modal label{font-size:13px;color:#5d6877;display:block;margin:14px 0 6px}.modal input,.modal select{width:100%;padding:10px;border:1px solid #dce2eb;border-radius:8px;background:white}.weight-row{display:grid;grid-template-columns:1fr 110px;gap:12px;align-items:end}.modal-actions{display:flex;justify-content:flex-end;gap:8px;margin-top:22px}.error{color:#bd3d4b!important;min-height:18px} .student-link{border:0;background:transparent;text-align:left;color:#344d96;font-weight:600;padding:7px 3px;cursor:pointer}.student-link:hover{text-decoration:underline}.drag-handle{border:0;background:transparent;color:#a4adba;cursor:grab;font-size:19px;padding:4px 7px}.dragging{opacity:.4}.drop-target{outline:2px solid #8ca0d6;outline-offset:-2px}.sort-bar{padding:12px 22px;border-bottom:1px solid #edf0f3;display:flex;align-items:center;gap:12px;font-size:12px;color:#748092}.sort-bar select{padding:7px;border:1px solid #e0e5eb;border-radius:7px;background:white;color:#526075}.student-notes{width:100%;min-height:170px;resize:vertical;border:1px solid #dce2eb;border-radius:9px;padding:12px;line-height:1.5}.student-notes:focus{outline:none;border-color:#879bd2;box-shadow:0 0 0 3px #e9eeff}.modal input:focus,.modal select:focus{outline:none;border-color:#879bd2;box-shadow:0 0 0 3px #e9eeff}.note-hint{font-size:12px;color:#8b95a3}.grade-input.grade-fail,.calculated.grade-fail{background:#fceced;color:#a3454b;border-radius:7px}.grade-input.grade-pass,.calculated.grade-pass{background:#eaf6ee;color:#337b51;border-radius:7px}.calculated{display:inline-block;min-width:76px;padding:8px 10px}.search-input{padding:8px 11px;border:1px solid #e0e5eb;border-radius:7px;min-width:190px;max-width:100%;font-size:13px;color:#526075}.search-input:focus{outline:none;border-color:#879bd2;box-shadow:0 0 0 3px #e9eeff}.search-count{color:#9aa3af}.footer{margin-top:18px;font-size:12px;color:#9ca5b1;text-align:right}@media(max-width:700px){header{padding:20px 24px}.layout{grid-template-columns:1fr}main{margin:25px auto}.content-head{align-items:flex-start;flex-direction:column}.top h1{font-size:24px}}
@@ -1235,7 +1235,7 @@ $('jediAdminButton').addEventListener('click',async()=>{
   const showList=document.createElement('button');showList.type='button';showList.className='secondary v10-subject-toggle';showList.textContent='Mostrar assignatures';showList.setAttribute('aria-expanded','false');
   const titleGroup=document.createElement('div');titleGroup.style.cssText='display:flex;align-items:center;gap:12px;flex-wrap:wrap';titleGroup.append(editHeading,editCount);listHeading.append(titleGroup,showList);
   const listPanel=document.createElement('div');listPanel.hidden=true;
-  const editHint=document.createElement('p');editHint.className='note-hint';editHint.textContent='Consulta i edita les dades bàsiques. No es modifiquen les matrícules, les notes ni el professorat assignat.';
+  const editHint=document.createElement('p');editHint.className='note-hint';editHint.textContent='Consulta i edita les dades bàsiques. Les matrícules i les notes es conserven. Administració també pot gestionar el professorat assignat.';
   const listTools=document.createElement('div');listTools.className='v10-subject-tools';
   const listSearch=document.createElement('input');listSearch.type='search';listSearch.placeholder='Cercar assignatura, grup o tipus…';listSearch.setAttribute('aria-label','Cercar assignatures');
   const listCourse=document.createElement('select');listCourse.setAttribute('aria-label','Filtrar per curs');listCourse.add(new Option('Tots els cursos',''));for(let i=1;i<=4;i++)listCourse.add(new Option(i+'r ESO'.replace('2r','2n').replace('3r','3r').replace('4r','4t'),String(i)));
@@ -1342,11 +1342,40 @@ $('jediAdminButton').addEventListener('click',async()=>{
   const editCourse=document.createElement('select');for(let i=1;i<=4;i++)editCourse.add(new Option(({1:'1r',2:'2n',3:'3r',4:'4t'})[i]+' ESO',String(i)));
   const editGroup=document.createElement('select');editGroup.required=true;
   const editType=document.createElement('select');editType.add(new Option('Obligatòria','obligatoria'));editType.add(new Option('Optativa','optativa'));editType.add(new Option('Reforç','reforc'));
+  // V25.7: gestió de codocència dins del mateix formulari d'edició.
+  const editStaffBox=document.createElement('div');editStaffBox.style.cssText='grid-column:1/-1;border-top:1px solid #e5eaf2;padding-top:15px';
+  const editStaffTitle=document.createElement('strong');editStaffTitle.textContent='Professorat assignat';
+  const editStaffHint=document.createElement('p');editStaffHint.className='note-hint';editStaffHint.textContent='Selecciona un o més docents actius. Les matrícules i les notes es conserven.';
+  const editStaffList=document.createElement('div');editStaffList.style.cssText='display:grid;grid-template-columns:repeat(auto-fit,minmax(210px,1fr));gap:9px;margin-top:12px';
+  editStaffBox.append(editStaffTitle,editStaffHint,editStaffList);
+  let editStaffOriginal=new Set(),editStaffReady=false,editStaffRequest=0;
+  async function loadEditStaff(id){
+   const request=++editStaffRequest;editStaffReady=false;editStaffList.textContent='Carregant professorat…';editSave.disabled=true;
+   try{
+    const assigned=await api('/rest/v1/professors_classes?select=professor_id&classe_id=eq.'+encodeURIComponent(id)+'&limit=1000',accessToken);
+    if(request!==editStaffRequest||String(editingId)!==String(id))return;
+    editStaffOriginal=new Set(assigned.map(a=>String(a.professor_id)));
+    editStaffList.replaceChildren();
+    for(const t of [...teachers].sort((a,b)=>String(a.nom).localeCompare(String(b.nom),'ca'))){
+     if(t.actiu===false&&!editStaffOriginal.has(String(t.id)))continue;
+     const label=document.createElement('label');label.style.cssText='display:flex;gap:9px;align-items:center;margin:0;padding:9px 11px;border:1px solid #e1e7f0;border-radius:8px;font-size:13px';
+     const cb=document.createElement('input');cb.type='checkbox';cb.value=String(t.id);cb.checked=editStaffOriginal.has(String(t.id));cb.disabled=t.actiu===false;
+     cb.style.cssText='width:17px;height:17px;flex:0 0 17px';
+     const name=document.createElement('span');name.textContent=t.nom+(t.actiu===false?' (de baixa; no editable)':'');
+     label.append(cb,name);editStaffList.append(label);
+    }
+    editStaffReady=true;editSave.disabled=false;
+   }catch(err){
+    if(request!==editStaffRequest)return;
+    editStaffList.textContent='No s’ha pogut carregar el professorat: '+err.message;
+    editStatus.textContent='Cal carregar el professorat abans de desar.';
+   }
+  }
   const editStatus=document.createElement('p');editStatus.setAttribute('role','status');editStatus.className='v9-edit-status';
   const editSave=document.createElement('button');editSave.className='primary';editSave.type='submit';editSave.textContent='Desar canvis';
   const editCancel=document.createElement('button');editCancel.className='secondary';editCancel.type='button';editCancel.textContent='Cancel·lar';
   const editButtons=document.createElement('div');editButtons.className='v9-modal-actions';editButtons.append(editCancel,editSave);
-  editForm.append(subjectField('Nom de l’assignatura',editName),subjectField('Curs de referència',editCourse),subjectField('Grup de referència',editGroup),subjectField('Tipus d’assignatura',editType),editStatus,editButtons);
+  editForm.append(subjectField('Nom de l’assignatura',editName),subjectField('Curs de referència',editCourse),subjectField('Grup de referència',editGroup),subjectField('Tipus d’assignatura',editType),editStaffBox,editStatus,editButtons);
   modal.append(modalHead,editForm);overlay.append(modal);document.body.append(overlay);
   let editingId=null,editBusy=false;
   const typeLabel=c=>({obligatoria:'Obligatòria',optativa:'Optativa',reforc:'Reforç'})[c.tipus_assignatura||(c.es_optativa?'optativa':'obligatoria')]||'Obligatòria';
@@ -1368,11 +1397,12 @@ $('jediAdminButton').addEventListener('click',async()=>{
   function refreshEditGroups(preferred){editGroup.replaceChildren();for(const g of subjectGroups.filter(g=>groupCourse(g)===Number(editCourse.value)))editGroup.add(new Option(g.nom,g.id));if([...editGroup.options].some(o=>o.value===String(preferred)))editGroup.value=String(preferred)}
   editCourse.onchange=()=>refreshEditGroups(editGroup.value);
   function closeEdit(){if(editBusy)return;overlay.hidden=true;editingId=null;editStatus.textContent=''}
-  function openEdit(id){const c=classes.find(c=>String(c.id)===String(id));if(!c)return;editingId=c.id;editName.value=c.nom||'';editCourse.value=String(c.curs);refreshEditGroups(c.grup_id);editType.value=c.tipus_assignatura||(c.es_optativa?'optativa':'obligatoria');editStatus.textContent='';overlay.hidden=false;editName.focus()}
+  function openEdit(id){const c=classes.find(c=>String(c.id)===String(id));if(!c)return;editingId=c.id;editName.value=c.nom||'';editCourse.value=String(c.curs);refreshEditGroups(c.grup_id);editType.value=c.tipus_assignatura||(c.es_optativa?'optativa':'obligatoria');editStatus.textContent='';overlay.hidden=false;loadEditStaff(c.id);editName.focus()}
   modalClose.onclick=closeEdit;editCancel.onclick=closeEdit;
   overlay.addEventListener('click',e=>{if(e.target===overlay)closeEdit()});
   editForm.onsubmit=async e=>{
    e.preventDefault();if(editBusy)return;
+   if(!editStaffReady){editStatus.textContent='Espera que es carregui el professorat.';return}
    const c=classes.find(c=>String(c.id)===String(editingId));if(!c)return;
    const nom=editName.value.trim();if(!nom||!editGroup.value){editStatus.textContent='Cal indicar un nom i un grup de referència.';return}
    const payload={nom,curs:Number(editCourse.value),grup_id:editGroup.value,tipus_assignatura:editType.value,es_optativa:editType.value==='optativa'};
@@ -1380,6 +1410,19 @@ $('jediAdminButton').addEventListener('click',async()=>{
    try{
     const rows=await api('/rest/v1/classes?id=eq.'+encodeURIComponent(c.id),accessToken,{method:'PATCH',headers:{'Content-Type':'application/json',Prefer:'return=representation'},body:JSON.stringify(payload)});
     if(!Array.isArray(rows)||rows.length!==1)throw Error('No s’ha confirmat l’actualització. Revisa els permisos de Supabase.');
+    // Conservem les assignacions dels docents de baixa; no es poden editar aquí.
+    const selected=new Set([...editStaffList.querySelectorAll('input[type="checkbox"]:checked')].map(x=>x.value));
+    for(const id of editStaffOriginal)if(teachers.find(t=>String(t.id)===id)?.actiu===false)selected.add(id);
+    const toAdd=[...selected].filter(id=>!editStaffOriginal.has(id));
+    const toRemove=[...editStaffOriginal].filter(id=>!selected.has(id));
+    try{
+     for(const professor_id of toAdd)await api('/rest/v1/professors_classes',accessToken,{method:'POST',headers:{'Content-Type':'application/json',Prefer:'return=minimal'},body:JSON.stringify({professor_id,classe_id:c.id})});
+     for(const professor_id of toRemove)await api('/rest/v1/professors_classes?professor_id=eq.'+encodeURIComponent(professor_id)+'&classe_id=eq.'+encodeURIComponent(c.id),accessToken,{method:'DELETE'});
+    }catch(staffErr){
+     Object.assign(c,payload);renderSubjectList();
+     editStaffReady=false;await loadEditStaff(c.id);
+     throw Error('Les dades bàsiques s’han desat, però alguna assignació de professorat ha fallat. Revisa les caselles abans de tornar a desar. '+staffErr.message);
+    }
     Object.assign(c,payload);renderSubjectList();
     overlay.hidden=true;editingId=null;editStatus.textContent='';
     listHeading.scrollIntoView({behavior:'smooth',block:'start'});
