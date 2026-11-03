@@ -419,6 +419,18 @@ body.paideia-authenticated > header, body.paideia-authenticated > main {display:
 .pa-v23-session-list{display:grid;gap:8px;margin:12px 0}.pa-v23-session-row{display:flex;align-items:center;justify-content:space-between;gap:12px;padding:11px 13px;border:1px solid #e2e8f2;background:#f8faff;border-radius:9px;font-size:13px;color:#344054}.pa-v23-session-row button{flex-shrink:0;font-size:12px}.pa-v23-session-actions{display:grid;gap:12px;justify-items:start}.pa-v23-session-editor{width:100%;display:grid;grid-template-columns:1fr 1fr;gap:11px;padding:15px;background:#f5f7fc;border:1px solid #dfe6f2;border-radius:11px}.pa-v23-session-editor label{display:grid;gap:5px;font-size:12px;color:#5e6c83}.pa-v23-session-editor label:nth-child(3){grid-column:1/-1}.pa-v23-select{width:100%;min-width:0;padding:10px;border:1px solid #d5deed;border-radius:8px;background:white;color:#344054}.pa-v23-session-editor button{font-size:12px}@media(max-width:550px){.pa-v23-session-editor{grid-template-columns:1fr}.pa-v23-session-editor label:nth-child(3){grid-column:auto}.pa-v23-session-row{flex-wrap:wrap}}
 </style>
 <style id="jedi-v254-notes-style">#jediShell .jedi-other-note{white-space:nowrap;border:1px solid #dfe6f1;border-radius:8px;background:#f7f9ff;color:#344d96;padding:8px 11px;font-size:12px}#jediShell .jedi-other-note:hover{background:#eaf0ff}.jedi-other-list{display:grid;gap:9px;margin:15px 0;max-height:42vh;overflow:auto}.jedi-other-entry{padding:12px;border:1px solid #e3e8f0;border-radius:9px;background:#f9fbfe}.jedi-other-entry p{white-space:pre-wrap;overflow-wrap:anywhere;margin:7px 0}.jedi-other-entry small{color:#758196}.jedi-other-entry-actions{display:flex;gap:8px;margin-top:9px}.jedi-other-entry-actions button{font-size:12px}.jedi-other-editor textarea{width:100%;min-height:100px;padding:10px;border:1px solid #dce2eb;border-radius:8px;resize:vertical}.jedi-other-editor select,.jedi-other-editor input{width:100%;padding:10px;border:1px solid #dce2eb;border-radius:8px}.jedi-other-editor label{display:block;margin:12px 0 5px;font-size:13px}.jedi-other-editor .jedi-other-value[hidden],.jedi-other-editor .jedi-other-text[hidden]{display:none!important}</style>
+
+<style id="jedi-v25-5-visual-polish">
+/* V25.5: compactar controls, moderar papereres i distingir càlculs. */
+#jediShell .jedi-matrix th,#jediShell .jedi-matrix td{padding:9px 9px;min-width:112px}
+#jediShell .jedi-matrix th:nth-child(2),#jediShell .jedi-matrix td:nth-child(2){min-width:185px}
+#jediShell .jedi-matrix .jedi-col-title{justify-content:flex-start;gap:3px;width:max-content;min-width:0}
+#jediShell .jedi-matrix .jedi-col-title .jedi-delete-column{margin-left:0;color:#a7afbc;font-size:14px;opacity:.72;transition:color .15s ease,background .15s ease,opacity .15s ease;border-radius:5px}
+#jediShell .jedi-matrix .jedi-col-title .jedi-delete-column:hover,#jediShell .jedi-matrix .jedi-col-title .jedi-delete-column:focus-visible{color:#bb4350;background:#fff0f1;opacity:1}
+#jediShell .jedi-matrix .jedi-col-title .jedi-final-star{margin-left:0;padding:2px 3px}
+#jediShell .jedi-matrix thead th.jedi-calculated-heading,#jediShell .jedi-matrix thead th.jedi-hierarchy-heading{background:#edf3ff;color:#38568c}
+#jediShell .jedi-matrix thead th.jedi-hierarchy-final{background:#e5edff}
+</style>
 </head>
 <body>
 <style id="jedi-hierarchy-style">
@@ -2497,7 +2509,7 @@ async function showClass(c){
   const thead=document.createElement('thead');const heading=document.createElement('tr');
   for(const label of ['#','Alumne']){const th=document.createElement('th');th.textContent=label;heading.append(th)}
   for(const item of evaluationItems){
-   const th=document.createElement('th');const head=document.createElement('div');head.className='jedi-col-title';
+   const th=document.createElement('th');if(item.tipus==='calculada')th.classList.add('jedi-calculated-heading');const head=document.createElement('div');head.className='jedi-col-title';
    const title=document.createElement('span');title.textContent=item.nom+(item.tipus==='calculada'?' ∑':'');
    head.append(title);
    const star=document.createElement('button');star.type='button';
