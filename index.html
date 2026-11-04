@@ -2,7 +2,7 @@
 <html lang="ca">
 <head>
 <meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Paideia · Plataforma educativa · V26.5 (Aula habitual i excepció Projecte)</title>
+<title>Paideia · Plataforma educativa · V26.8 (Concepte a Altres notes)</title>
 <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='14' fill='%23344d96'/%3E%3Cpath d='M22 47V17h13c18 0 18 24 0 24H22' fill='none' stroke='white' stroke-width='6' stroke-linejoin='round'/%3E%3C/svg%3E">
 <style>
 :root{font-family:Inter,system-ui,-apple-system,Segoe UI,sans-serif;color:#252b35;background:#f7f8fa}*{box-sizing:border-box}body{margin:0}button,input,textarea{font:inherit}button{cursor:pointer}header{background:white;border-bottom:1px solid #e8ebef;padding:23px max(24px,calc((100vw - 1200px)/2));display:flex;justify-content:space-between;align-items:center}header strong{font-size:21px;letter-spacing:-.6px}header span{color:#8a929f;font-size:13px}main{max-width:1200px;margin:42px auto;padding:0 24px}.top{display:flex;justify-content:space-between;gap:16px;align-items:center;margin-bottom:22px}.top h1{margin:0;font-size:28px;letter-spacing:-.8px}.sub{margin:7px 0 0;color:#87909c;font-size:14px}.layout{display:grid;grid-template-columns:295px minmax(0,1fr);gap:24px}.panel{background:white;border:1px solid #e8ebef;border-radius:14px;overflow:hidden}.side{padding:17px}.side-title{font-size:12px;text-transform:uppercase;letter-spacing:1.1px;color:#8d96a2;font-weight:700;margin:6px 8px 15px}.class-btn{white-space:nowrap;font-size:13px;width:100%;display:flex;justify-content:space-between;align-items:center;border:0;background:transparent;padding:12px 13px;border-radius:9px;text-align:left;color:#4b5563;margin-bottom:4px}.class-btn.active{background:#eef2ff;color:#4058a8;font-weight:650}.class-btn:hover:not(.active){background:#f6f7f9}.count{font-size:12px;color:#9ba3ae}.add-side{width:100%;background:white;border:1px dashed #d5dbe4;border-radius:9px;padding:12px;color:#687586;margin-top:13px}.add-side:hover{background:#f8faff}.content-head{padding:23px 25px;display:flex;justify-content:space-between;align-items:center;gap:15px;border-bottom:1px solid #edf0f3}.content-head h2{margin:0;font-size:21px;letter-spacing:-.5px}.hint{color:#9aa2ad;font-size:12px;margin-top:5px}.actions{display:flex;gap:9px;flex-wrap:wrap}button.primary{background:#344d96;color:white;border:1px solid #344d96;padding:10px 14px;border-radius:8px;font-size:13px;font-weight:600}button.secondary{background:white;color:#667181;border:1px solid #e0e5eb;padding:10px 13px;border-radius:8px;font-size:13px}button:hover{filter:brightness(.97)}.table-wrap{overflow-x:auto}table{width:100%;border-collapse:collapse;text-align:left}th{background:#fafbfc;font-size:11px;letter-spacing:.8px;text-transform:uppercase;color:#9ba4b0;font-weight:700;padding:15px 22px;border-bottom:1px solid #edf0f3}td{padding:11px 22px;border-bottom:1px solid #f0f2f5;font-size:14px}tr:last-child td{border-bottom:0}tbody tr:hover{background:#fafbff}.num{color:#a5adba;width:65px}.grade-input{width:94px;min-width:75px;border:1px solid transparent;background:transparent;border-radius:6px;padding:8px 9px;color:#303946;text-align:center}.grade-input:hover{border-color:#e6eaf0}.grade-input:focus{outline:none;border-color:#a4b2e0;background:white}.item-head{display:flex;align-items:center;gap:5px;white-space:nowrap}.item-edit{border:0;background:transparent;color:inherit;font:inherit;text-transform:inherit;letter-spacing:inherit;cursor:pointer;padding:3px}.item-remove{border:0;background:transparent;color:#b0b8c4;font-size:16px;padding:2px 5px}.item-remove:hover{color:#be4b52}.name-input{border:1px solid transparent;border-radius:6px;background:transparent;padding:8px 9px;width:100%;min-width:130px;color:#303946}.name-input:hover{border-color:#e6eaf0}.name-input:focus{outline:none;border-color:#a4b2e0;background:white}.delete{border:0;background:transparent;color:#aab2bd;font-size:18px;border-radius:6px;padding:5px 10px}.delete:hover{color:#be4b52;background:#fff0f1}.empty{padding:65px 20px;text-align:center;color:#9aa3af;font-size:14px}.calculated{font-weight:650;color:#344d96;text-align:center;white-space:nowrap}.calc-tag{font-size:10px;color:#7e8cb6;margin-left:4px}.modal-back{position:fixed;inset:0;background:#17233b66;display:flex;align-items:center;justify-content:center;padding:18px;z-index:10}.modal{background:white;border-radius:15px;padding:25px;width:min(540px,100%);box-shadow:0 18px 60px #1c2b4933}.modal h3{margin:0 0 9px}.modal p{font-size:13px;color:#7d8795}.modal label{font-size:13px;color:#5d6877;display:block;margin:14px 0 6px}.modal input,.modal select{width:100%;padding:10px;border:1px solid #dce2eb;border-radius:8px;background:white}.weight-row{display:grid;grid-template-columns:1fr 110px;gap:12px;align-items:end}.modal-actions{display:flex;justify-content:flex-end;gap:8px;margin-top:22px}.error{color:#bd3d4b!important;min-height:18px} .student-link{border:0;background:transparent;text-align:left;color:#344d96;font-weight:600;padding:7px 3px;cursor:pointer}.student-link:hover{text-decoration:underline}.drag-handle{border:0;background:transparent;color:#a4adba;cursor:grab;font-size:19px;padding:4px 7px}.dragging{opacity:.4}.drop-target{outline:2px solid #8ca0d6;outline-offset:-2px}.sort-bar{padding:12px 22px;border-bottom:1px solid #edf0f3;display:flex;align-items:center;gap:12px;font-size:12px;color:#748092}.sort-bar select{padding:7px;border:1px solid #e0e5eb;border-radius:7px;background:white;color:#526075}.student-notes{width:100%;min-height:170px;resize:vertical;border:1px solid #dce2eb;border-radius:9px;padding:12px;line-height:1.5}.student-notes:focus{outline:none;border-color:#879bd2;box-shadow:0 0 0 3px #e9eeff}.modal input:focus,.modal select:focus{outline:none;border-color:#879bd2;box-shadow:0 0 0 3px #e9eeff}.note-hint{font-size:12px;color:#8b95a3}.grade-input.grade-fail,.calculated.grade-fail{background:#fceced;color:#a3454b;border-radius:7px}.grade-input.grade-pass,.calculated.grade-pass{background:#eaf6ee;color:#337b51;border-radius:7px}.calculated{display:inline-block;min-width:76px;padding:8px 10px}.search-input{padding:8px 11px;border:1px solid #e0e5eb;border-radius:7px;min-width:190px;max-width:100%;font-size:13px;color:#526075}.search-input:focus{outline:none;border-color:#879bd2;box-shadow:0 0 0 3px #e9eeff}.search-count{color:#9aa3af}.footer{margin-top:18px;font-size:12px;color:#9ca5b1;text-align:right}@media(max-width:700px){header{padding:20px 24px}.layout{grid-template-columns:1fr}main{margin:25px auto}.content-head{align-items:flex-start;flex-direction:column}.top h1{font-size:24px}}
@@ -885,10 +885,10 @@ async function paMoveLink(link,dir,links,refresh){
  }catch(e){alert('No s’ha pogut reordenar: '+e.message);await refresh()}
 }
 document.addEventListener('click',e=>{if(!e.target.closest('.pa-link-menu-wrap')){document.querySelectorAll('.pa-link-menu').forEach(m=>m.hidden=true);document.querySelectorAll('.pa-link-menu-toggle').forEach(t=>t.setAttribute('aria-expanded','false'))}});
-$('paUsefulLinks').onclick=paShowLinks;
+$('paUsefulLinks').onclick=()=>{window.scrollTo({top:0,left:0,behavior:'instant'});return paShowLinks()};
 
 // V14 · Comunicats: es guarden exclusivament com a esborranys; cap enviament extern.
-$('paComms').onclick=paShowComms;
+$('paComms').onclick=()=>{window.scrollTo({top:0,left:0,behavior:'instant'});return paShowComms()};
 async function paShowComms(){
  currentClass=null;currentView='comms';
  $('paUsefulLinks').classList.remove('active');$('paComms').classList.add('active');
@@ -899,7 +899,7 @@ async function paShowComms(){
  const root=$('jediContent');root.className='';root.replaceChildren();
  const wrap=paEl('div','','pa-comms');root.append(wrap);
  const head=paEl('div','','pa-comms-head');head.append(paEl('h3','Comunicats'));
- const newBtn=paButton('+ Nou comunicat',()=>showEditor(),'primary');if(isAdmin)head.append(newBtn);wrap.append(head);
+ const newBtn=paButton('+ Nou comunicat',()=>showEditor(),'primary');wrap.append(head);
  wrap.append(paEl('p','Mode de prova: es pot enviar un comunicat a entre 1 i 5 alumnes actius, amb un màxim de 20 adreces familiars autoritzades i sense duplicats. El servidor comprova els permisos i registra els intents.','pa-comms-hint'));
  const notice=paEl('p','','pa-comms-hint');notice.setAttribute('role','status');wrap.append(notice);
  const editor=paEl('div','','pa-comms-form');editor.hidden=true;wrap.append(editor);
@@ -909,10 +909,16 @@ async function paShowComms(){
  const archivedTab=paButton('Arxivats',()=>{view='archived';page=0;draw()},'secondary');
  filters.append(activeTab,archivedTab);wrap.insertBefore(filters,toolbar);
  const list=paEl('div');wrap.append(list);const pager=paEl('div','','pa-comms-actions');wrap.append(pager);let page=0,view='active';
- let students=[],groups=[],drafts=[],editing=null;let attempts=new Map();
+ let students=[],groups=[],drafts=[],editing=null;let attempts=new Map(),tutorGroupIds=new Set(),canCompose=isAdmin;
  try{
-  const results=await Promise.all([api('/rest/v1/comunicats_families?select=*&order=updated_at.desc&limit=500'),isAdmin?api('/rest/v1/grups?select=id,nom&limit=1000'):Promise.resolve([]),isAdmin?api('/rest/v1/alumnes?select=id,nom,cognoms,grup_id,actiu&limit=1000'):Promise.resolve([])]);
-  drafts=results[0]||[];groups=results[1]||[];students=results[2]||[];
+  if(!isAdmin&&profile?.id){
+   const tutorRows=await api('/rest/v1/tutories?select=grup_id&professor_id=eq.'+encodeURIComponent(profile.id)+'&limit=100',accessToken);
+   tutorGroupIds=new Set((tutorRows||[]).map(t=>String(t.grup_id)));
+  }
+  canCompose=isAdmin||tutorGroupIds.size>0;
+  if(canCompose)head.append(newBtn);
+  const results=await Promise.all([api('/rest/v1/comunicats_families?select=*&order=updated_at.desc&limit=500'),canCompose?api('/rest/v1/grups?select=id,nom&limit=1000',accessToken):Promise.resolve([]),canCompose?api('/rest/v1/alumnes?select=id,nom,cognoms,grup_id,actiu&limit=1000',accessToken):Promise.resolve([])]);
+  drafts=results[0]||[];groups=(results[1]||[]).filter(g=>isAdmin||tutorGroupIds.has(String(g.id)));students=(results[2]||[]).filter(st=>isAdmin||tutorGroupIds.has(String(st.grup_id)));
   if(isAdmin){
    const rows=await api('/rest/v1/rpc/paideia_comunicats_v20_estat',accessToken,{method:'POST',headers:{'Content-Type':'application/json'},body:'{}'});
    attempts=new Map((rows||[]).map(r=>[String(r.comunicat_id),Number(r.intents)||0]));
@@ -935,12 +941,12 @@ async function paShowComms(){
    card.append(paEl('h4',d.assumpte));
    card.append(paEl('div',(sent?'Enviat (prova)':'Esborrany')+' · '+targetNames(d)+' · '+new Date(d.updated_at).toLocaleDateString('ca-ES'),'pa-comms-meta'));
    const preview=paEl('p',d.cos.length>210?d.cos.slice(0,210)+'…':d.cos);preview.style.whiteSpace='pre-wrap';card.append(preview);
-   if(isAdmin){
+   if(canCompose){
     const actions=paEl('div','','pa-comms-actions');
     if(view==='active'){
      if(!sent){actions.append(paButton('Enviar prova ✉',()=>sendTest(d),'primary'),paButton('Editar',()=>showEditor(d),'secondary'))}
      else {actions.append(paEl('span','Registre d’enviament conservat','pa-comms-hint'))}
-     actions.append(paButton(sent?'Arxivar':'Eliminar',async()=>{
+     if(isAdmin)actions.append(paButton(sent?'Arxivar':'Eliminar',async()=>{
       if(!confirm(sent?'Arxivar aquest comunicat? El registre d’enviament es conservarà.':'Eliminar definitivament aquest esborrany sense enviaments?'))return;
       try{
        const result=await api('/rest/v1/rpc/paideia_comunicats_v20_retirar',accessToken,{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({p_id:d.id})});
@@ -950,7 +956,7 @@ async function paShowComms(){
        draw();
       }catch(e){notice.textContent='No s’ha pogut retirar el comunicat: '+e.message}
      },'secondary'));
-    }else{
+    }else if(isAdmin){
      actions.append(paButton('Restaurar',async()=>{
       try{
        await api('/rest/v1/rpc/paideia_comunicats_v21_restaurar',accessToken,{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({p_id:d.id})});
@@ -978,13 +984,13 @@ async function paShowComms(){
   pager.append(prev,paEl('span','Mostrant '+(page*10+1)+'–'+Math.min((page+1)*10,found.length)+' de '+found.length+' · Pàgina '+(page+1)+'/'+total),next);
  }
  async function sendTest(d){
-  if(!isAdmin)return;
+  if(!canCompose)return;
   const ids=Array.isArray(d.alumnes_ids)?d.alumnes_ids:[];
   if(d.abast!=='alumnes'||ids.length<1||ids.length>5||new Set(ids).size!==ids.length){
    notice.textContent='Per enviar una prova, selecciona «Famílies concretes» i entre 1 i 5 alumnes diferents.';return;
   }
   const selected=ids.map(id=>students.find(s=>String(s.id)===String(id)));
-  if(selected.some(s=>!s||s.actiu===false)){
+  if(selected.some(s=>!s||s.actiu!==true||(!isAdmin&&!tutorGroupIds.has(String(s.grup_id))))){
    notice.textContent='Algun alumne seleccionat no existeix o està de baixa.';return;
   }
   notice.textContent='Comprovant els contactes familiars autoritzats…';
@@ -1005,17 +1011,22 @@ async function paShowComms(){
    const accepted=Number(result?.accepted_count||0),failed=Number(result?.failed_count||0);
    notice.textContent=failed?'Atenció: '+accepted+' correus acceptats pel proveïdor i '+failed+' amb error. No tornis a enviar aquest esborrany.':
     '✓ '+accepted+' correus acceptats pel proveïdor. Això no confirma que hagin arribat a la safata d’entrada.';
-   try{const rows=await api('/rest/v1/rpc/paideia_comunicats_v20_estat',accessToken,{method:'POST',headers:{'Content-Type':'application/json'},body:'{}'});attempts=new Map((rows||[]).map(r=>[String(r.comunicat_id),Number(r.intents)||0]));draw()}catch(e){notice.textContent+=' No s’ha pogut actualitzar l’estat: '+e.message}
+   attempts.set(String(d.id),Math.max(1,accepted+failed));draw();
+   if(isAdmin){
+    try{const rows=await api('/rest/v1/rpc/paideia_comunicats_v20_estat',accessToken,{method:'POST',headers:{'Content-Type':'application/json'},body:'{}'});attempts=new Map((rows||[]).map(r=>[String(r.comunicat_id),Number(r.intents)||0]));draw()}
+    catch(e){console.warn('No s’ha pogut refrescar el registre administratiu:',e)}
+   }
   }catch(e){notice.textContent='No s’ha pogut completar l’enviament: '+e.message+' No repeteixis l’intent sense revisar-ne el registre.'}
  }
  search.oninput=()=>{page=0;draw()};draw();
- function showEditor(d=null){if(!isAdmin)return;editing=d;editor.hidden=false;editor.replaceChildren();newBtn.hidden=true;
+ function showEditor(d=null){if(!canCompose)return;editing=d;editor.hidden=false;editor.replaceChildren();newBtn.hidden=true;
   if(d&&(attempts.get(String(d.id))||0)>0){notice.textContent='Aquest comunicat ja té intents d’enviament i no es pot editar.';return}const title=paEl('h4',d?'Editar esborrany':'Nou esborrany');title.style.margin='0';editor.append(title);
   const subject=paEl('input');subject.maxLength=180;subject.required=true;subject.value=d?.assumpte||'';
   const body=paEl('textarea');body.maxLength=10000;body.value=d?.cos||'';
-  const scope=paSelect([['centre','Tot el centre'],['curs','Tot un curs'],['grup','Tot un grup classe'],['alumnes','Famílies concretes']],d?.abast||'grup');
+  const scope=paSelect(isAdmin?[['centre','Tot el centre'],['curs','Tot un curs'],['grup','Tot un grup classe'],['alumnes','Famílies concretes']]:[['alumnes','Alumnes de la meva tutoria']],isAdmin?(d?.abast||'grup'):'alumnes');
   const course=paSelect([['1','1r ESO'],['2','2n ESO'],['3','3r ESO'],['4','4t ESO']],d?.curs||'1');
   const group=paSelect(groups.map(g=>[g.id,g.nom]),d?.grup_id||groups[0]?.id||'');
+  if(!isAdmin){scope.disabled=true;scope.value='alumnes'}
   const people=paEl('div','','pa-comms-people');const picked=new Set(d?.alumnes_ids||[]);const peopleSearch=paEl('input');peopleSearch.type='search';peopleSearch.placeholder='Cercar alumne per nom o grup…';peopleSearch.setAttribute('aria-label','Cercar alumne');const peopleHeader=paEl('div','','pa-comms-people-tools');const peopleCounter=paEl('span','','pa-comms-hint');peopleHeader.append(peopleSearch,peopleCounter);
   function field(label,control){const l=paEl('label',label);l.append(control);return l}
   editor.append(field('Assumpte',subject),field('Missatge',body));const row=paEl('div','','pa-comms-row');row.append(field('Destinataris',scope));const detail=paEl('div');row.append(detail);editor.append(row);editor.append(peopleHeader,people);
@@ -1030,7 +1041,7 @@ async function paShowComms(){
    }catch(e){familyContacts=null;recipients.textContent='No es poden consultar els correus familiars: '+e.message;}
   }
   loadRecipientContacts();
-  function refresh(){detail.replaceChildren();people.replaceChildren();people.hidden=scope.value!=='alumnes';peopleHeader.hidden=scope.value!=='alumnes';if(scope.value==='curs')detail.append(field('Curs',course));if(scope.value==='grup')detail.append(field('Grup',group));if(scope.value==='alumnes'){const candidates=students.filter(x=>x.actiu!==false).sort((a,b)=>String(a.cognoms).localeCompare(String(b.cognoms),'ca'));const q=peopleSearch.value.trim().toLocaleLowerCase('ca');const shown=candidates.filter(st=>(st.nom+' '+st.cognoms+' '+st.cognoms+' '+st.nom+' '+(groups.find(g=>g.id===st.grup_id)?.nom||'')).toLocaleLowerCase('ca').includes(q));peopleCounter.textContent=shown.length+' de '+candidates.length+' alumnes · '+picked.size+' seleccionats';for(const st of shown){const label=paEl('label');const cb=paEl('input');cb.type='checkbox';cb.checked=picked.has(st.id);cb.onchange=()=>{if(cb.checked)picked.add(st.id);else picked.delete(st.id);updateCount()};label.append(cb,document.createTextNode(st.cognoms+', '+st.nom+' · '+(groups.find(g=>g.id===st.grup_id)?.nom||'Sense grup')));people.append(label)}}updateCount()}
+  function refresh(){detail.replaceChildren();people.replaceChildren();people.hidden=scope.value!=='alumnes';peopleHeader.hidden=scope.value!=='alumnes';if(scope.value==='curs')detail.append(field('Curs',course));if(scope.value==='grup')detail.append(field('Grup',group));if(scope.value==='alumnes'){const candidates=students.filter(x=>x.actiu===true).sort((a,b)=>String(a.cognoms).localeCompare(String(b.cognoms),'ca'));const q=peopleSearch.value.trim().toLocaleLowerCase('ca');const shown=candidates.filter(st=>(st.nom+' '+st.cognoms+' '+st.cognoms+' '+st.nom+' '+(groups.find(g=>g.id===st.grup_id)?.nom||'')).toLocaleLowerCase('ca').includes(q));peopleCounter.textContent=shown.length+' de '+candidates.length+' alumnes · '+picked.size+' seleccionats';for(const st of shown){const label=paEl('label');const cb=paEl('input');cb.type='checkbox';cb.checked=picked.has(st.id);cb.onchange=()=>{if(cb.checked)picked.add(st.id);else picked.delete(st.id);peopleCounter.textContent=shown.length+' de '+candidates.length+' alumnes · '+picked.size+' seleccionats';updateCount()};label.append(cb,document.createTextNode(st.cognoms+', '+st.nom+' · '+(groups.find(g=>g.id===st.grup_id)?.nom||'Sense grup')));people.append(label)}}updateCount()}
   function updateCount(){let n=0;if(scope.value==='centre')n=students.filter(s=>s.actiu!==false).length;else if(scope.value==='curs')n=students.filter(s=>s.actiu!==false&&groupCourse(groups.find(g=>g.id===s.grup_id)||{})===course.value).length;else if(scope.value==='grup')n=students.filter(s=>s.actiu!==false&&s.grup_id===group.value).length;else n=students.filter(s=>s.actiu!==false&&picked.has(s.id)).length;count.textContent='Alumnes seleccionats: '+n+'. Aquest formulari només desa un esborrany. Per a la prova d’enviament, selecciona entre 1 i 5 alumnes.';
    if(familyContacts){
     const selected=students.filter(s=>s.actiu!==false&&(scope.value==='centre'||(scope.value==='curs'&&groupCourse(groups.find(g=>g.id===s.grup_id)||{})===course.value)||(scope.value==='grup'&&s.grup_id===group.value)||(scope.value==='alumnes'&&picked.has(s.id))));
@@ -1038,14 +1049,14 @@ async function paShowComms(){
     const valid=familyContacts.filter(c=>ids.has(String(c.alumne_id))&&c.rep_comunicats===true&&c.email_verificat_at&&c.email);
     const unique=[...new Set(valid.map(c=>String(c.email).trim().toLowerCase()))];
     recipients.replaceChildren();
-    recipients.append(paEl('strong',unique.length+' correu(s) autoritzat(s) · '+selected.filter(s=>valid.some(c=>String(c.alumne_id)===String(s.id))).length+' alumne(s) amb contacte'));
+    recipients.append(paEl('strong',unique.length+' correu(s) autoritzat(s) · '+selected.filter(s=>valid.some(c=>String(c.alumne_id)===String(s.id))).length+' alumne(s) amb contacte verificat'));
     recipients.append(paEl('p','Vista prèvia dels destinataris. Encara no activa l’enviament general.','pa-comms-hint'));
     if(unique.length){const details=paEl('details');details.append(paEl('summary','Veure adreces destinatàries ('+unique.length+')'));const ul=paEl('ul');for(const address of unique.slice(0,100))ul.append(paEl('li',address));details.append(ul);if(unique.length>100)details.append(paEl('p','Es mostren les primeres 100 adreces.','pa-comms-hint'));recipients.append(details)}
     else recipients.append(paEl('p','No hi ha cap contacte familiar autoritzat per als alumnes seleccionats. Afegeix-los des d’Administració → Gestió de l’alumnat → Fitxa.','pa-comms-hint'));
    }
    return n}
   scope.onchange=refresh;course.onchange=updateCount;group.onchange=updateCount;peopleSearch.oninput=refresh;refresh();
-  const actions=paEl('div','','pa-comms-actions');const cancel=paButton('Cancel·lar',()=>{editor.hidden=true;newBtn.hidden=false},'secondary');const save=paButton('Desar esborrany',async()=>{if(!subject.value.trim()||!body.value.trim()){notice.textContent='Indica l’assumpte i el missatge.';return}if(!updateCount()){notice.textContent='No hi ha cap destinatari seleccionat.';return}save.disabled=true;try{const data={assumpte:subject.value.trim(),cos:body.value.trim(),abast:scope.value,curs:scope.value==='curs'?Number(course.value):null,grup_id:scope.value==='grup'?group.value:null,alumnes_ids:scope.value==='alumnes'?[...picked]:[],updated_at:new Date().toISOString()};const path='/rest/v1/comunicats_families'+(editing?'?id=eq.'+encodeURIComponent(editing.id):'');const result=await api(path,accessToken,{method:editing?'PATCH':'POST',headers:{'Content-Type':'application/json',Prefer:'return=representation'},body:JSON.stringify(data)});if(!Array.isArray(result)||result.length!==1)throw Error('No s’ha pogut confirmar el desament.');if(editing)drafts=drafts.map(x=>x.id===editing.id?result[0]:x);else drafts.unshift(result[0]);editor.hidden=true;newBtn.hidden=false;notice.textContent='Esborrany desat correctament. No s’ha enviat.';draw()}catch(e){notice.textContent='No s’ha pogut desar: '+e.message}finally{save.disabled=false}},'primary');actions.append(cancel,save);editor.append(actions);subject.focus();}
+  const actions=paEl('div','','pa-comms-actions');const cancel=paButton('Cancel·lar',()=>{editor.hidden=true;newBtn.hidden=false},'secondary');const save=paButton('Desar esborrany',async()=>{if(!subject.value.trim()||!body.value.trim()){notice.textContent='Indica l’assumpte i el missatge.';return}if(!updateCount()){notice.textContent='No hi ha cap destinatari seleccionat.';return}if(!isAdmin&&([...picked].some(id=>!students.some(st=>st.id===id&&st.actiu===true&&tutorGroupIds.has(String(st.grup_id))))||picked.size>5)){notice.textContent='Selecciona entre 1 i 5 alumnes actius de la teva tutoria.';return}save.disabled=true;try{const data={assumpte:subject.value.trim(),cos:body.value.trim(),abast:scope.value,curs:scope.value==='curs'?Number(course.value):null,grup_id:scope.value==='grup'?group.value:null,alumnes_ids:scope.value==='alumnes'?[...picked]:[],updated_at:new Date().toISOString()};const path='/rest/v1/comunicats_families'+(editing?'?id=eq.'+encodeURIComponent(editing.id):'');const result=await api(path,accessToken,{method:editing?'PATCH':'POST',headers:{'Content-Type':'application/json',Prefer:'return=representation'},body:JSON.stringify(data)});if(!Array.isArray(result)||result.length!==1)throw Error('No s’ha pogut confirmar el desament.');if(editing)drafts=drafts.map(x=>x.id===editing.id?result[0]:x);else drafts.unshift(result[0]);editor.hidden=true;newBtn.hidden=false;notice.textContent='Esborrany desat correctament. No s’ha enviat.';draw()}catch(e){notice.textContent='No s’ha pogut desar: '+e.message}finally{save.disabled=false}},'primary');actions.append(cancel,save);editor.append(actions);subject.focus();}
 }
 
 
@@ -2469,6 +2480,8 @@ async function jediOpenOtherNotes(student,c,e){
  const kind=document.createElement('select');for(const [v,t] of [['text','Comentari de text'],['numerica','Nota numèrica (0–10)']]){const o=document.createElement('option');o.value=v;o.textContent=t;kind.append(o)}
  const textLabel=document.createElement('label');textLabel.textContent='Comentari';textLabel.className='jedi-other-text';
  const body=document.createElement('textarea');body.className='jedi-other-text';body.maxLength=10000;body.placeholder='Ex.: Va entregar un treball extra el dilluns 30 de març.';
+ const conceptLabel=document.createElement('label');conceptLabel.textContent='Concepte de la nota';conceptLabel.className='jedi-other-concept';
+ const concept=document.createElement('input');concept.type='text';concept.maxLength=200;concept.placeholder='Ex.: Exposició oral, treball extra, activitat de classe...';concept.className='jedi-other-concept';
  const valueLabel=document.createElement('label');valueLabel.textContent='Nota (0–10)';valueLabel.className='jedi-other-value';
  const value=document.createElement('input');value.type='number';value.min='0';value.max='10';value.step='0.01';value.className='jedi-other-value';
  const error=document.createElement('p');error.className='error';error.setAttribute('role','alert');
@@ -2476,27 +2489,28 @@ async function jediOpenOtherNotes(student,c,e){
  const close=document.createElement('button');close.type='button';close.className='secondary';close.textContent='Tancar';close.onclick=()=>overlay.remove();
  const reset=document.createElement('button');reset.type='button';reset.className='secondary';reset.textContent='Cancel·lar edició';reset.hidden=true;
  const save=document.createElement('button');save.type='submit';save.className='primary';save.textContent='Afegir anotació';
- actions.append(close,reset,save);form.append(kindLabel,kind,textLabel,body,valueLabel,value,error,actions);card.append(title,subtitle,list,form);overlay.append(card);document.body.append(overlay);
+ actions.append(close,reset,save);form.append(kindLabel,kind,textLabel,body,conceptLabel,concept,valueLabel,value,error,actions);card.append(title,subtitle,list,form);overlay.append(card);document.body.append(overlay);
  overlay.addEventListener('click',ev=>{if(ev.target===overlay)overlay.remove()});
  let editing=null;
- const updateKind=()=>{const numeric=kind.value==='numerica';textLabel.hidden=body.hidden=numeric;valueLabel.hidden=value.hidden=!numeric};kind.onchange=updateKind;updateKind();
- const clear=()=>{editing=null;kind.value='text';body.value='';value.value='';reset.hidden=true;save.textContent='Afegir anotació';error.textContent='';updateKind()};reset.onclick=clear;
+ const updateKind=()=>{const numeric=kind.value==='numerica';textLabel.hidden=body.hidden=numeric;conceptLabel.hidden=concept.hidden=!numeric;valueLabel.hidden=value.hidden=!numeric};kind.onchange=updateKind;updateKind();
+ const clear=()=>{editing=null;kind.value='text';body.value='';concept.value='';value.value='';reset.hidden=true;save.textContent='Afegir anotació';error.textContent='';updateKind()};reset.onclick=clear;
  async function refresh(){
   const rows=(await jediLoadOtherNotes(c,e)).filter(x=>String(x.alumne_id)===String(student.id));jediUpdateOtherNotesCounter(student,c,e,rows.length);list.replaceChildren();
   if(!rows.length){const empty=document.createElement('p');empty.textContent='Encara no hi ha anotacions.';list.append(empty)}
   for(const r of rows){const entry=document.createElement('div');entry.className='jedi-other-entry';
    const small=document.createElement('small');small.textContent=(r.tipus==='numerica'?'Nota numèrica':'Comentari')+' · '+(r.creat_el?new Date(r.creat_el).toLocaleString('ca-ES'):'');
-   const content=document.createElement('p');content.textContent=r.tipus==='numerica'?Number(r.valor).toLocaleString('ca-ES',{maximumFractionDigits:2})+' / 10':r.contingut;
+   const content=document.createElement('p');content.textContent=r.tipus==='numerica'?((r.contingut?String(r.contingut)+' — ':'')+Number(r.valor).toLocaleString('ca-ES',{maximumFractionDigits:2})+' / 10'):r.contingut;
    const buttons=document.createElement('div');buttons.className='jedi-other-entry-actions';
-   const edit=document.createElement('button');edit.type='button';edit.className='secondary';edit.textContent='Editar';edit.onclick=()=>{editing=r;kind.value=r.tipus;body.value=r.contingut||'';value.value=r.valor??'';reset.hidden=false;save.textContent='Desar canvis';updateKind();body.hidden?value.focus():body.focus()};
+   const edit=document.createElement('button');edit.type='button';edit.className='secondary';edit.textContent='Editar';edit.onclick=()=>{editing=r;kind.value=r.tipus;body.value=r.tipus==='text'?(r.contingut||''):'';concept.value=r.tipus==='numerica'?(r.contingut||''):'';value.value=r.valor??'';reset.hidden=false;save.textContent='Desar canvis';updateKind();body.hidden?value.focus():body.focus()};
    const del=document.createElement('button');del.type='button';del.className='secondary';del.textContent='Eliminar';del.onclick=async()=>{if(!confirm('Eliminar aquesta anotació?'))return;del.disabled=true;try{await api('/rest/v1/altres_notes_avaluacio?id=eq.'+encodeURIComponent(r.id),accessToken,{method:'DELETE',headers:{Prefer:'return=representation'}});clear();await refresh();}catch(ex){alert('No s’ha pogut eliminar: '+ex.message);del.disabled=false}};
    buttons.append(edit,del);entry.append(small,content,buttons);list.append(entry)
   }
  }
- form.onsubmit=async ev=>{ev.preventDefault();error.textContent='';const numeric=kind.value==='numerica';const v=value.value.trim()===''?null:Number(value.value.replace(',','.'));const t=body.value.trim();
+ form.onsubmit=async ev=>{ev.preventDefault();error.textContent='';const numeric=kind.value==='numerica';const v=value.value.trim()===''?null:Number(value.value.replace(',','.'));const t=body.value.trim();const conceptText=concept.value.trim();
   if(numeric&&(v===null||!Number.isFinite(v)||v<0||v>10)){error.textContent='Introdueix una nota entre 0 i 10.';return}
   if(!numeric&&!t){error.textContent='Escriu un comentari.';return}
-  const payload={tipus:kind.value,contingut:numeric?null:t,valor:numeric?v:null};
+  if(numeric&&!conceptText){error.textContent='Indica a què correspon la nota.';concept.focus();return}
+  const payload={tipus:kind.value,contingut:numeric?conceptText:t,valor:numeric?v:null};
   if(!editing)Object.assign(payload,{classe_id:c.id,alumne_id:student.id,avaluacio:jediOtherEvaluation(e)});
   save.disabled=true;
   try{const result=await api('/rest/v1/altres_notes_avaluacio'+(editing?'?id=eq.'+encodeURIComponent(editing.id):''),accessToken,{method:editing?'PATCH':'POST',headers:{'Content-Type':'application/json',Prefer:'return=representation'},body:JSON.stringify(payload)});
