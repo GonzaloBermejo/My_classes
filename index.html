@@ -2,7 +2,7 @@
 <html lang="ca">
 <head>
 <meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Paideia · Plataforma educativa · V25.8 (Assistència optatives rotatives)</title>
+<title>Paideia · Plataforma educativa · V26.2 (Fitxa observacions i optatives sense grup)</title>
 <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='14' fill='%23344d96'/%3E%3Cpath d='M22 47V17h13c18 0 18 24 0 24H22' fill='none' stroke='white' stroke-width='6' stroke-linejoin='round'/%3E%3C/svg%3E">
 <style>
 :root{font-family:Inter,system-ui,-apple-system,Segoe UI,sans-serif;color:#252b35;background:#f7f8fa}*{box-sizing:border-box}body{margin:0}button,input,textarea{font:inherit}button{cursor:pointer}header{background:white;border-bottom:1px solid #e8ebef;padding:23px max(24px,calc((100vw - 1200px)/2));display:flex;justify-content:space-between;align-items:center}header strong{font-size:21px;letter-spacing:-.6px}header span{color:#8a929f;font-size:13px}main{max-width:1200px;margin:42px auto;padding:0 24px}.top{display:flex;justify-content:space-between;gap:16px;align-items:center;margin-bottom:22px}.top h1{margin:0;font-size:28px;letter-spacing:-.8px}.sub{margin:7px 0 0;color:#87909c;font-size:14px}.layout{display:grid;grid-template-columns:295px minmax(0,1fr);gap:24px}.panel{background:white;border:1px solid #e8ebef;border-radius:14px;overflow:hidden}.side{padding:17px}.side-title{font-size:12px;text-transform:uppercase;letter-spacing:1.1px;color:#8d96a2;font-weight:700;margin:6px 8px 15px}.class-btn{white-space:nowrap;font-size:13px;width:100%;display:flex;justify-content:space-between;align-items:center;border:0;background:transparent;padding:12px 13px;border-radius:9px;text-align:left;color:#4b5563;margin-bottom:4px}.class-btn.active{background:#eef2ff;color:#4058a8;font-weight:650}.class-btn:hover:not(.active){background:#f6f7f9}.count{font-size:12px;color:#9ba3ae}.add-side{width:100%;background:white;border:1px dashed #d5dbe4;border-radius:9px;padding:12px;color:#687586;margin-top:13px}.add-side:hover{background:#f8faff}.content-head{padding:23px 25px;display:flex;justify-content:space-between;align-items:center;gap:15px;border-bottom:1px solid #edf0f3}.content-head h2{margin:0;font-size:21px;letter-spacing:-.5px}.hint{color:#9aa2ad;font-size:12px;margin-top:5px}.actions{display:flex;gap:9px;flex-wrap:wrap}button.primary{background:#344d96;color:white;border:1px solid #344d96;padding:10px 14px;border-radius:8px;font-size:13px;font-weight:600}button.secondary{background:white;color:#667181;border:1px solid #e0e5eb;padding:10px 13px;border-radius:8px;font-size:13px}button:hover{filter:brightness(.97)}.table-wrap{overflow-x:auto}table{width:100%;border-collapse:collapse;text-align:left}th{background:#fafbfc;font-size:11px;letter-spacing:.8px;text-transform:uppercase;color:#9ba4b0;font-weight:700;padding:15px 22px;border-bottom:1px solid #edf0f3}td{padding:11px 22px;border-bottom:1px solid #f0f2f5;font-size:14px}tr:last-child td{border-bottom:0}tbody tr:hover{background:#fafbff}.num{color:#a5adba;width:65px}.grade-input{width:94px;min-width:75px;border:1px solid transparent;background:transparent;border-radius:6px;padding:8px 9px;color:#303946;text-align:center}.grade-input:hover{border-color:#e6eaf0}.grade-input:focus{outline:none;border-color:#a4b2e0;background:white}.item-head{display:flex;align-items:center;gap:5px;white-space:nowrap}.item-edit{border:0;background:transparent;color:inherit;font:inherit;text-transform:inherit;letter-spacing:inherit;cursor:pointer;padding:3px}.item-remove{border:0;background:transparent;color:#b0b8c4;font-size:16px;padding:2px 5px}.item-remove:hover{color:#be4b52}.name-input{border:1px solid transparent;border-radius:6px;background:transparent;padding:8px 9px;width:100%;min-width:130px;color:#303946}.name-input:hover{border-color:#e6eaf0}.name-input:focus{outline:none;border-color:#a4b2e0;background:white}.delete{border:0;background:transparent;color:#aab2bd;font-size:18px;border-radius:6px;padding:5px 10px}.delete:hover{color:#be4b52;background:#fff0f1}.empty{padding:65px 20px;text-align:center;color:#9aa3af;font-size:14px}.calculated{font-weight:650;color:#344d96;text-align:center;white-space:nowrap}.calc-tag{font-size:10px;color:#7e8cb6;margin-left:4px}.modal-back{position:fixed;inset:0;background:#17233b66;display:flex;align-items:center;justify-content:center;padding:18px;z-index:10}.modal{background:white;border-radius:15px;padding:25px;width:min(540px,100%);box-shadow:0 18px 60px #1c2b4933}.modal h3{margin:0 0 9px}.modal p{font-size:13px;color:#7d8795}.modal label{font-size:13px;color:#5d6877;display:block;margin:14px 0 6px}.modal input,.modal select{width:100%;padding:10px;border:1px solid #dce2eb;border-radius:8px;background:white}.weight-row{display:grid;grid-template-columns:1fr 110px;gap:12px;align-items:end}.modal-actions{display:flex;justify-content:flex-end;gap:8px;margin-top:22px}.error{color:#bd3d4b!important;min-height:18px} .student-link{border:0;background:transparent;text-align:left;color:#344d96;font-weight:600;padding:7px 3px;cursor:pointer}.student-link:hover{text-decoration:underline}.drag-handle{border:0;background:transparent;color:#a4adba;cursor:grab;font-size:19px;padding:4px 7px}.dragging{opacity:.4}.drop-target{outline:2px solid #8ca0d6;outline-offset:-2px}.sort-bar{padding:12px 22px;border-bottom:1px solid #edf0f3;display:flex;align-items:center;gap:12px;font-size:12px;color:#748092}.sort-bar select{padding:7px;border:1px solid #e0e5eb;border-radius:7px;background:white;color:#526075}.student-notes{width:100%;min-height:170px;resize:vertical;border:1px solid #dce2eb;border-radius:9px;padding:12px;line-height:1.5}.student-notes:focus{outline:none;border-color:#879bd2;box-shadow:0 0 0 3px #e9eeff}.modal input:focus,.modal select:focus{outline:none;border-color:#879bd2;box-shadow:0 0 0 3px #e9eeff}.note-hint{font-size:12px;color:#8b95a3}.grade-input.grade-fail,.calculated.grade-fail{background:#fceced;color:#a3454b;border-radius:7px}.grade-input.grade-pass,.calculated.grade-pass{background:#eaf6ee;color:#337b51;border-radius:7px}.calculated{display:inline-block;min-width:76px;padding:8px 10px}.search-input{padding:8px 11px;border:1px solid #e0e5eb;border-radius:7px;min-width:190px;max-width:100%;font-size:13px;color:#526075}.search-input:focus{outline:none;border-color:#879bd2;box-shadow:0 0 0 3px #e9eeff}.search-count{color:#9aa3af}.footer{margin-top:18px;font-size:12px;color:#9ca5b1;text-align:right}@media(max-width:700px){header{padding:20px 24px}.layout{grid-template-columns:1fr}main{margin:25px auto}.content-head{align-items:flex-start;flex-direction:column}.top h1{font-size:24px}}
@@ -594,7 +594,7 @@ async function paGetScheduleData(){
   api('/rest/v1/sessions_horari?select=*&limit=3000'),
   api('/rest/v1/professors?select=id,nom&limit=1000'),
   api('/rest/v1/grups?select=id,nom&limit=1000'),
-  api('/rest/v1/classes?select=id,nom,curs,grup_id&limit=1000')
+  api('/rest/v1/classes?select=id,nom,curs,grup_id,tipus_assignatura&limit=1000')
  ]);
  const links=await api('/rest/v1/sessions_horari_professors?select=sessio_id,professor_id&limit=5000');
  return {slots,sessions,teachers,groups,classes,links};
@@ -632,7 +632,7 @@ async function paShowSchedule(mode){
       const clazz=data.classes.find(x=>x.id===record?.classe_id);
       const teacherNames=record?data.links.filter(l=>String(l.sessio_id)===String(record.id)).map(l=>data.teachers.find(t=>String(t.id)===String(l.professor_id))?.nom).filter(Boolean):[];
       const group=data.groups.find(x=>x.id===record?.grup_id);
-      td.textContent=record?[(clazz?.nom||record.etiqueta||'Sessió'),mode==='teacher'?(group?.nom||''):(teacherNames.join(' · ')||'')].filter(Boolean).join('\n'): '—';
+      const yearName=({1:'1r ESO',2:'2n ESO',3:'3r ESO',4:'4t ESO'})[clazz?.curs]||'';const courseLabel=clazz?(clazz.tipus_assignatura==='acollida'?'Tots els cursos':(clazz.grup_id&&!['optativa','optativa_rotativa','optativa_eleccio'].includes(clazz.tipus_assignatura))?(data.groups.find(g=>String(g.id)===String(clazz.grup_id))?.nom||group?.nom||yearName):yearName):'';td.textContent=record?[(clazz?.nom||record.etiqueta||'Sessió')+(courseLabel?' · '+courseLabel:''),mode==='teacher'?(group?.nom&&group.nom!==courseLabel?group.nom:''):(teacherNames.join(' · ')||'')].filter(Boolean).join('\n'): '—';
       if(record)td.style.background='#e8f1ff';
       if(isAdmin){td.style.cursor='pointer';td.title='Clica per editar aquesta sessió';td.onclick=()=>paEditSession(data,mode,selector.value,day,slot,record,()=>paShowSchedule(mode))}
      }row.append(td)
@@ -1160,8 +1160,8 @@ $('jediAdminButton').addEventListener('click',async()=>{
   const subjectName=document.createElement('input');subjectName.required=true;subjectName.maxLength=150;subjectName.placeholder='Ex.: Acollida, Tallers, Projecte interdisciplinari';
   const subjectCourse=document.createElement('select');for(let i=1;i<=4;i++)subjectCourse.add(new Option(({1:'1r',2:'2n',3:'3r',4:'4t'})[i]+' ESO',String(i)));
   const subjectGroup=document.createElement('select');subjectGroup.required=true;
-  const subjectType=document.createElement('select');for(const [label,value] of [['Obligatòria','obligatoria'],['Optativa rotativa','optativa_rotativa'],['Optativa d’elecció','optativa_eleccio'],['Optativa','optativa'],['Reforç','reforc']])subjectType.add(new Option(label,value));
-  const subjectTypeHelp=document.createElement('p');subjectTypeHelp.className='note-hint';subjectTypeHelp.textContent='La classificació és independent dels alumnes matriculats. Per a Acollida i Tallers pots triar Reforç.';
+  const subjectType=document.createElement('select');for(const [label,value] of [['Obligatòria','obligatoria'],['Optativa rotativa','optativa_rotativa'],['Optativa d’elecció','optativa_eleccio'],['Optativa','optativa'],['Reforç','reforc'],['Acollida','acollida']])subjectType.add(new Option(label,value));
+  const subjectTypeHelp=document.createElement('p');subjectTypeHelp.className='note-hint';subjectTypeHelp.textContent='La classificació és independent dels alumnes matriculats. Acollida és transversal: tots els cursos i tots els grups.';
   const subjectTeachers=document.createElement('div');subjectTeachers.style.cssText='display:grid;grid-template-columns:repeat(auto-fit,minmax(190px,1fr));gap:8px;border:1px solid #e1e6ef;border-radius:8px;padding:12px';
   const subjectMode=document.createElement('select');subjectMode.add(new Option('Sense matricular alumnes ara','none'));subjectMode.add(new Option('Seleccionar grups i/o alumnes','custom'));
   const subjectGroupChoices=document.createElement('div');subjectGroupChoices.style.cssText='display:grid;grid-template-columns:repeat(auto-fit,minmax(135px,1fr));gap:8px;border:1px solid #e1e6ef;border-radius:8px;padding:12px';
@@ -1197,7 +1197,7 @@ $('jediAdminButton').addEventListener('click',async()=>{
   rotationStudents.addEventListener('change',e=>{if(e.target.matches('select[data-rotation-student]'))renderRotation()});
   rotationBox.append(rotationTitle,rotationHelp,rotationNames,rotationStudents,rotationPreview,rotationMessage);
   subjectForm.insertBefore(rotationBox,subjectTeachers.parentElement);
-  function updateRotationVisibility(){const rotating=subjectType.value==='optativa_rotativa';rotationBox.hidden=!rotating;rotationBox.style.display=rotating?'block':'none';subjectSave.disabled=rotating;subjectSave.title=rotating?'Cal preparar les taules de Supabase abans de desar rotacions':'';subjectNotice.textContent=rotating?'Mode de preparació: no es desaran assignatures ni matrícules rotatives fins que la base de dades estigui preparada.':'';if(rotating)renderRotation()}
+  function updateRotationVisibility(){const acollida=subjectType.value==='acollida';const withoutGroup=acollida||['optativa','optativa_rotativa','optativa_eleccio'].includes(subjectType.value);subjectCourse.disabled=acollida;subjectGroup.disabled=withoutGroup;subjectGroup.required=!withoutGroup;if(withoutGroup)subjectGroup.replaceChildren(new Option('Tots els grups',''));else refreshSubjectGroups();const rotating=subjectType.value==='optativa_rotativa';rotationBox.hidden=!rotating;rotationBox.style.display=rotating?'block':'none';subjectSave.disabled=rotating;subjectSave.title=rotating?'Cal preparar les taules de Supabase abans de desar rotacions':'';subjectNotice.textContent=rotating?'Mode de preparació: no es desaran assignatures ni matrícules rotatives fins que la base de dades estigui preparada.':'';if(rotating)renderRotation()}
   subjectType.addEventListener('change',updateRotationVisibility);
   subjectCourse.addEventListener('change',()=>{if(subjectType.value==='optativa_rotativa')renderRotation()});
   subjectSection.append(subjectToggle,subjectForm);content.firstElementChild.append(subjectSection);
@@ -1205,7 +1205,7 @@ $('jediAdminButton').addEventListener('click',async()=>{
   const groupCourse=g=>Number((String(g.nom||'').match(/^\s*(\d+)/)||[])[1]);
   const subjectGroups=[...groups].sort((a,b)=>String(a.nom).localeCompare(String(b.nom),'ca',{numeric:true}));
   const subjectGroupName=id=>groups.find(g=>String(g.id)===String(id))?.nom||'Grup desconegut';
-  function refreshSubjectGroups(){const previous=subjectGroup.value;subjectGroup.replaceChildren();for(const g of subjectGroups.filter(g=>groupCourse(g)===Number(subjectCourse.value)))subjectGroup.add(new Option(g.nom,g.id));if([...subjectGroup.options].some(o=>o.value===previous))subjectGroup.value=previous}
+  function refreshSubjectGroups(){if(['acollida','optativa','optativa_rotativa','optativa_eleccio'].includes(subjectType.value)){subjectGroup.replaceChildren(new Option('Tots els grups',''));return}const previous=subjectGroup.value;subjectGroup.replaceChildren();for(const g of subjectGroups.filter(g=>groupCourse(g)===Number(subjectCourse.value)))subjectGroup.add(new Option(g.nom,g.id));if([...subjectGroup.options].some(o=>o.value===previous))subjectGroup.value=previous}
   function refreshSubjectSelection(){
    const oldGroups=new Set([...subjectGroupChoices.querySelectorAll('input:checked')].map(x=>x.value));
    const oldStudents=new Set([...subjectStudents.querySelectorAll('input:checked')].map(x=>x.value));
@@ -1218,7 +1218,7 @@ $('jediAdminButton').addEventListener('click',async()=>{
     const l=document.createElement('label');l.style.cssText='display:flex;align-items:center;gap:9px;margin:5px 0;font-size:13px';const cb=document.createElement('input');cb.type='checkbox';cb.value=a.id;cb.dataset.subjectStudent='1';cb.checked=oldStudents.has(String(a.id));l.append(cb,document.createTextNode([a.nom,a.cognoms].filter(Boolean).join(' ')));subjectStudents.append(l)}
   }
   for(const t of [...teachers].filter(t=>t.actiu!==false).sort((a,b)=>String(a.nom).localeCompare(String(b.nom),'ca'))){const l=document.createElement('label');l.style.cssText='display:flex;align-items:center;gap:7px;font-size:13px';const cb=document.createElement('input');cb.type='checkbox';cb.value=t.id;cb.dataset.subjectTeacher='1';l.append(cb,document.createTextNode(t.nom));subjectTeachers.append(l)}
-  subjectCourse.onchange=refreshSubjectGroups;
+  subjectCourse.onchange=()=>{refreshSubjectGroups();if(subjectType.value==='optativa_rotativa')renderRotation()};
   subjectMode.onchange=()=>{subjectSelection.style.display=subjectMode.value==='custom'?'grid':'none'};
   subjectToggle.onclick=async()=>{subjectForm.hidden=!subjectForm.hidden;subjectForm.style.display=subjectForm.hidden?'none':'grid';if(subjectForm.hidden)return;refreshSubjectGroups();subjectMode.onchange();updateRotationVisibility();subjectName.focus();if(!subjectCatalogReady){subjectNotice.textContent='Carregant alumnat…';try{subjectStudentCatalog=await api('/rest/v1/alumnes?select=id,nom,cognoms,grup_id,actiu&limit=1000');subjectCatalogReady=true;subjectNotice.textContent='';refreshSubjectSelection();updateRotationVisibility()}catch(e){subjectNotice.textContent='No es pot carregar l’alumnat: '+e.message}}};
   subjectCancel.onclick=()=>{if(subjectBusy)return;subjectForm.hidden=true;subjectForm.style.display='none';subjectNotice.textContent=''};
@@ -1229,7 +1229,7 @@ $('jediAdminButton').addEventListener('click',async()=>{
    const teacherIds=[...subjectTeachers.querySelectorAll('input:checked')].map(x=>x.value);
    const groupIds=new Set([...subjectGroupChoices.querySelectorAll('input:checked')].map(x=>String(x.value)));
    const individualIds=[...subjectStudents.querySelectorAll('input[data-subject-student]:checked')].map(x=>x.value);
-   if(!name||!subjectGroup.value){subjectNotice.textContent='Cal indicar el nom i el grup de referència.';return}
+   if(!name||(subjectType.value!=='acollida'&&!subjectGroup.value)){subjectNotice.textContent='Cal indicar el nom i el grup de referència.';return}
    if(!teacherIds.length){subjectNotice.textContent='Selecciona almenys un professor.';return}
    if(subjectMode.value==='custom'&&!subjectCatalogReady){subjectNotice.textContent='No s’ha pogut carregar l’alumnat.';return}
    const studentIds=subjectMode.value==='none'?[]:[...new Set([...subjectStudentCatalog.filter(a=>a.actiu!==false&&groupIds.has(String(a.grup_id))).map(a=>a.id),...individualIds])];
@@ -1237,7 +1237,7 @@ $('jediAdminButton').addEventListener('click',async()=>{
    if(!confirm('Crear «'+name+'» amb '+teacherIds.length+' professor(s) i '+studentIds.length+' alumne(s)?'))return;
    subjectBusy=true;subjectSave.disabled=true;subjectNotice.style.color='#526075';subjectNotice.textContent='Creant assignatura…';let createdId=null;
    try{
-    const created=await api('/rest/v1/classes',accessToken,{method:'POST',headers:{'Content-Type':'application/json',Prefer:'return=representation'},body:JSON.stringify({nom:name,curs:Number(subjectCourse.value),grup_id:subjectGroup.value,es_optativa:['optativa','optativa_eleccio','optativa_rotativa'].includes(subjectType.value),tipus_assignatura:subjectType.value})});
+    const created=await api('/rest/v1/classes',accessToken,{method:'POST',headers:{'Content-Type':'application/json',Prefer:'return=representation'},body:JSON.stringify({nom:name,curs:subjectType.value==='acollida'?null:Number(subjectCourse.value),grup_id:['acollida','optativa','optativa_rotativa','optativa_eleccio'].includes(subjectType.value)?null:subjectGroup.value,es_optativa:['optativa','optativa_eleccio','optativa_rotativa'].includes(subjectType.value),tipus_assignatura:subjectType.value})});
     createdId=created?.[0]?.id;if(!createdId)throw Error('No s’ha retornat l’identificador. Comprova si s’ha creat abans de repetir.');
     await api('/rest/v1/professors_classes',accessToken,{method:'POST',headers:{'Content-Type':'application/json',Prefer:'return=minimal'},body:JSON.stringify(teacherIds.map(professor_id=>({professor_id,classe_id:createdId})))});
     if(studentIds.length)await api('/rest/v1/alumnes_classes',accessToken,{method:'POST',headers:{'Content-Type':'application/json',Prefer:'return=minimal'},body:JSON.stringify(studentIds.map(alumne_id=>({alumne_id,classe_id:createdId,activa:true})))});
@@ -1366,7 +1366,7 @@ $('jediAdminButton').addEventListener('click',async()=>{
   const editName=document.createElement('input');editName.required=true;editName.maxLength=150;
   const editCourse=document.createElement('select');for(let i=1;i<=4;i++)editCourse.add(new Option(({1:'1r',2:'2n',3:'3r',4:'4t'})[i]+' ESO',String(i)));
   const editGroup=document.createElement('select');editGroup.required=true;
-  const editType=document.createElement('select');for(const [label,value] of [['Obligatòria','obligatoria'],['Optativa rotativa','optativa_rotativa'],['Optativa d’elecció','optativa_eleccio'],['Optativa','optativa'],['Reforç','reforc']])editType.add(new Option(label,value));
+  const editType=document.createElement('select');for(const [label,value] of [['Obligatòria','obligatoria'],['Optativa rotativa','optativa_rotativa'],['Optativa d’elecció','optativa_eleccio'],['Optativa','optativa'],['Reforç','reforc'],['Acollida','acollida']])editType.add(new Option(label,value));
   // V25.7: gestió de codocència dins del mateix formulari d'edició.
   const editStaffBox=document.createElement('div');editStaffBox.style.cssText='grid-column:1/-1;border-top:1px solid #e5eaf2;padding-top:15px';
   const editStaffTitle=document.createElement('strong');editStaffTitle.textContent='Professorat assignat';
@@ -1403,34 +1403,34 @@ $('jediAdminButton').addEventListener('click',async()=>{
   editForm.append(subjectField('Tipus d’assignatura',editType),subjectField('Nom de l’assignatura',editName),subjectField('Curs de referència',editCourse),subjectField('Grup de referència',editGroup),editStaffBox,editStatus,editButtons);
   modal.append(modalHead,editForm);overlay.append(modal);document.body.append(overlay);
   let editingId=null,editBusy=false;
-  const typeLabel=c=>({obligatoria:'Obligatòria',optativa:'Optativa',optativa_rotativa:'Optativa rotativa',optativa_eleccio:'Optativa d’elecció',reforc:'Reforç'})[c.tipus_assignatura||(c.es_optativa?'optativa':'obligatoria')]||'Obligatòria';
+  const typeLabel=c=>({obligatoria:'Obligatòria',optativa:'Optativa',optativa_rotativa:'Optativa rotativa',optativa_eleccio:'Optativa d’elecció',reforc:'Reforç',acollida:'Acollida'})[c.tipus_assignatura||(c.es_optativa?'optativa':'obligatoria')]||'Obligatòria';
   function renderSubjectList(){
    const body=listTable.tBodies[0];body.replaceChildren();
    const term=listSearch.value.trim().toLocaleLowerCase('ca');const course=listCourse.value;
-   const matches=[...classes].filter(c=>(!course||String(c.curs)===course)&&[c.nom,subjectGroupName(c.grup_id),typeLabel(c),String(c.curs)+' ESO'].some(v=>String(v||'').toLocaleLowerCase('ca').includes(term))).sort((a,b)=>Number(a.curs)-Number(b.curs)||String(a.nom).localeCompare(String(b.nom),'ca'));
+   const matches=[...classes].filter(c=>(!course||String(c.curs)===course)&&[c.nom,c.grup_id?subjectGroupName(c.grup_id):'Tots els grups',typeLabel(c),c.curs==null?'Tots els cursos':String(c.curs)+' ESO'].some(v=>String(v||'').toLocaleLowerCase('ca').includes(term))).sort((a,b)=>{const ag=groups.find(g=>String(g.id)===String(a.grup_id)),bg=groups.find(g=>String(g.id)===String(b.grup_id));const ak=a.curs==null?99:Number(a.curs),bk=b.curs==null?99:Number(b.curs);return ak-bk||(a.grup_id?0:1)-(b.grup_id?0:1)||(ag&&bg?String(ag.nom).localeCompare(String(bg.nom),'ca',{numeric:true}):0)||String(a.nom).localeCompare(String(b.nom),'ca')});
    editCount.textContent=classes.length+' assignatures';listResult.textContent=matches.length+' resultats';
    for(const c of matches){
     const tr=document.createElement('tr');
     const nameTd=document.createElement('td');const nameBtn=document.createElement('button');nameBtn.type='button';nameBtn.className='pa-v22-subject-link';nameBtn.textContent=c.nom;nameBtn.title='Veure fitxa de '+c.nom;nameBtn.addEventListener('click',()=>openSubjectInfo(c));nameTd.append(nameBtn);tr.append(nameTd);
-    for(const value of [({1:'1r ESO',2:'2n ESO',3:'3r ESO',4:'4t ESO'})[c.curs]||String(c.curs),subjectGroupName(c.grup_id)]){const td=document.createElement('td');td.textContent=value;tr.append(td)}
+    for(const value of [(c.curs==null?'Tots els cursos':({1:'1r ESO',2:'2n ESO',3:'3r ESO',4:'4t ESO'})[c.curs]||String(c.curs)),(c.grup_id?subjectGroupName(c.grup_id):'Tots els grups')]){const td=document.createElement('td');td.textContent=value;tr.append(td)}
     const typeTd=document.createElement('td');const tag=document.createElement('span');tag.className='v10-type-tag';tag.dataset.type=c.tipus_assignatura||(c.es_optativa?'optativa':'obligatoria');tag.textContent=typeLabel(c);typeTd.append(tag);tr.append(typeTd);
     const td=document.createElement('td');const btn=document.createElement('button');btn.type='button';btn.className='secondary';btn.textContent='Editar';btn.addEventListener('click',()=>openEdit(c.id));td.append(btn);tr.append(td);body.append(tr);
    }
    if(!matches.length){const tr=document.createElement('tr');const td=document.createElement('td');td.colSpan=5;td.textContent='No s’han trobat assignatures amb aquests filtres.';td.style.cssText='text-align:center!important;color:#7a8799;padding:24px';tr.append(td);body.append(tr)}
   }
   listSearch.addEventListener('input',renderSubjectList);listCourse.addEventListener('change',renderSubjectList);
-  function refreshEditGroups(preferred){editGroup.replaceChildren();for(const g of subjectGroups.filter(g=>groupCourse(g)===Number(editCourse.value)))editGroup.add(new Option(g.nom,g.id));if([...editGroup.options].some(o=>o.value===String(preferred)))editGroup.value=String(preferred)}
-  editCourse.onchange=()=>refreshEditGroups(editGroup.value);
+  function refreshEditGroups(preferred){if(['acollida','optativa','optativa_rotativa','optativa_eleccio'].includes(editType.value)){editCourse.disabled=editType.value==='acollida';editGroup.disabled=true;editGroup.required=false;editGroup.replaceChildren(new Option('Tots els grups',''));return}editCourse.disabled=false;editGroup.disabled=false;editGroup.required=true;editGroup.replaceChildren();for(const g of subjectGroups.filter(g=>groupCourse(g)===Number(editCourse.value)))editGroup.add(new Option(g.nom,g.id));if([...editGroup.options].some(o=>o.value===String(preferred)))editGroup.value=String(preferred)}
+  editCourse.onchange=()=>refreshEditGroups(editGroup.value);editType.onchange=()=>refreshEditGroups(editGroup.value);
   function closeEdit(){if(editBusy)return;overlay.hidden=true;editingId=null;editStatus.textContent=''}
-  function openEdit(id){const c=classes.find(c=>String(c.id)===String(id));if(!c)return;editingId=c.id;editName.value=c.nom||'';editCourse.value=String(c.curs);refreshEditGroups(c.grup_id);editType.value=c.tipus_assignatura||(c.es_optativa?'optativa':'obligatoria');editStatus.textContent='';overlay.hidden=false;loadEditStaff(c.id);editName.focus()}
+  function openEdit(id){const c=classes.find(c=>String(c.id)===String(id));if(!c)return;editingId=c.id;editName.value=c.nom||'';editCourse.value=String(c.curs??1);editType.value=c.tipus_assignatura||(c.es_optativa?'optativa':'obligatoria');refreshEditGroups(c.grup_id);editStatus.textContent='';overlay.hidden=false;loadEditStaff(c.id);editName.focus()}
   modalClose.onclick=closeEdit;editCancel.onclick=closeEdit;
   overlay.addEventListener('click',e=>{if(e.target===overlay)closeEdit()});
   editForm.onsubmit=async e=>{
    e.preventDefault();if(editBusy)return;
    if(!editStaffReady){editStatus.textContent='Espera que es carregui el professorat.';return}
    const c=classes.find(c=>String(c.id)===String(editingId));if(!c)return;
-   const nom=editName.value.trim();if(!nom||!editGroup.value){editStatus.textContent='Cal indicar un nom i un grup de referència.';return}
-   const payload={nom,curs:Number(editCourse.value),grup_id:editGroup.value,tipus_assignatura:editType.value,es_optativa:['optativa','optativa_rotativa','optativa_eleccio'].includes(editType.value)};
+   const nom=editName.value.trim();if(!nom||(!['acollida','optativa','optativa_rotativa','optativa_eleccio'].includes(editType.value)&&!editGroup.value)){editStatus.textContent='Cal indicar un nom i un grup de referència.';return}
+   const payload={nom,curs:editType.value==='acollida'?null:Number(editCourse.value),grup_id:['acollida','optativa','optativa_rotativa','optativa_eleccio'].includes(editType.value)?null:editGroup.value,tipus_assignatura:editType.value,es_optativa:['optativa','optativa_rotativa','optativa_eleccio'].includes(editType.value)};
    editBusy=true;editSave.disabled=true;editCancel.disabled=true;modalClose.disabled=true;editStatus.style.color='#526075';editStatus.textContent='Desant canvis…';
    try{
     const rows=await api('/rest/v1/classes?id=eq.'+encodeURIComponent(c.id),accessToken,{method:'PATCH',headers:{'Content-Type':'application/json',Prefer:'return=representation'},body:JSON.stringify(payload)});
@@ -1616,7 +1616,7 @@ $('jediAdminButton').addEventListener('click',async()=>{
      else if(feedback.textContent.startsWith('Professor de baixa:'))setFeedback('Professor actiu: pots assignar classes.');
     }
     try{
-     const [subjects,groupsForAdmin]=await Promise.all([api('/rest/v1/classes?select=id,nom,curs,grup_id&limit=1000'),api('/rest/v1/grups?select=id,nom&limit=1000')]);
+     const [subjects,groupsForAdmin]=await Promise.all([api('/rest/v1/classes?select=id,nom,curs,grup_id,tipus_assignatura&limit=1000'),api('/rest/v1/grups?select=id,nom&limit=1000')]);
      if(request!==detailsRequest||currentView!=='admin')return;
      const sortedSubjects=[...subjects].sort((a,b)=>classOrder(a,b,groupsForAdmin));
      let assignedIds=new Set();
@@ -1924,6 +1924,25 @@ $('jediAdminButton').addEventListener('click',async()=>{
      actions.append(cancel,save);form.append(field('Nom i cognoms',nom),field('Rol',rol),field('Correu electrònic',email),allowedLabel,actions);familyList.after(form);nom.focus()}
     addFamily.onclick=()=>editFamily();
     async function loadFamily(){familyStatus.textContent='Carregant contactes…';try{familyContacts=await api('/rest/v1/contactes_familiars?select=*&alumne_id=eq.'+encodeURIComponent(student.id)+'&order=created_at.asc');drawFamily();familyStatus.textContent=''}catch(e){familyStatus.textContent='No s’han pogut carregar els contactes. Executa el SQL V15. '+e.message;addFamily.disabled=true}}
+    // V26.2: observacions generals a la fitxa administrativa real (no només a la fitxa acadèmica).
+    const observationsSection=document.createElement('section');observationsSection.style.cssText='margin:20px 0;padding:16px;border:1px solid #dce4ee;border-radius:12px;background:#fafcff';
+    const observationsTitle=document.createElement('h4');observationsTitle.textContent='Observacions';observationsTitle.style.margin='0 0 9px';
+    const observationsArea=document.createElement('textarea');observationsArea.className='student-notes';observationsArea.placeholder='Escriu les observacions generals de l’alumne…';observationsArea.setAttribute('aria-label','Observacions generals de l’alumne');observationsArea.disabled=true;
+    const observationsSave=document.createElement('button');observationsSave.type='button';observationsSave.className='primary';observationsSave.textContent='Desar observacions';observationsSave.style.marginTop='10px';observationsSave.disabled=true;
+    const observationsStatus=document.createElement('p');observationsStatus.className='note-hint';observationsStatus.setAttribute('role','status');observationsStatus.textContent='Carregant observacions…';
+    observationsSection.append(observationsTitle,observationsArea,observationsSave,observationsStatus);
+    async function loadStudentObservations(){
+     try{const rows=await api('/rest/v1/alumnes?select=observacions&id=eq.'+encodeURIComponent(student.id)+'&limit=1',accessToken);
+      if(!Array.isArray(rows)||rows.length!==1)throw Error('No hi ha accés a les observacions.');
+      observationsArea.value=rows[0].observacions||'';observationsArea.disabled=false;observationsSave.disabled=false;observationsStatus.textContent='Observacions guardades a Supabase.';
+     }catch(err){observationsStatus.textContent='No disponibles: cal comprovar la columna «observacions» a «alumnes» i els permisos RLS. '+err.message}
+    }
+    observationsSave.onclick=async()=>{observationsSave.disabled=true;observationsStatus.textContent='Desant observacions…';
+     try{const rows=await api('/rest/v1/alumnes?id=eq.'+encodeURIComponent(student.id),accessToken,{method:'PATCH',headers:{'Content-Type':'application/json',Prefer:'return=representation'},body:JSON.stringify({observacions:observationsArea.value})});
+      if(!Array.isArray(rows)||rows.length!==1)throw Error('No s’ha confirmat el desament. Comprova els permisos RLS.');
+      observationsStatus.textContent='✓ Observacions desades correctament.';
+     }catch(err){observationsStatus.textContent='Error en desar: '+err.message}finally{observationsSave.disabled=false}
+    };
     const subtitle=document.createElement('h4');subtitle.textContent='Assignatures matriculades';subtitle.style.margin='20px 0 10px';
     const contents=document.createElement('div');contents.setAttribute('aria-live','polite');
     const footer=document.createElement('div');footer.className='modal-actions';
@@ -1945,7 +1964,7 @@ $('jediAdminButton').addEventListener('click',async()=>{
     };
     const reportBtn=document.createElement('button');reportBtn.type='button';reportBtn.className='secondary';reportBtn.textContent='📄 Butlletí individual';reportBtn.onclick=()=>{const ev=paideiaReportEvaluation();if(ev)paideiaMakeReports([student],groups,ev)};
     footer.append(reportBtn);
-    footer.append(pdfBtn,closeBtn);modal.append(title,identity,familySection,subtitle,contents,footer);loadFamily();backdrop.append(modal);document.body.append(backdrop);closeBtn.focus();
+    footer.append(pdfBtn,closeBtn);modal.append(title,identity,familySection,observationsSection,subtitle,contents,footer);loadFamily();loadStudentObservations();backdrop.append(modal);document.body.append(backdrop);closeBtn.focus();
     async function loadFicha(){
      contents.textContent='Carregant assignatures…';
      try{
@@ -3038,7 +3057,7 @@ $('jediIncidentsTab').addEventListener('click',()=>{if(currentClass)showIncident
   const content=document.createElement('div');content.setAttribute('role','region');content.setAttribute('aria-live','polite');
   card.append(head,tabs,content);overlay.append(card);shell.append(overlay);
   overlay.addEventListener('click',e=>{if(e.target===overlay)dismiss()});
-  const views=[['summary','Resum'],['grades','Qualificacions'],['attendance','Assistència'],['incidents','Incidències']];
+  const views=[['summary','Resum'],['notes','Observacions'],['grades','Qualificacions'],['attendance','Assistència'],['incidents','Incidències']];
   const buttons=new Map();let active='summary';
   for(const [key,label] of views){const b=document.createElement('button');b.type='button';b.textContent=label;buttons.set(key,b);tabs.append(b);b.onclick=()=>render(key)}
   const note=(text)=>{const p=document.createElement('p');p.className='jedi-profile-note';p.textContent=text;return p};
@@ -3065,6 +3084,7 @@ $('jediIncidentsTab').addEventListener('click',()=>{if(currentClass)showIncident
     addMetric('Incidències',incidents.filter(i=>i.tipus!=='positiva').length);
     addMetric('Reconeixements',incidents.filter(i=>i.tipus==='positiva').length);
     content.append(metrics,note('La mitjana és aritmètica simple i orientativa; encara no aplica ponderacions. L’assistència compta registres desats, no necessàriament dies diferents.'),note('Només es mostren els registres de «'+classe.nom+'» que Supabase permet consultar a aquest professor.'));
+   }else if(key==='notes'){const label=document.createElement('label');label.textContent='Observacions generals de l’alumne';label.style.cssText='display:block;font-weight:600;margin-bottom:9px';const area=document.createElement('textarea');area.className='student-notes';area.placeholder='Observacions generals…';area.value=data.studentNotes??'';const save=document.createElement('button');save.className='primary';save.textContent='Desar observacions';save.style.marginTop='10px';const status=note(data.notesSupported?'Les observacions es desen a Supabase.':'Per activar aquesta funció cal afegir la columna observacions a alumnes i configurar els permisos RLS.');save.disabled=!data.notesSupported;save.onclick=async()=>{save.disabled=true;status.textContent='Desant…';try{const rows=await api('/rest/v1/alumnes?id=eq.'+encodeURIComponent(student.id),accessToken,{method:'PATCH',headers:{'Content-Type':'application/json',Prefer:'return=representation'},body:JSON.stringify({observacions:area.value})});if(!rows?.length)throw Error('No hi ha permís per actualitzar aquesta fitxa.');data.studentNotes=area.value;status.textContent='Observacions desades correctament.'}catch(e){status.textContent='No s’han pogut desar: '+e.message}finally{save.disabled=false}};content.append(label,area,save,status);
    }else if(key==='grades'){
     if(!grades.length)content.append(empty('Encara no hi ha qualificacions registrades.'));
     else content.append(makeTable(['Concepte','Nota'],grades.map(g=>[g.concepte,Number(g.nota).toLocaleString('ca-ES',{maximumFractionDigits:2})])));
@@ -3087,7 +3107,7 @@ $('jediIncidentsTab').addEventListener('click',()=>{if(currentClass)showIncident
    ]);
    if(!overlay.isConnected)return;
    if(currentClass?.id!==classe.id||profile?.id!==originalProfessor){dismiss();return}
-   data={grades,attendance,incidents};render(active);
+   let studentNotes='',notesSupported=false;try{const notes=await api('/rest/v1/alumnes?select=observacions&id=eq.'+encodeURIComponent(student.id)+'&limit=1');notesSupported=Array.isArray(notes)&&notes.length===1;studentNotes=notes?.[0]?.observacions||''}catch(e){console.warn('Observacions generals encara no disponibles:',e.message)}data={grades,attendance,incidents,studentNotes,notesSupported};render(active);
   }catch(err){if(overlay.isConnected){content.replaceChildren();const p=document.createElement('p');p.className='error';p.textContent='No s’ha pogut carregar la fitxa: '+err.message;content.append(p)}}
  }
 
