@@ -2,7 +2,7 @@
 <html lang="ca">
 <head>
 <meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Paideia · Plataforma educativa · V26.3 (Fitxa observacions i optatives sense grup)</title>
+<title>Paideia · Plataforma educativa · V26.4 (Creació modal i codocència sense selector)</title>
 <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='14' fill='%23344d96'/%3E%3Cpath d='M22 47V17h13c18 0 18 24 0 24H22' fill='none' stroke='white' stroke-width='6' stroke-linejoin='round'/%3E%3C/svg%3E">
 <style>
 :root{font-family:Inter,system-ui,-apple-system,Segoe UI,sans-serif;color:#252b35;background:#f7f8fa}*{box-sizing:border-box}body{margin:0}button,input,textarea{font:inherit}button{cursor:pointer}header{background:white;border-bottom:1px solid #e8ebef;padding:23px max(24px,calc((100vw - 1200px)/2));display:flex;justify-content:space-between;align-items:center}header strong{font-size:21px;letter-spacing:-.6px}header span{color:#8a929f;font-size:13px}main{max-width:1200px;margin:42px auto;padding:0 24px}.top{display:flex;justify-content:space-between;gap:16px;align-items:center;margin-bottom:22px}.top h1{margin:0;font-size:28px;letter-spacing:-.8px}.sub{margin:7px 0 0;color:#87909c;font-size:14px}.layout{display:grid;grid-template-columns:295px minmax(0,1fr);gap:24px}.panel{background:white;border:1px solid #e8ebef;border-radius:14px;overflow:hidden}.side{padding:17px}.side-title{font-size:12px;text-transform:uppercase;letter-spacing:1.1px;color:#8d96a2;font-weight:700;margin:6px 8px 15px}.class-btn{white-space:nowrap;font-size:13px;width:100%;display:flex;justify-content:space-between;align-items:center;border:0;background:transparent;padding:12px 13px;border-radius:9px;text-align:left;color:#4b5563;margin-bottom:4px}.class-btn.active{background:#eef2ff;color:#4058a8;font-weight:650}.class-btn:hover:not(.active){background:#f6f7f9}.count{font-size:12px;color:#9ba3ae}.add-side{width:100%;background:white;border:1px dashed #d5dbe4;border-radius:9px;padding:12px;color:#687586;margin-top:13px}.add-side:hover{background:#f8faff}.content-head{padding:23px 25px;display:flex;justify-content:space-between;align-items:center;gap:15px;border-bottom:1px solid #edf0f3}.content-head h2{margin:0;font-size:21px;letter-spacing:-.5px}.hint{color:#9aa2ad;font-size:12px;margin-top:5px}.actions{display:flex;gap:9px;flex-wrap:wrap}button.primary{background:#344d96;color:white;border:1px solid #344d96;padding:10px 14px;border-radius:8px;font-size:13px;font-weight:600}button.secondary{background:white;color:#667181;border:1px solid #e0e5eb;padding:10px 13px;border-radius:8px;font-size:13px}button:hover{filter:brightness(.97)}.table-wrap{overflow-x:auto}table{width:100%;border-collapse:collapse;text-align:left}th{background:#fafbfc;font-size:11px;letter-spacing:.8px;text-transform:uppercase;color:#9ba4b0;font-weight:700;padding:15px 22px;border-bottom:1px solid #edf0f3}td{padding:11px 22px;border-bottom:1px solid #f0f2f5;font-size:14px}tr:last-child td{border-bottom:0}tbody tr:hover{background:#fafbff}.num{color:#a5adba;width:65px}.grade-input{width:94px;min-width:75px;border:1px solid transparent;background:transparent;border-radius:6px;padding:8px 9px;color:#303946;text-align:center}.grade-input:hover{border-color:#e6eaf0}.grade-input:focus{outline:none;border-color:#a4b2e0;background:white}.item-head{display:flex;align-items:center;gap:5px;white-space:nowrap}.item-edit{border:0;background:transparent;color:inherit;font:inherit;text-transform:inherit;letter-spacing:inherit;cursor:pointer;padding:3px}.item-remove{border:0;background:transparent;color:#b0b8c4;font-size:16px;padding:2px 5px}.item-remove:hover{color:#be4b52}.name-input{border:1px solid transparent;border-radius:6px;background:transparent;padding:8px 9px;width:100%;min-width:130px;color:#303946}.name-input:hover{border-color:#e6eaf0}.name-input:focus{outline:none;border-color:#a4b2e0;background:white}.delete{border:0;background:transparent;color:#aab2bd;font-size:18px;border-radius:6px;padding:5px 10px}.delete:hover{color:#be4b52;background:#fff0f1}.empty{padding:65px 20px;text-align:center;color:#9aa3af;font-size:14px}.calculated{font-weight:650;color:#344d96;text-align:center;white-space:nowrap}.calc-tag{font-size:10px;color:#7e8cb6;margin-left:4px}.modal-back{position:fixed;inset:0;background:#17233b66;display:flex;align-items:center;justify-content:center;padding:18px;z-index:10}.modal{background:white;border-radius:15px;padding:25px;width:min(540px,100%);box-shadow:0 18px 60px #1c2b4933}.modal h3{margin:0 0 9px}.modal p{font-size:13px;color:#7d8795}.modal label{font-size:13px;color:#5d6877;display:block;margin:14px 0 6px}.modal input,.modal select{width:100%;padding:10px;border:1px solid #dce2eb;border-radius:8px;background:white}.weight-row{display:grid;grid-template-columns:1fr 110px;gap:12px;align-items:end}.modal-actions{display:flex;justify-content:flex-end;gap:8px;margin-top:22px}.error{color:#bd3d4b!important;min-height:18px} .student-link{border:0;background:transparent;text-align:left;color:#344d96;font-weight:600;padding:7px 3px;cursor:pointer}.student-link:hover{text-decoration:underline}.drag-handle{border:0;background:transparent;color:#a4adba;cursor:grab;font-size:19px;padding:4px 7px}.dragging{opacity:.4}.drop-target{outline:2px solid #8ca0d6;outline-offset:-2px}.sort-bar{padding:12px 22px;border-bottom:1px solid #edf0f3;display:flex;align-items:center;gap:12px;font-size:12px;color:#748092}.sort-bar select{padding:7px;border:1px solid #e0e5eb;border-radius:7px;background:white;color:#526075}.student-notes{width:100%;min-height:170px;resize:vertical;border:1px solid #dce2eb;border-radius:9px;padding:12px;line-height:1.5}.student-notes:focus{outline:none;border-color:#879bd2;box-shadow:0 0 0 3px #e9eeff}.modal input:focus,.modal select:focus{outline:none;border-color:#879bd2;box-shadow:0 0 0 3px #e9eeff}.note-hint{font-size:12px;color:#8b95a3}.grade-input.grade-fail,.calculated.grade-fail{background:#fceced;color:#a3454b;border-radius:7px}.grade-input.grade-pass,.calculated.grade-pass{background:#eaf6ee;color:#337b51;border-radius:7px}.calculated{display:inline-block;min-width:76px;padding:8px 10px}.search-input{padding:8px 11px;border:1px solid #e0e5eb;border-radius:7px;min-width:190px;max-width:100%;font-size:13px;color:#526075}.search-input:focus{outline:none;border-color:#879bd2;box-shadow:0 0 0 3px #e9eeff}.search-count{color:#9aa3af}.footer{margin-top:18px;font-size:12px;color:#9ca5b1;text-align:right}@media(max-width:700px){header{padding:20px 24px}.layout{grid-template-columns:1fr}main{margin:25px auto}.content-head{align-items:flex-start;flex-direction:column}.top h1{font-size:24px}}
@@ -436,6 +436,18 @@ body.paideia-authenticated > header, body.paideia-authenticated > main {display:
 .jedi-observation-editor .jedi-observation-remove{color:#ad4651;border-color:#efcdd1}
 .jedi-observation-editor .jedi-observation-remove:hover{background:#fff0f1}
 </style>
+<style id="pa-v264-style">
+.pa-create-modal{width:min(850px,100%);max-height:90vh;display:flex;flex-direction:column;overflow:hidden}
+.pa-create-modal .v9-modal-head{flex-shrink:0}
+.pa-create-form{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:17px;padding:22px 26px 0;overflow-y:auto;min-height:0;align-content:start}
+.pa-create-form[hidden],.v9-modal-back[hidden]{display:none!important}
+.pa-create-form>label:first-child,.pa-create-form>label:nth-child(5),.pa-create-form>label:nth-child(6),.pa-create-form>label:nth-child(7),.pa-create-form>.note-hint,.pa-create-form>section,.pa-create-form>div:not(.pa-create-actions),.pa-create-form>p{grid-column:1/-1}
+.pa-create-form label{min-width:0;line-height:1.5}
+.pa-create-form input,.pa-create-form select{min-width:0;min-height:42px}
+.pa-create-form input[type=checkbox]{min-height:0;width:17px;height:17px;accent-color:#344d96}
+.pa-create-form .pa-create-actions{grid-column:1/-1;position:sticky;bottom:0;background:white;border-top:1px solid #e5eaf2;padding:16px 0 18px;justify-content:flex-end;z-index:2}
+@media(max-width:650px){.pa-create-form{grid-template-columns:1fr;padding:17px}.pa-create-form>*{grid-column:1/-1!important}}
+</style>
 </head>
 <body>
 <style id="jedi-hierarchy-style">
@@ -669,14 +681,14 @@ function paEditSession(data,mode,id,day,slot,record,refresh){
  );
  const classOptions=[['','— Sense assignatura —'],...orderedClasses.map(c=>[c.id,classLabelForSchedule(c)])];
  const classSelect=paField(box,'Assignatura',paSelect(classOptions,record?.classe_id||''));
- const teacherSelect=paField(box,'Professor/a',paSelect([['','— Sense professor/a —'],...data.teachers.map(t=>[t.id,t.nom])],record?.professor_id||(mode==='teacher'?id:'')));
+ const initialTeacherId=record?.professor_id||(mode==='teacher'?id:'');
  const groupSelect=paField(box,'Grup classe',paSelect([['','— Sense grup —'],...data.groups.map(g=>[g.id,g.nom])],record?.grup_id||(mode==='group'?id:'')));
  const coWrap=paEl('div');coWrap.style.cssText='margin:14px 0;padding:12px;border:1px solid #dce3ed;border-radius:9px';
  coWrap.append(paEl('strong','Professorat de la sessió (codocència)'));
  const coChecks=new Map();
- for(const t of data.teachers){const lab=paEl('label');lab.style.cssText='display:flex;align-items:center;gap:8px;margin:8px 0;font-size:13px';const check=document.createElement('input');check.type='checkbox';check.style.width='auto';check.checked=Boolean(record?(String(record.professor_id)===String(t.id)||data.links.some(l=>String(l.sessio_id)===String(record.id)&&String(l.professor_id)===String(t.id))):(String(t.id)===String(teacherSelect.value)));coChecks.set(String(t.id),check);lab.append(check,document.createTextNode(t.nom));coWrap.append(lab)}
+ for(const t of data.teachers){const lab=paEl('label');lab.style.cssText='display:flex;align-items:center;gap:8px;margin:8px 0;font-size:13px';const check=document.createElement('input');check.type='checkbox';check.style.width='auto';check.checked=Boolean(record?(String(record.professor_id)===String(t.id)||data.links.some(l=>String(l.sessio_id)===String(record.id)&&String(l.professor_id)===String(t.id))):(String(t.id)===String(initialTeacherId)));coChecks.set(String(t.id),check);lab.append(check,document.createTextNode(t.nom));coWrap.append(lab)}
  box.append(coWrap);
- teacherSelect.onchange=()=>{if(teacherSelect.value)coChecks.get(teacherSelect.value).checked=true};
+
  const name=paField(box,'Etiqueta de la sessió',document.createElement('input'));name.value=record?.etiqueta||'';name.placeholder='Ex.: Tecnologia, Guàrdia, Projecte…';
  classSelect.onchange=()=>{const c=data.classes.find(x=>x.id===classSelect.value);if(c&&c.grup_id)groupSelect.value=c.grup_id;if(c&&!name.value)name.value=c.nom};
  const msg=paEl('p','','note-hint');box.append(msg);const actions=paActions(box);
@@ -684,8 +696,9 @@ function paEditSession(data,mode,id,day,slot,record,refresh){
  if(record)actions.append(paButton('Eliminar sessió',async()=>{if(!confirm('Eliminar aquesta sessió?'))return;try{await api('/rest/v1/sessions_horari?id=eq.'+encodeURIComponent(record.id),accessToken,{method:'DELETE'});shade.remove();refresh()}catch(e){msg.textContent=e.message}}));
  actions.append(paButton('Desar sessió',async()=>{
   const chosen=[...coChecks].filter(([_,c])=>c.checked).map(([id])=>id);
-  const busyPrimary=new Set(data.sessions.filter(x=>String(x.id)!==String(record?.id)&&Number(x.dia)===day&&String(x.franja_id)===String(slot.id)).map(x=>String(x.professor_id)));
-  const primary=chosen.find(t=>!busyPrimary.has(t))||((!groupSelect.value&&teacherSelect.value)?teacherSelect.value:null);
+  // professor_id és un camp tècnic de compatibilitat; no representa cap jerarquia docent.
+  // Es manté un docent ja vinculat, si encara és seleccionat, per reduir canvis innecessaris.
+  const primary=(record?.professor_id&&chosen.includes(String(record.professor_id)))?String(record.professor_id):(chosen[0]||null);
   const payload={dia:day,franja_id:slot.id,professor_id:primary,grup_id:groupSelect.value||null,classe_id:classSelect.value||null,etiqueta:name.value.trim()||'Sessió'};
   if(!primary&&!payload.grup_id){msg.textContent='Selecciona un professor o un grup.';return}
   // Un professor itinerant pot figurar en dos grups de la mateixa assignatura.
@@ -1200,7 +1213,20 @@ $('jediAdminButton').addEventListener('click',async()=>{
   function updateRotationVisibility(){const acollida=subjectType.value==='acollida';const withoutGroup=acollida||['optativa','optativa_rotativa','optativa_eleccio'].includes(subjectType.value);subjectCourse.disabled=acollida;subjectGroup.disabled=withoutGroup;subjectGroup.required=!withoutGroup;if(withoutGroup)subjectGroup.replaceChildren(new Option('Tots els grups',''));else refreshSubjectGroups();const rotating=subjectType.value==='optativa_rotativa';rotationBox.hidden=!rotating;rotationBox.style.display=rotating?'block':'none';subjectSave.disabled=rotating;subjectSave.title=rotating?'Cal preparar les taules de Supabase abans de desar rotacions':'';subjectNotice.textContent=rotating?'Mode de preparació: no es desaran assignatures ni matrícules rotatives fins que la base de dades estigui preparada.':'';if(rotating)renderRotation()}
   subjectType.addEventListener('change',updateRotationVisibility);
   subjectCourse.addEventListener('change',()=>{if(subjectType.value==='optativa_rotativa')renderRotation()});
-  subjectSection.append(subjectToggle,subjectForm);content.firstElementChild.append(subjectSection);
+  // V26.4: crear assignatures amb el mateix patró de finestra que editar.
+  const createOverlay=document.createElement('div');createOverlay.className='v9-modal-back';createOverlay.hidden=true;
+  const createModal=document.createElement('div');createModal.className='v9-modal pa-create-modal';createModal.setAttribute('role','dialog');createModal.setAttribute('aria-modal','true');createModal.setAttribute('aria-labelledby','paCreateTitle');
+  const createHead=document.createElement('div');createHead.className='v9-modal-head';
+  const createTitle=document.createElement('h3');createTitle.id='paCreateTitle';createTitle.textContent='Nova assignatura';
+  const createClose=document.createElement('button');createClose.type='button';createClose.className='secondary';createClose.textContent='✕';createClose.setAttribute('aria-label','Tancar');
+  createHead.append(createTitle,createClose);
+  subjectForm.classList.add('pa-create-form');subjectForm.style.cssText='';subjectForm.hidden=true;
+  subjectActions.classList.add('pa-create-actions');
+  createModal.append(createHead,subjectForm);createOverlay.append(createModal);document.body.append(createOverlay);
+  const closeCreate=()=>{if(subjectBusy)return;createOverlay.hidden=true;subjectForm.hidden=true;subjectNotice.textContent=''};
+  createClose.onclick=closeCreate;
+  createOverlay.addEventListener('click',e=>{if(e.target===createOverlay)closeCreate()});
+  subjectSection.append(subjectToggle);content.firstElementChild.append(subjectSection);
   let subjectStudentCatalog=[];let subjectCatalogReady=false;let subjectBusy=false;
   const groupCourse=g=>Number((String(g.nom||'').match(/^\s*(\d+)/)||[])[1]);
   const subjectGroups=[...groups].sort((a,b)=>String(a.nom).localeCompare(String(b.nom),'ca',{numeric:true}));
@@ -1220,8 +1246,8 @@ $('jediAdminButton').addEventListener('click',async()=>{
   for(const t of [...teachers].filter(t=>t.actiu!==false).sort((a,b)=>String(a.nom).localeCompare(String(b.nom),'ca'))){const l=document.createElement('label');l.style.cssText='display:flex;align-items:center;gap:7px;font-size:13px';const cb=document.createElement('input');cb.type='checkbox';cb.value=t.id;cb.dataset.subjectTeacher='1';l.append(cb,document.createTextNode(t.nom));subjectTeachers.append(l)}
   subjectCourse.onchange=()=>{refreshSubjectGroups();if(subjectType.value==='optativa_rotativa')renderRotation()};
   subjectMode.onchange=()=>{subjectSelection.style.display=subjectMode.value==='custom'?'grid':'none'};
-  subjectToggle.onclick=async()=>{subjectForm.hidden=!subjectForm.hidden;subjectForm.style.display=subjectForm.hidden?'none':'grid';if(subjectForm.hidden)return;refreshSubjectGroups();subjectMode.onchange();updateRotationVisibility();subjectName.focus();if(!subjectCatalogReady){subjectNotice.textContent='Carregant alumnat…';try{subjectStudentCatalog=await api('/rest/v1/alumnes?select=id,nom,cognoms,grup_id,actiu&limit=1000');subjectCatalogReady=true;subjectNotice.textContent='';refreshSubjectSelection();updateRotationVisibility()}catch(e){subjectNotice.textContent='No es pot carregar l’alumnat: '+e.message}}};
-  subjectCancel.onclick=()=>{if(subjectBusy)return;subjectForm.hidden=true;subjectForm.style.display='none';subjectNotice.textContent=''};
+  subjectToggle.onclick=async()=>{createOverlay.hidden=false;subjectForm.hidden=false;refreshSubjectGroups();subjectMode.onchange();updateRotationVisibility();subjectName.focus();if(!subjectCatalogReady){subjectNotice.textContent='Carregant alumnat…';try{subjectStudentCatalog=await api('/rest/v1/alumnes?select=id,nom,cognoms,grup_id,actiu&limit=1000');subjectCatalogReady=true;subjectNotice.textContent='';refreshSubjectSelection();updateRotationVisibility()}catch(e){subjectNotice.textContent='No es pot carregar l’alumnat: '+e.message}}};
+  subjectCancel.onclick=closeCreate;
   subjectForm.onsubmit=async e=>{
    e.preventDefault();if(subjectBusy)return;
    if(subjectType.value==='optativa_rotativa'){subjectNotice.textContent='Cal configurar primer la persistència de les rotacions a Supabase.';return}
@@ -1242,7 +1268,7 @@ $('jediAdminButton').addEventListener('click',async()=>{
     await api('/rest/v1/professors_classes',accessToken,{method:'POST',headers:{'Content-Type':'application/json',Prefer:'return=minimal'},body:JSON.stringify(teacherIds.map(professor_id=>({professor_id,classe_id:createdId})))});
     if(studentIds.length)await api('/rest/v1/alumnes_classes',accessToken,{method:'POST',headers:{'Content-Type':'application/json',Prefer:'return=minimal'},body:JSON.stringify(studentIds.map(alumne_id=>({alumne_id,classe_id:createdId,activa:true})))});
     subjectNotice.style.color='#286b43';subjectNotice.textContent='Assignatura creada i assignacions desades. Actualitza la pàgina per veure-la al menú.';
-    subjectForm.reset();refreshSubjectGroups();refreshSubjectSelection();subjectMode.onchange();updateRotationVisibility();
+    subjectForm.reset();refreshSubjectGroups();refreshSubjectSelection();subjectMode.onchange();updateRotationVisibility();createOverlay.hidden=true;subjectForm.hidden=true;v9Toast('Assignatura creada correctament');
     const countBox=grid.querySelectorAll('.stats-tile')[1]?.querySelector('strong');if(countBox)countBox.textContent=String(Number(countBox.textContent||0)+1);
    }catch(err){subjectNotice.style.color='#a3454b';subjectNotice.textContent=(createdId?'ATENCIÓ: l’assignatura ja s’ha creat (ID '+createdId+'), però alguna assignació ha fallat. No tornis a crear-la; revisa les assignacions. ':'No s’ha pogut crear l’assignatura. ')+err.message}
    finally{subjectBusy=false;subjectSave.disabled=false}
