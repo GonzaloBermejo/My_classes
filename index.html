@@ -448,6 +448,12 @@ body.paideia-authenticated > header, body.paideia-authenticated > main {display:
 .pa-create-form .pa-create-actions{grid-column:1/-1;position:sticky;bottom:0;background:white;border-top:1px solid #e5eaf2;padding:16px 0 18px;justify-content:flex-end;z-index:2}
 @media(max-width:650px){.pa-create-form{grid-template-columns:1fr;padding:17px}.pa-create-form>*{grid-column:1/-1!important}}
 </style>
+<style id="pa-students-sorting-style">
+.jedi-students-table .pa-students-sort{display:inline-flex;align-items:center;gap:8px;border:0;background:transparent;padding:0;color:inherit;font:inherit;font-weight:700;cursor:pointer;text-align:left}
+.jedi-students-table .pa-students-sort:hover{color:#344d96}
+.jedi-students-table .pa-students-sort:focus-visible{outline:2px solid #344d96;outline-offset:4px;border-radius:3px}
+.jedi-students-table .pa-students-sort-arrow{color:#6078ae;font-size:12px;min-width:12px}
+</style>
 </head>
 <body>
 <style id="jedi-hierarchy-style">
@@ -1184,7 +1190,7 @@ $('jediAdminButton').addEventListener('click',async()=>{
     api('/rest/v1/tutories?select=id,professor_id,grup_id&limit=1000')
   ]);
   if(currentView!=='admin')return;
-  const entries=[['Grups visibles',groups.length],['Assignatures visibles',classes.length],['Professorat visible',teachers.length],['Rols registrats visibles',roles.length]];
+  const entries=[['Grups visibles',groups.length],['Assignatures visibles',classes.length],['Professorat visible',teachers.length],['Assignacions de rols visibles',roles.length]];
   const grid=$('jediAdminSummary');grid.replaceChildren();
   for(const [label,count] of entries){const box=document.createElement('div');box.className='stats-tile';const title=document.createElement('span');title.textContent=label;const value=document.createElement('strong');value.textContent=String(count);box.append(title,value);grid.append(box)}
   // Gestió d'assignatures: classificació i matrícula independents.
@@ -1858,7 +1864,7 @@ $('jediAdminButton').addEventListener('click',async()=>{
    // Gestió de rols docents. Els permisos reals són sempre validats per RLS.
    const permissions=document.createElement('section');permissions.style.cssText='margin-top:30px;padding-top:22px;border-top:1px solid #e5eaf1';
    const permTitle=document.createElement('h3');permTitle.textContent='Gestió d’usuaris i permisos';permTitle.style.margin='0 0 8px';
-   const permHint=document.createElement('p');permHint.className='note-hint';permHint.textContent='Cada grup té un únic tutor i cada docent només pot tutoritzar un grup. Assignar una tutoria concedeix també el rol de tutor. El rol d’administrador es gestiona exclusivament a Supabase.';
+   const permHint=document.createElement('p');permHint.className='note-hint';permHint.textContent='El rol de professor s’assigna automàticament quan el docent té un compte vinculat. Aquí es mostra el seu estat, sense necessitat de concedir-lo manualment. Cada grup té un únic tutor i cada docent només pot tutoritzar un grup. Assignar una tutoria concedeix també el rol de tutor. El rol d’administrador es gestiona exclusivament a Supabase.';
    const permNotice=document.createElement('p');permNotice.setAttribute('role','status');permNotice.style.cssText='font-size:13px;min-height:18px';
    const permWrap=document.createElement('div');permWrap.style.cssText='overflow-x:auto';
    const permTable=document.createElement('table');permTable.className='jedi-permissions-table';permTable.style.cssText='width:100%;border-collapse:collapse;min-width:690px;text-align:left';
@@ -1982,19 +1988,13 @@ $('jediAdminButton').addEventListener('click',async()=>{
        b.onclick=()=>current?removeTutoria(teacher):assignTutoria(teacher);
        tooltip.append(b);td.append(tooltip);continue;
       }
-      const b=document.createElement('button');b.type='button';b.className='secondary';b.textContent=assigned?'✓ Assignat':'+ Assignar';
-      b.style.cssText='white-space:nowrap;font-size:12px;padding:8px 10px';
-      const disabled=!teacher.auth_user_id||teacher.actiu===false;
-      b.disabled=disabled;
-      const help=!teacher.auth_user_id?'Cal vincular un compte d’usuari':teacher.actiu===false?'Professor de baixa':assigned?'Retirar rol':'Concedir rol';
-      b.title=help;
-      if(disabled){
-       b.style.backgroundColor='#f0f2f5';b.style.borderColor='#e1e5eb';b.style.color='#8993a2';
-       b.style.opacity='1';b.style.cursor='not-allowed';
-      }
-      // El tooltip és al contenidor perquè els botons disabled no sempre el mostren.
-      const tooltip=document.createElement('span');tooltip.title=help;tooltip.style.cssText='display:inline-block;cursor:'+(disabled?'not-allowed':'pointer');
-      b.onclick=()=>changeRole(teacher,role,!assigned,b);tooltip.append(b);td.append(tooltip);
+      // El rol de professor es gestiona automàticament a Supabase.
+      // Aquesta columna és informativa: no ofereix concedir ni retirar permisos.
+      const status=document.createElement('span');
+      status.textContent=!teacher.auth_user_id?'Sense compte':assigned?'✓ Rol concedit':'Pendent de rol';
+      status.title=!teacher.auth_user_id?'Cal vincular un compte d’usuari':assigned?'Rol de professor verificat':'El compte està vinculat, però encara no consta el rol de professor. Cal revisar la sincronització a Supabase.';
+      status.style.cssText='display:inline-block;font-size:12px;font-weight:600;color:'+(!teacher.auth_user_id?'#8993a2':assigned?'#337b51':'#a16c1e');
+      td.append(status);
      }
      permBody.append(tr);
     }
@@ -2021,6 +2021,23 @@ $('jediAdminButton').addEventListener('click',async()=>{
    const studentsWrap=document.createElement('div');studentsWrap.className='table-wrap';
    const studentsTable=document.createElement('table');studentsTable.className='registry-table jedi-students-table';
    studentsTable.innerHTML='<thead><tr><th>Cognoms</th><th>Nom</th><th>Grup</th><th>Estat</th><th>Accions</th></tr></thead><tbody></tbody>';
+   // Ordenació interactiva del registre d'alumnat (només presentació).
+   let studentsSortKey='cognoms',studentsSortDirection=1;
+   const studentsSortColumns=['cognoms','nom','grup','estat'];
+   studentsTable.querySelectorAll('thead th').forEach((th,i)=>{
+    if(i>=studentsSortColumns.length)return;
+    const key=studentsSortColumns[i];
+    const btn=document.createElement('button');btn.type='button';btn.className='pa-students-sort';
+    btn.dataset.sortKey=key;btn.setAttribute('aria-label','Ordenar per '+th.textContent);
+    const label=document.createElement('span');label.textContent=th.textContent;
+    const arrow=document.createElement('span');arrow.className='pa-students-sort-arrow';
+    btn.append(label,arrow);th.replaceChildren(btn);
+    btn.addEventListener('click',()=>{
+     if(studentsSortKey===key)studentsSortDirection*=-1;
+     else{studentsSortKey=key;studentsSortDirection=1;}
+     renderStudents();
+    });
+   });
    const studentsBody=studentsTable.querySelector('tbody');studentsWrap.append(studentsTable);
    studentsSection.append(studentsTitle,studentsHint,studentsToolbar,studentsNotice,studentsCount,studentsWrap);
    grid.parentElement.append(studentsSection);
@@ -2059,7 +2076,16 @@ $('jediAdminButton').addEventListener('click',async()=>{
    function renderStudents(){
     const query=studentsSearch.value.trim().toLocaleLowerCase('ca');
     const rows=studentRows.filter(a=>(!query||(String(a.nom)+' '+String(a.cognoms)+' '+String(a.cognoms)+' '+String(a.nom)).toLocaleLowerCase('ca').includes(query))&&(!studentsGroup.value||String(a.grup_id)===studentsGroup.value)&&(studentsStatus.value==='all'||(a.actiu===true)===(studentsStatus.value==='active')))
-     .sort((a,b)=>String(a.cognoms).localeCompare(String(b.cognoms),'ca',{sensitivity:'base'})||String(a.nom).localeCompare(String(b.nom),'ca',{sensitivity:'base'}));
+     .sort((a,b)=>{
+      const compare=(x,y)=>String(x??'').localeCompare(String(y??''),'ca',{sensitivity:'base',numeric:true});
+      const value=(a,key)=>key==='grup'?groupName(a.grup_id):key==='estat'?(a.actiu?'Actiu':'De baixa'):a[key];
+      return studentsSortDirection*(compare(value(a,studentsSortKey),value(b,studentsSortKey))||compare(a.cognoms,b.cognoms)||compare(a.nom,b.nom));
+     });
+    studentsTable.querySelectorAll('.pa-students-sort').forEach(btn=>{
+     const active=btn.dataset.sortKey===studentsSortKey;
+     btn.querySelector('.pa-students-sort-arrow').textContent=active?(studentsSortDirection===1?'▲':'▼'):'↕';
+     btn.closest('th').setAttribute('aria-sort',active?(studentsSortDirection===1?'ascending':'descending'):'none');
+    });
     studentsCount.textContent=rows.length+' alumnes visibles · '+studentRows.filter(a=>a.actiu===true).length+' actius · '+studentRows.filter(a=>a.actiu===false).length+' de baixa';
     studentsBody.replaceChildren();
     if(!rows.length){const tr=document.createElement('tr');const td=document.createElement('td');td.colSpan=5;td.textContent='No hi ha alumnes amb aquests filtres.';tr.append(td);studentsBody.append(tr);return}
