@@ -3446,12 +3446,11 @@ function openCopyItemsEditor({classe,items,weights}){
 
 // Eliminació amb advertiments: Supabase/RLS ha de validar els permisos del docent.
 async function jediDeleteItem({classe,item,weights,grades}){
- if(item.es_nota_final){alert('Aquesta columna és la nota final de l’avaluació. Selecciona primer una altra columna com a nota final.');return}
  if(weights.some(w=>w.item_origen_id===item.id)){alert('Aquesta columna forma part d’una fórmula. Treu-la primer de les ponderacions corresponents.');return}
  const linked=grades.filter(g=>g.item_id===item.id);
  const own=weights.filter(w=>w.item_calculat_id===item.id);
  const summary='«'+item.nom+'»';
- if(!confirm('Vols eliminar definitivament la columna '+summary+'?'+(linked.length?'\n\nConté '+linked.length+' qualificació(ns), que també s’eliminaran.':'')+(own.length?'\nTambé s’eliminaran les seves ponderacions.':'')+'\n\nAquesta acció no es pot desfer.'))return;
+ if(!confirm('Vols eliminar definitivament la columna '+summary+'?'+(item.es_nota_final?'\n\n★ Aquesta columna és la nota final de l’avaluació. En eliminar-la, l’avaluació quedarà sense columna de nota final fins que en seleccionis una altra.':'')+(linked.length?'\n\nConté '+linked.length+' qualificació(ns), que també s’eliminaran.':'')+(own.length?'\nTambé s’eliminaran les seves ponderacions.':'')+'\n\nAquesta acció no es pot desfer.'))return;
  if(linked.length&&!confirm('SEGONA CONFIRMACIÓ\n\nS’eliminaran '+linked.length+' qualificació(ns) de '+summary+'.\n\nEstàs segur que vols continuar?'))return;
  try{
   // Abans de tocar notes, comprovem que RLS permet gestionar aquesta columna.
