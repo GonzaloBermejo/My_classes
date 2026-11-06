@@ -3297,7 +3297,39 @@ $('jediIncidentsTab').addEventListener('click',()=>{if(currentClass)showIncident
        try{const result=await api('/rest/v1/incidencies?id=eq.'+encodeURIComponent(item.id)+'&professor_id=eq.'+encodeURIComponent(originalProfessor),accessToken,{method:'DELETE',headers:{Prefer:'return=representation'}});if(!Array.isArray(result)||result.length!==1)throw Error('No s’ha confirmat l’eliminació; comprova els permisos RLS.');await reloadIncidents();}
        catch(e){alert('No s’ha pogut eliminar: '+e.message);del.disabled=false}
       };
-      row.append(edit,del);article.append(row);
+      const notify=document.createElement('button');notify.type='button';notify.className='primary';notify.textContent='✉ Notificar a la família';
+      notify.onclick=async()=>{
+       if(!accessToken||profile?.id!==originalProfessor){alert('Cal iniciar sessió per notificar.');return}
+       if(!confirm('Vols enviar una notificació per correu electrònic als contactes familiars autoritzats i verificats?\n\nAquesta acció pot enviar correus reals i no es pot desfer.'))return;
+       notify.disabled=true;notify.textContent='Enviant notificació…';
+       try{
+        const response=await fetch(BASE+'/functions/v1/paideia-notificar-incidencia',{
+         method:'POST',headers:{apikey:KEY,Authorization:'Bearer '+accessToken,'Content-Type':'application/json'},
+         body:JSON.stringify({incidencia_id:item.id})
+        });
+        const raw=await response.text();let result;try{result=JSON.parse(raw)}catch{result={error:raw}}
+        if(!response.ok)throw Error(result?.error||result?.message||('HTTP '+response.status));
+        const accepted=Number(result?.accepted_count??result?.accepted??result?.enviats??result?.sent??NaN);
+        const failed=Number(result?.failed_count??result?.failed??result?.errors??NaN);
+        const total=Number(result?.total??NaN);
+        const confirmed=Number.isFinite(accepted)&&Number.isFinite(failed);
+        const complete=confirmed&&accepted>0&&failed===0;
+        const partial=confirmed&&accepted>0&&failed>0;
+        const heading=complete?'Notificació enviada correctament!':partial?'Notificació enviada parcialment':confirmed?'No s’ha pogut enviar la notificació':'Cal revisar el resultat de la notificació';
+        const detail=complete?'El servei de correu ha acceptat la notificació.':partial?'Alguns correus han estat acceptats, però altres han fallat.':confirmed?'El servei de correu no ha acceptat cap notificació.':'El servidor ha respost, però no ha confirmat el nombre de correus acceptats.';
+        const backdrop=document.createElement('div');backdrop.style.cssText='position:fixed;inset:0;z-index:200000;background:rgba(21,35,60,.58);display:flex;align-items:center;justify-content:center;padding:20px';
+        const dialog=document.createElement('div');dialog.setAttribute('role','alertdialog');dialog.setAttribute('aria-modal','true');dialog.style.cssText='width:min(440px,100%);background:white;border-radius:17px;padding:30px;box-shadow:0 24px 70px #15233c45;text-align:center;color:#293449';
+        const symbol=document.createElement('div');symbol.textContent=complete?'✓':partial?'!':confirmed?'×':'i';symbol.style.cssText='width:58px;height:58px;border-radius:50%;display:grid;place-items:center;margin:0 auto 16px;font-size:32px;font-weight:700;background:'+(complete?'#eaf6ee':partial?'#fff5dc':'#fff0f1')+';color:'+(complete?'#28764c':partial?'#94671c':'#a3454b');
+        const title=document.createElement('h3');title.textContent=heading;title.style.cssText='margin:0 0 10px;font-size:20px;color:#293449';
+        const desc=document.createElement('p');desc.textContent=detail;desc.style.cssText='font-size:14px;color:#61708a;line-height:1.55;margin:0 0 12px';
+        const counts=document.createElement('p');counts.textContent=confirmed?'Correus acceptats: '+accepted+' · Errors: '+failed+(Number.isFinite(total)?' · Total: '+total:''):'';counts.style.cssText='font-size:13px;color:#61708a;margin:0 0 12px';
+        const caution=document.createElement('p');caution.textContent='L’acceptació pel servei no garanteix el lliurament final. Consulta el registre de notificacions abans de tornar a enviar.';caution.style.cssText='font-size:12px;color:#8792a4;line-height:1.5;margin:0 0 22px';
+        const ok=document.createElement('button');ok.type='button';ok.className='primary';ok.textContent='D’acord';ok.style.cssText='min-width:135px;padding:11px 18px';
+        ok.onclick=()=>backdrop.remove();dialog.append(symbol,title,desc,counts,caution,ok);backdrop.append(dialog);document.body.append(backdrop);ok.focus();
+        notify.textContent='Notificació sol·licitada';
+       }catch(e){alert('No s’ha pogut completar la notificació: '+e.message);notify.disabled=false;notify.textContent='✉ Notificar a la família'}
+      };
+      row.append(edit,del,notify);article.append(row);
      }
      content.append(article)}
    }
