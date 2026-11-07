@@ -1204,7 +1204,7 @@ $('jediAdminButton').addEventListener('click',async()=>{
   const subjectGroup=document.createElement('select');subjectGroup.required=true;
   const subjectRoom=document.createElement('input');subjectRoom.type='text';subjectRoom.maxLength=160;subjectRoom.placeholder='Ex.: Aula 1r ESO A, Taller, Laboratori…';
   const subjectType=document.createElement('select');for(const [label,value] of [['Obligatòria','obligatoria'],['Optativa rotativa','optativa_rotativa'],['Optativa d’elecció','optativa_eleccio'],['Reforç','reforc'],['Acollida','acollida']])subjectType.add(new Option(label,value));
-  const subjectTypeHelp=document.createElement('p');subjectTypeHelp.className='note-hint';subjectTypeHelp.textContent='La classificació és independent dels alumnes matriculats. Acollida és transversal: tots els cursos i tots els grups. L’aula habitual és informativa i no apareix a l’horari.';
+  const subjectTypeHelp=document.createElement('p');subjectTypeHelp.className='note-hint';subjectTypeHelp.textContent='La classificació és independent dels alumnes matriculats. Reforç agrupa els grups A i B del curs seleccionat; Acollida és transversal a tots els cursos. L’aula habitual és informativa i no apareix a l’horari.';
   const subjectTeachers=document.createElement('div');subjectTeachers.style.cssText='display:grid;grid-template-columns:repeat(auto-fit,minmax(190px,1fr));gap:8px;border:1px solid #e1e6ef;border-radius:8px;padding:12px';
   const subjectMode=document.createElement('select');subjectMode.add(new Option('Sense matricular alumnes ara','none'));subjectMode.add(new Option('Seleccionar grups i/o alumnes','custom'));
   const subjectGroupChoices=document.createElement('div');subjectGroupChoices.style.cssText='display:grid;grid-template-columns:repeat(auto-fit,minmax(135px,1fr));gap:8px;border:1px solid #e1e6ef;border-radius:8px;padding:12px';
@@ -1331,7 +1331,7 @@ $('jediAdminButton').addEventListener('click',async()=>{
   electionRenderList();
   function updateRotationVisibility(){
    const rotating=subjectType.value==='optativa_rotativa',electing=subjectType.value==='optativa_eleccio',special=rotating||electing;
-   const acollida=subjectType.value==='acollida';const withoutGroup=acollida||['optativa','optativa_rotativa','optativa_eleccio'].includes(subjectType.value);
+   const acollida=subjectType.value==='acollida';const withoutGroup=acollida||['reforc','optativa','optativa_rotativa','optativa_eleccio'].includes(subjectType.value);
    subjectCourse.disabled=acollida||electing;if(electing)subjectCourse.value='4';subjectGroup.disabled=withoutGroup;subjectGroup.required=!withoutGroup;
    if(withoutGroup)subjectGroup.replaceChildren(new Option('Tots els grups',''));else refreshSubjectGroups();
    rotationBox.hidden=!rotating;rotationBox.style.display=rotating?'block':'none';electionBox.hidden=!electing;electionBox.style.display=electing?'block':'none';
@@ -1362,7 +1362,7 @@ $('jediAdminButton').addEventListener('click',async()=>{
   const groupCourse=g=>Number((String(g.nom||'').match(/^\s*(\d+)/)||[])[1]);
   const subjectGroups=[...groups].sort((a,b)=>String(a.nom).localeCompare(String(b.nom),'ca',{numeric:true}));
   const subjectGroupName=id=>groups.find(g=>String(g.id)===String(id))?.nom||'Grup desconegut';
-  function refreshSubjectGroups(){if(['acollida','optativa','optativa_rotativa','optativa_eleccio'].includes(subjectType.value)){subjectGroup.replaceChildren(new Option('Tots els grups',''));return}const previous=subjectGroup.value;subjectGroup.replaceChildren();for(const g of subjectGroups.filter(g=>groupCourse(g)===Number(subjectCourse.value)))subjectGroup.add(new Option(g.nom,g.id));if([...subjectGroup.options].some(o=>o.value===previous))subjectGroup.value=previous}
+  function refreshSubjectGroups(){if(['acollida','reforc','optativa','optativa_rotativa','optativa_eleccio'].includes(subjectType.value)){subjectGroup.replaceChildren(new Option('Tot el curs (A + B)',''));return}const previous=subjectGroup.value;subjectGroup.replaceChildren();for(const g of subjectGroups.filter(g=>groupCourse(g)===Number(subjectCourse.value)))subjectGroup.add(new Option(g.nom,g.id));if([...subjectGroup.options].some(o=>o.value===previous))subjectGroup.value=previous}
   function refreshSubjectSelection(){
    const oldGroups=new Set([...subjectGroupChoices.querySelectorAll('input:checked')].map(x=>x.value));
    const oldStudents=new Set([...subjectStudents.querySelectorAll('input:checked')].map(x=>x.value));
@@ -1403,7 +1403,7 @@ $('jediAdminButton').addEventListener('click',async()=>{
    const teacherIds=[...subjectTeachers.querySelectorAll('input:checked')].map(x=>x.value);
    const groupIds=new Set([...subjectGroupChoices.querySelectorAll('input:checked')].map(x=>String(x.value)));
    const individualIds=[...subjectStudents.querySelectorAll('input[data-subject-student]:checked')].map(x=>x.value);
-   if(!name||(subjectType.value!=='acollida'&&!subjectGroup.value)){subjectNotice.textContent='Cal indicar el nom i el grup de referència.';return}
+   if(!name||(!['acollida','reforc','optativa','optativa_rotativa','optativa_eleccio'].includes(subjectType.value)&&!subjectGroup.value)){subjectNotice.textContent='Cal indicar el nom i el grup de referència.';return}
    if(!teacherIds.length){subjectNotice.textContent='Selecciona almenys un professor.';return}
    if(subjectMode.value==='custom'&&!subjectCatalogReady){subjectNotice.textContent='No s’ha pogut carregar l’alumnat.';return}
    const studentIds=subjectMode.value==='none'?[]:[...new Set([...subjectStudentCatalog.filter(a=>a.actiu!==false&&groupIds.has(String(a.grup_id))).map(a=>a.id),...individualIds])];
@@ -1411,7 +1411,7 @@ $('jediAdminButton').addEventListener('click',async()=>{
    if(!confirm('Crear «'+name+'» amb '+teacherIds.length+' professor(s) i '+studentIds.length+' alumne(s)?'))return;
    subjectBusy=true;subjectSave.disabled=true;subjectNotice.style.color='#526075';subjectNotice.textContent='Creant assignatura…';let createdId=null;
    try{
-    const created=await api('/rest/v1/classes',accessToken,{method:'POST',headers:{'Content-Type':'application/json',Prefer:'return=representation'},body:JSON.stringify({nom:name,curs:subjectType.value==='acollida'?null:Number(subjectCourse.value),grup_id:['acollida','optativa','optativa_rotativa','optativa_eleccio'].includes(subjectType.value)?null:subjectGroup.value,es_optativa:['optativa','optativa_eleccio','optativa_rotativa'].includes(subjectType.value),tipus_assignatura:subjectType.value,aula_habitual:subjectRoom.value.trim()||null})});
+    const created=await api('/rest/v1/classes',accessToken,{method:'POST',headers:{'Content-Type':'application/json',Prefer:'return=representation'},body:JSON.stringify({nom:name,curs:subjectType.value==='acollida'?null:Number(subjectCourse.value),grup_id:['acollida','reforc','optativa','optativa_rotativa','optativa_eleccio'].includes(subjectType.value)?null:subjectGroup.value,es_optativa:['optativa','optativa_eleccio','optativa_rotativa'].includes(subjectType.value),tipus_assignatura:subjectType.value,aula_habitual:subjectRoom.value.trim()||null})});
     createdId=created?.[0]?.id;if(!createdId)throw Error('No s’ha retornat l’identificador. Comprova si s’ha creat abans de repetir.');
     await api('/rest/v1/professors_classes',accessToken,{method:'POST',headers:{'Content-Type':'application/json',Prefer:'return=minimal'},body:JSON.stringify(teacherIds.map(professor_id=>({professor_id,classe_id:createdId})))});
     if(studentIds.length)await api('/rest/v1/alumnes_classes',accessToken,{method:'POST',headers:{'Content-Type':'application/json',Prefer:'return=minimal'},body:JSON.stringify(studentIds.map(alumne_id=>({alumne_id,classe_id:createdId,activa:true})))});
@@ -1456,14 +1456,52 @@ $('jediAdminButton').addEventListener('click',async()=>{
   async function openSubjectInfo(c){
    infoTitle.textContent=c.nom;infoBody.replaceChildren();infoOverlay.hidden=false;
    const meta=document.createElement('div');meta.className='pa-v22-subject-meta';
-   for(const [label,value] of [['Curs',({1:'1r ESO',2:'2n ESO',3:'3r ESO',4:'4t ESO'})[c.curs]||String(c.curs)],['Grup de referència',subjectGroupName(c.grup_id)],['Tipus',typeLabel(c)]]){const box=document.createElement('div');const small=document.createElement('small');small.textContent=label;const strong=document.createElement('strong');strong.textContent=value;box.append(small,strong);meta.append(box)}
+   for(const [label,value] of [['Curs',({1:'1r ESO',2:'2n ESO',3:'3r ESO',4:'4t ESO'})[c.curs]||String(c.curs)],['Grup de referència',c.grup_id?subjectGroupName(c.grup_id):'Tots els grups'],['Tipus',typeLabel(c)]]){const box=document.createElement('div');const small=document.createElement('small');small.textContent=label;const strong=document.createElement('strong');strong.textContent=value;box.append(small,strong);meta.append(box)}
    const staffSection=document.createElement('section');const staffTitle=document.createElement('h4');staffTitle.textContent='Professorat assignat';const staffText=document.createElement('p');staffText.className='note-hint';staffText.textContent='Carregant professorat…';staffSection.append(staffTitle,staffText);
+   // Consulta de matrícules actives: la fitxa mai no modifica dades.
+   const enrollmentSection=document.createElement('section');
+   const enrollmentTitle=document.createElement('h4');enrollmentTitle.textContent='Alumnat matriculat';
+   const enrollmentBody=document.createElement('div');enrollmentBody.className='note-hint';enrollmentBody.textContent='Carregant matrícules…';
+   enrollmentSection.append(enrollmentTitle,enrollmentBody);
+   const enrollmentId=String(c.id);
+   (async()=>{
+    try{
+     const [members,students]=await Promise.all([
+      api('/rest/v1/alumnes_classes?select=alumne_id&classe_id=eq.'+encodeURIComponent(c.id)+'&activa=eq.true&limit=1000'),
+      api('/rest/v1/alumnes?select=id,nom,cognoms,grup_id,actiu&limit=1000')
+     ]);
+     if(infoOverlay.hidden||String(c.id)!==enrollmentId||infoTitle.textContent!==c.nom)return;
+     const enrolled=new Set(members.map(m=>String(m.alumne_id)));
+     const visible=students.filter(a=>enrolled.has(String(a.id)));
+     const sorted=[...visible].sort((a,b)=>String(a.cognoms||'').localeCompare(String(b.cognoms||''),'ca')||String(a.nom||'').localeCompare(String(b.nom||''),'ca'));
+     enrollmentBody.replaceChildren();
+     const count=document.createElement('p');count.style.cssText='margin:6px 0 12px;font-size:14px;font-weight:650;color:#344d96';
+     count.textContent=visible.length+' alumnes matriculats';enrollmentBody.append(count);
+     if(members.length!==visible.length){const warning=document.createElement('p');warning.style.color='#9a641e';warning.textContent='Algunes matrícules no són visibles amb els permisos actuals; el recompte mostra només l’alumnat consultable.';enrollmentBody.append(warning)}
+     if(!visible.length){const empty=document.createElement('p');empty.textContent='No hi ha alumnat matriculat visible.';enrollmentBody.append(empty);return}
+     const normalized=String(c.nom||'').toLocaleLowerCase('ca').normalize('NFD').replace(/[\u0300-\u036f]/g,'');
+     const project=Number(c.curs)===3&&normalized.includes('projecte interdisciplin');
+     const groupIds=[...new Set(visible.map(a=>String(a.grup_id||'')))].filter(Boolean);
+     // Només resumim per grup si la matrícula cobreix realment TOTS els alumnes actius del grup.
+     const completeGroups=groupIds.length>0&&groupIds.every(id=>{
+      const groupStudents=students.filter(a=>String(a.grup_id)===id&&a.actiu!==false);
+      return groupStudents.length>0&&groupStudents.every(a=>enrolled.has(String(a.id)));
+     });
+     const showGroups=completeGroups&&(project||Boolean(c.grup_id));
+     if(showGroups){const summary=document.createElement('p');summary.style.cssText='font-size:14px;color:#344054;margin:0';summary.textContent=groupIds.map(id=>subjectGroupName(id)).sort((a,b)=>a.localeCompare(b,'ca',{numeric:true})).join(' + ');enrollmentBody.append(summary);return}
+     const wrap=document.createElement('div');wrap.style.cssText='max-height:260px;overflow:auto;border:1px solid #e5eaf2;border-radius:9px';
+     const table=document.createElement('table');table.style.width='100%';
+     const head=document.createElement('thead');const hr=document.createElement('tr');
+     for(const label of ['Alumne/a','Grup d’origen']){const th=document.createElement('th');th.textContent=label;th.style.cssText='font-size:12px;text-transform:none;letter-spacing:0;padding:9px 12px';hr.append(th)}head.append(hr);table.append(head);
+     const tbody=document.createElement('tbody');for(const a of sorted){const tr=document.createElement('tr');const name=document.createElement('td');name.textContent=[a.nom,a.cognoms].filter(Boolean).join(' ');name.style.padding='8px 12px';const group=document.createElement('td');group.textContent=a.grup_id?subjectGroupName(a.grup_id):'—';group.style.padding='8px 12px';tr.append(name,group);tbody.append(tr)}table.append(tbody);wrap.append(table);enrollmentBody.append(wrap);
+    }catch(err){if(!infoOverlay.hidden&&infoTitle.textContent===c.nom){enrollmentBody.textContent='No s’ha pogut consultar la matrícula: '+err.message}}
+   })();
    const hoursSection=document.createElement('section');const hoursTitle=document.createElement('h4');hoursTitle.textContent='Horari setmanal de l’assignatura';
    const hoursHint=document.createElement('p');hoursHint.className='note-hint';hoursHint.textContent='Sessions vinculades als horaris del professorat i dels grups classe.';
    const hoursList=document.createElement('div');hoursList.className='pa-v23-session-list';
    const hoursActions=document.createElement('div');hoursActions.className='pa-v23-session-actions';
    const hoursStatus=document.createElement('p');hoursStatus.className='note-hint';hoursStatus.setAttribute('role','status');
-   hoursSection.append(hoursTitle,hoursHint,hoursList,hoursActions,hoursStatus);infoBody.append(meta,staffSection,hoursSection);
+   hoursSection.append(hoursTitle,hoursHint,hoursList,hoursActions,hoursStatus);infoBody.append(meta,staffSection,enrollmentSection,hoursSection);
    try{
     const [assignments,slots,allSessions,sessionLinks]=await Promise.all([
      api('/rest/v1/professors_classes?select=professor_id&classe_id=eq.'+encodeURIComponent(c.id)+'&limit=1000'),
@@ -1605,7 +1643,7 @@ $('jediAdminButton').addEventListener('click',async()=>{
    if(!matches.length){const tr=document.createElement('tr');const td=document.createElement('td');td.colSpan=5;td.textContent='No s’han trobat assignatures amb aquests filtres.';td.style.cssText='text-align:center!important;color:#7a8799;padding:24px';tr.append(td);body.append(tr)}
   }
   listSearch.addEventListener('input',renderSubjectList);listCourse.addEventListener('change',renderSubjectList);
-  function refreshEditGroups(preferred){if(['acollida','optativa','optativa_rotativa','optativa_eleccio'].includes(editType.value)){editCourse.disabled=editType.value==='acollida';editGroup.disabled=true;editGroup.required=false;editGroup.replaceChildren(new Option('Tots els grups',''));return}editCourse.disabled=false;editGroup.disabled=false;editGroup.required=true;editGroup.replaceChildren();for(const g of subjectGroups.filter(g=>groupCourse(g)===Number(editCourse.value)))editGroup.add(new Option(g.nom,g.id));if([...editGroup.options].some(o=>o.value===String(preferred)))editGroup.value=String(preferred)}
+  function refreshEditGroups(preferred){if(['acollida','reforc','optativa','optativa_rotativa','optativa_eleccio'].includes(editType.value)){editCourse.disabled=editType.value==='acollida';editGroup.disabled=true;editGroup.required=false;editGroup.replaceChildren(new Option('Tot el curs (A + B)',''));return}editCourse.disabled=false;editGroup.disabled=false;editGroup.required=true;editGroup.replaceChildren();for(const g of subjectGroups.filter(g=>groupCourse(g)===Number(editCourse.value)))editGroup.add(new Option(g.nom,g.id));if([...editGroup.options].some(o=>o.value===String(preferred)))editGroup.value=String(preferred)}
   editCourse.onchange=()=>refreshEditGroups(editGroup.value);editType.onchange=()=>refreshEditGroups(editGroup.value);
   function closeEdit(){if(editBusy)return;overlay.hidden=true;editingId=null;editStatus.textContent=''}
   function openEdit(id){const c=classes.find(c=>String(c.id)===String(id));if(!c)return;editingId=c.id;editName.value=c.nom||'';editRoom.value=c.aula_habitual||'';editCourse.value=String(c.curs??1);// Manté el tipus històric 'optativa' només si l'assignatura ja el tenia.
@@ -1621,8 +1659,8 @@ $('jediAdminButton').addEventListener('click',async()=>{
    e.preventDefault();if(editBusy)return;
    if(!editStaffReady){editStatus.textContent='Espera que es carregui el professorat.';return}
    const c=classes.find(c=>String(c.id)===String(editingId));if(!c)return;
-   const nom=editName.value.trim();if(!nom||(!['acollida','optativa','optativa_rotativa','optativa_eleccio'].includes(editType.value)&&!editGroup.value)){editStatus.textContent='Cal indicar un nom i un grup de referència.';return}
-   const payload={nom,curs:editType.value==='acollida'?null:Number(editCourse.value),grup_id:['acollida','optativa','optativa_rotativa','optativa_eleccio'].includes(editType.value)?null:editGroup.value,tipus_assignatura:editType.value,es_optativa:['optativa','optativa_rotativa','optativa_eleccio'].includes(editType.value),aula_habitual:editRoom.value.trim()||null};
+   const nom=editName.value.trim();if(!nom||(!['acollida','reforc','optativa','optativa_rotativa','optativa_eleccio'].includes(editType.value)&&!editGroup.value)){editStatus.textContent='Cal indicar un nom i un grup de referència.';return}
+   const payload={nom,curs:editType.value==='acollida'?null:Number(editCourse.value),grup_id:['acollida','reforc','optativa','optativa_rotativa','optativa_eleccio'].includes(editType.value)?null:editGroup.value,tipus_assignatura:editType.value,es_optativa:['optativa','optativa_rotativa','optativa_eleccio'].includes(editType.value),aula_habitual:editRoom.value.trim()||null};
    editBusy=true;editSave.disabled=true;editCancel.disabled=true;modalClose.disabled=true;editStatus.style.color='#526075';editStatus.textContent='Desant canvis…';
    try{
     const rows=await api('/rest/v1/classes?id=eq.'+encodeURIComponent(c.id),accessToken,{method:'PATCH',headers:{'Content-Type':'application/json',Prefer:'return=representation'},body:JSON.stringify(payload)});
