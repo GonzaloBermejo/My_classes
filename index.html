@@ -1,8 +1,23 @@
 <!DOCTYPE html>
 <html lang="ca">
 <head>
+<script id="paideia-restore-eleccio-4t">
+/* Recuperació de la simulació local exportada: no accedeix a Supabase. */
+(function(){
+  try {
+    const key='paideia-v27-3-eleccio-4t-local';
+    const existing=localStorage.getItem(key);
+    if (existing !== null) {
+      try { if (Array.isArray(JSON.parse(existing)) && JSON.parse(existing).length > 0) return; }
+      catch (_) { return; }
+    }
+    localStorage.setItem(key, "[{\"id\":\"eleccio-1794212892021\",\"format\":\"paideia-eleccio-prova-local-v27.3\",\"creada_at\":\"2026-11-09T08:28:12.021Z\",\"curs\":4,\"franges\":[[{\"nom\":\"Franc\u00e8s\",\"aula_habitual\":\"4t d'ESO A\",\"professor_id\":\"f377b137-4254-420b-ab88-24b46a217955\"},{\"nom\":\"F\u00edsica i Qu\u00edmica\",\"aula_habitual\":\"Laboratori\",\"professor_id\":\"5eb87a1c-ff3d-4e5e-bbc8-4b9feb29c3cf\"},{\"nom\":\"Digitalitzaci\u00f3\",\"aula_habitual\":\"4t d'ESO B\",\"professor_id\":\"3ee4b8aa-5245-4d14-8506-b4f6bca0e9aa\"}],[{\"nom\":\"Llat\u00ed\",\"aula_habitual\":null,\"professor_id\":\"fd0960de-62ab-4b2a-849c-076cffd90862\"},{\"nom\":\"Economia b\u00e0sica\",\"aula_habitual\":null,\"professor_id\":\"86a670eb-6f10-4318-8d07-2cd0d9e1cdfc\"},{\"nom\":\"Biologia i Geologia\",\"aula_habitual\":\"Laboratori 2\",\"professor_id\":\"8b2a91ee-3cae-41eb-981b-6586dc49c501\"}],[{\"nom\":\"Tecnologia\",\"aula_habitual\":null,\"professor_id\":\"8b2a91ee-3cae-41eb-981b-6586dc49c501\"},{\"nom\":\"Filosofia\",\"aula_habitual\":null,\"professor_id\":\"fd0960de-62ab-4b2a-849c-076cffd90862\"},{\"nom\":\"Cultura cientifica\",\"aula_habitual\":null,\"professor_id\":\"5eb87a1c-ff3d-4e5e-bbc8-4b9feb29c3cf\"}]],\"alumnes\":[{\"alumne_id\":\"a27558fa-edfc-4a87-87d6-848990e3cf75\",\"nom\":\"Bruce Banner\",\"eleccions\":[0,0,0]},{\"alumne_id\":\"d549ae04-17ac-46a3-9863-312dbfe0659c\",\"nom\":\"T Challa\",\"eleccions\":[1,1,1]},{\"alumne_id\":\"4ad3c6f1-50b5-4955-8402-a374840aff01\",\"nom\":\"Carol Danvers\",\"eleccions\":[2,2,2]},{\"alumne_id\":\"ff4f328e-9b54-49fc-b91a-06165399c0ee\",\"nom\":\"Wanda Maximoff\",\"eleccions\":[0,0,0]},{\"alumne_id\":\"a65ddc83-d086-47a1-b7f2-17b7ca767fa2\",\"nom\":\"Thor Odinson\",\"eleccions\":[1,1,1]},{\"alumne_id\":\"083f8550-43d1-4637-b248-92f654183f41\",\"nom\":\"Peter Parker\",\"eleccions\":[2,2,2]},{\"alumne_id\":\"6dd23f02-cd67-4a0a-aaa7-9612efee0712\",\"nom\":\"Steve Rogers\",\"eleccions\":[0,0,0]},{\"alumne_id\":\"c7d0aa47-64b9-48f8-8f1b-00aee55ee5cd\",\"nom\":\"Natasha Romanoff\",\"eleccions\":[1,1,1]},{\"alumne_id\":\"238c0ce0-1d93-4e03-ad7a-1c24e0fb9145\",\"nom\":\"Tony Stark\",\"eleccions\":[2,2,0]},{\"alumne_id\":\"1a96c92f-972a-4fd9-8152-92e61300999a\",\"nom\":\"Stephen Strange\",\"eleccions\":[0,0,2]}]}]");
+  } catch (_) { /* storage unavailable; leave application untouched */ }
+})();
+</script>
+
 <meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Paideia · Plataforma educativa · V27.0 (Optatives rotatives: prova segura)</title>
+<title>Paideia · Plataforma educativa · Consolidació optatives Supabase</title>
 <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='14' fill='%23344d96'/%3E%3Cpath d='M22 47V17h13c18 0 18 24 0 24H22' fill='none' stroke='white' stroke-width='6' stroke-linejoin='round'/%3E%3C/svg%3E">
 <style>
 :root{font-family:Inter,system-ui,-apple-system,Segoe UI,sans-serif;color:#252b35;background:#f7f8fa}*{box-sizing:border-box}body{margin:0}button,input,textarea{font:inherit}button{cursor:pointer}header{background:white;border-bottom:1px solid #e8ebef;padding:23px max(24px,calc((100vw - 1200px)/2));display:flex;justify-content:space-between;align-items:center}header strong{font-size:21px;letter-spacing:-.6px}header span{color:#8a929f;font-size:13px}main{max-width:1200px;margin:42px auto;padding:0 24px}.top{display:flex;justify-content:space-between;gap:16px;align-items:center;margin-bottom:22px}.top h1{margin:0;font-size:28px;letter-spacing:-.8px}.sub{margin:7px 0 0;color:#87909c;font-size:14px}.layout{display:grid;grid-template-columns:295px minmax(0,1fr);gap:24px}.panel{background:white;border:1px solid #e8ebef;border-radius:14px;overflow:hidden}.side{padding:17px}.side-title{font-size:12px;text-transform:uppercase;letter-spacing:1.1px;color:#8d96a2;font-weight:700;margin:6px 8px 15px}.class-btn{white-space:nowrap;font-size:13px;width:100%;display:flex;justify-content:space-between;align-items:center;border:0;background:transparent;padding:12px 13px;border-radius:9px;text-align:left;color:#4b5563;margin-bottom:4px}.class-btn.active{background:#eef2ff;color:#4058a8;font-weight:650}.class-btn:hover:not(.active){background:#f6f7f9}.count{font-size:12px;color:#9ba3ae}.add-side{width:100%;background:white;border:1px dashed #d5dbe4;border-radius:9px;padding:12px;color:#687586;margin-top:13px}.add-side:hover{background:#f8faff}.content-head{padding:23px 25px;display:flex;justify-content:space-between;align-items:center;gap:15px;border-bottom:1px solid #edf0f3}.content-head h2{margin:0;font-size:21px;letter-spacing:-.5px}.hint{color:#9aa2ad;font-size:12px;margin-top:5px}.actions{display:flex;gap:9px;flex-wrap:wrap}button.primary{background:#344d96;color:white;border:1px solid #344d96;padding:10px 14px;border-radius:8px;font-size:13px;font-weight:600}button.secondary{background:white;color:#667181;border:1px solid #e0e5eb;padding:10px 13px;border-radius:8px;font-size:13px}button:hover{filter:brightness(.97)}.table-wrap{overflow-x:auto}table{width:100%;border-collapse:collapse;text-align:left}th{background:#fafbfc;font-size:11px;letter-spacing:.8px;text-transform:uppercase;color:#9ba4b0;font-weight:700;padding:15px 22px;border-bottom:1px solid #edf0f3}td{padding:11px 22px;border-bottom:1px solid #f0f2f5;font-size:14px}tr:last-child td{border-bottom:0}tbody tr:hover{background:#fafbff}.num{color:#a5adba;width:65px}.grade-input{width:94px;min-width:75px;border:1px solid transparent;background:transparent;border-radius:6px;padding:8px 9px;color:#303946;text-align:center}.grade-input:hover{border-color:#e6eaf0}.grade-input:focus{outline:none;border-color:#a4b2e0;background:white}.item-head{display:flex;align-items:center;gap:5px;white-space:nowrap}.item-edit{border:0;background:transparent;color:inherit;font:inherit;text-transform:inherit;letter-spacing:inherit;cursor:pointer;padding:3px}.item-remove{border:0;background:transparent;color:#b0b8c4;font-size:16px;padding:2px 5px}.item-remove:hover{color:#be4b52}.name-input{border:1px solid transparent;border-radius:6px;background:transparent;padding:8px 9px;width:100%;min-width:130px;color:#303946}.name-input:hover{border-color:#e6eaf0}.name-input:focus{outline:none;border-color:#a4b2e0;background:white}.delete{border:0;background:transparent;color:#aab2bd;font-size:18px;border-radius:6px;padding:5px 10px}.delete:hover{color:#be4b52;background:#fff0f1}.empty{padding:65px 20px;text-align:center;color:#9aa3af;font-size:14px}.calculated{font-weight:650;color:#344d96;text-align:center;white-space:nowrap}.calc-tag{font-size:10px;color:#7e8cb6;margin-left:4px}.modal-back{position:fixed;inset:0;background:#17233b66;display:flex;align-items:center;justify-content:center;padding:18px;z-index:10}.modal{background:white;border-radius:15px;padding:25px;width:min(540px,100%);box-shadow:0 18px 60px #1c2b4933}.modal h3{margin:0 0 9px}.modal p{font-size:13px;color:#7d8795}.modal label{font-size:13px;color:#5d6877;display:block;margin:14px 0 6px}.modal input,.modal select{width:100%;padding:10px;border:1px solid #dce2eb;border-radius:8px;background:white}.weight-row{display:grid;grid-template-columns:1fr 110px;gap:12px;align-items:end}.modal-actions{display:flex;justify-content:flex-end;gap:8px;margin-top:22px}.error{color:#bd3d4b!important;min-height:18px} .student-link{border:0;background:transparent;text-align:left;color:#344d96;font-weight:600;padding:7px 3px;cursor:pointer}.student-link:hover{text-decoration:underline}.drag-handle{border:0;background:transparent;color:#a4adba;cursor:grab;font-size:19px;padding:4px 7px}.dragging{opacity:.4}.drop-target{outline:2px solid #8ca0d6;outline-offset:-2px}.sort-bar{padding:12px 22px;border-bottom:1px solid #edf0f3;display:flex;align-items:center;gap:12px;font-size:12px;color:#748092}.sort-bar select{padding:7px;border:1px solid #e0e5eb;border-radius:7px;background:white;color:#526075}.student-notes{width:100%;min-height:170px;resize:vertical;border:1px solid #dce2eb;border-radius:9px;padding:12px;line-height:1.5}.student-notes:focus{outline:none;border-color:#879bd2;box-shadow:0 0 0 3px #e9eeff}.modal input:focus,.modal select:focus{outline:none;border-color:#879bd2;box-shadow:0 0 0 3px #e9eeff}.note-hint{font-size:12px;color:#8b95a3}.grade-input.grade-fail,.calculated.grade-fail{background:#fceced;color:#a3454b;border-radius:7px}.grade-input.grade-pass,.calculated.grade-pass{background:#eaf6ee;color:#337b51;border-radius:7px}.calculated{display:inline-block;min-width:76px;padding:8px 10px}.search-input{padding:8px 11px;border:1px solid #e0e5eb;border-radius:7px;min-width:190px;max-width:100%;font-size:13px;color:#526075}.search-input:focus{outline:none;border-color:#879bd2;box-shadow:0 0 0 3px #e9eeff}.search-count{color:#9aa3af}.footer{margin-top:18px;font-size:12px;color:#9ca5b1;text-align:right}@media(max-width:700px){header{padding:20px 24px}.layout{grid-template-columns:1fr}main{margin:25px auto}.content-head{align-items:flex-start;flex-direction:column}.top h1{font-size:24px}}
@@ -1273,6 +1288,82 @@ $('jediAdminButton').addEventListener('click',async()=>{
     const remove=document.createElement('button');remove.type='button';remove.className='secondary';remove.style.marginTop='10px';remove.textContent='Eliminar prova local';remove.onclick=()=>{if(confirm('Eliminar aquesta prova local? No es tocarà Supabase.')){rotationWriteDrafts(rotationReadDrafts().filter(d=>d.id!==draft.id));rotationRenderDrafts();if(typeof renderSubjectList==='function')renderSubjectList()}};item.append(remove);rotationDraftPanel.append(item)}
   }
   rotationRenderDrafts();
+  // Integració real de la rotació de 1r ESO. Les funcions RPC mantenen
+  // les comprovacions d'administrador al servidor; cap bypass d'auth.
+  const liveRotationId='980936a3-36d5-4ed9-ab1a-673e324d2a23';
+  const liveRotation=document.createElement('section');
+  liveRotation.style.cssText='margin-top:18px;border:1px solid #bdcce8;border-radius:12px;padding:17px;background:#f5f8ff';
+  const liveTitle=document.createElement('h4');liveTitle.textContent='Optatives rotatives reals · 1r ESO (Supabase)';liveTitle.style.margin='0 0 8px';
+  const liveHelp=document.createElement('p');liveHelp.className='note-hint';liveHelp.textContent='Consulta la distribució amb la funció protegida de Supabase abans d’activar cada avaluació. La funció del servidor valida els permisos i l’ordre de les activacions. No s’accedeix directament a les taules protegides.';
+  const liveState=document.createElement('p');liveState.setAttribute('role','status');liveState.className='note-hint';liveState.textContent='Carregant estat de Supabase…';
+  const liveControls=document.createElement('div');liveControls.style.cssText='display:flex;gap:10px;align-items:center;flex-wrap:wrap;margin:12px 0';
+  const liveTerm=document.createElement('select');liveTerm.setAttribute('aria-label','Avaluació de la rotació');liveTerm.style.cssText='padding:9px;border:1px solid #dce2eb;border-radius:8px';
+  for(const [v,label] of [['1a','1a avaluació'],['2a','2a avaluació'],['3a','3a avaluació']])liveTerm.add(new Option(label,v));
+  const liveRefresh=document.createElement('button');liveRefresh.type='button';liveRefresh.className='secondary';liveRefresh.textContent='Actualitzar estat';
+  const livePreview=document.createElement('button');livePreview.type='button';livePreview.className='secondary';livePreview.textContent='Previsualitzar';
+  const liveActivate=document.createElement('button');liveActivate.type='button';liveActivate.className='primary';liveActivate.textContent='Activar avaluació';liveActivate.disabled=true;
+  const liveResult=document.createElement('div');liveResult.style.cssText='overflow-x:auto;margin-top:10px';
+  liveControls.append(liveTerm,liveRefresh,livePreview,liveActivate);liveRotation.append(liveTitle,liveHelp,liveState,liveControls,liveResult);
+  // Accés exclusiu per RPC autoritzada: cap SELECT directe a taules protegides.
+  // El servidor és l'única font d'autoritat per validar l'activació.
+  let livePreviewed=null,liveBusy=false;
+  const liveRpc=(name,args)=>api('/rest/v1/rpc/'+name,accessToken,{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(args)});
+  function liveClearPreview(){livePreviewed=null;liveActivate.disabled=true;liveResult.replaceChildren()}
+  function liveSetBusy(b){liveBusy=b;liveRefresh.disabled=b;livePreview.disabled=b;liveTerm.disabled=b;liveActivate.disabled=b||!livePreviewed}
+  async function liveLoad(){
+   liveClearPreview();
+   liveState.textContent='Connexió preparada. Prem «Previsualitzar» per consultar la distribució amb els permisos d’administració. L’estat històric de les activacions no es pot llegir directament des del navegador.';
+  }
+  liveTerm.onchange=liveClearPreview;
+  liveRefresh.onclick=liveLoad;
+  livePreview.onclick=async()=>{
+   liveClearPreview();liveSetBusy(true);
+   try{
+    const term=liveTerm.value;
+    const rows=await liveRpc('previsualitzar_rotacio_optativa',{p_rotacio_id:liveRotationId,p_avaluacio:term});
+    if(!Array.isArray(rows)||rows.length!==16||new Set(rows.map(r=>r.alumne_id)).size!==16)throw Error('La previsualització no ha retornat 16 alumnes diferents. No es pot activar.');
+    if(rows.some(r=>![1,2,3].includes(Number(r.grup_rotatiu))||!r.assignatura_destinacio))throw Error('La previsualització conté grups o destinacions invàlids.');
+    // Els noms provenen del registre d'alumnat que l'administrador ja pot consultar.
+    // No exposem les taules internes de la rotació ni alterem els permisos RLS.
+    const ids=rows.map(r=>String(r.alumne_id));
+    let students=[];
+    try{
+     students=await api('/rest/v1/alumnes?select=id,nom,cognoms&id=in.('+ids.join(',')+')',accessToken);
+    }catch(err){
+     // Catàleg que Paideia ja hagi carregat a la sessió, si està disponible.
+     students=subjectStudentCatalog.filter(a=>ids.includes(String(a.id)));
+    }
+    const byId=new Map((Array.isArray(students)?students:[]).map(a=>[String(a.id),[a.nom,a.cognoms].filter(Boolean).join(' ').trim()]));
+    const missing=rows.filter(r=>!byId.get(String(r.alumne_id)));
+    const ordered=[...rows].sort((a,b)=>Number(a.grup_rotatiu)-Number(b.grup_rotatiu)||(byId.get(String(a.alumne_id))||'').localeCompare(byId.get(String(b.alumne_id))||'','ca'));
+    const table=document.createElement('table');table.style.cssText='width:100%;font-size:13px';
+    const thead=document.createElement('thead');const hr=document.createElement('tr');
+    for(const t of ['Grup','Alumne/a','Assignatura actual','Assignatura de destinació']){const th=document.createElement('th');th.textContent=t;hr.append(th)}thead.append(hr);table.append(thead);
+    const tbody=document.createElement('tbody');
+    for(const r of ordered){const tr=document.createElement('tr');for(const v of [r.grup_rotatiu,byId.get(String(r.alumne_id))||'Nom no disponible',r.assignatura_actual||'—',r.assignatura_destinacio]){const td=document.createElement('td');td.textContent=String(v??'—');td.style.padding='7px';tr.append(td)}tbody.append(tr)}table.append(tbody);liveResult.append(table);
+    if(missing.length){
+     livePreviewed=null;
+     liveState.textContent='Previsualització de 16 alumnes rebuda, però falten '+missing.length+' noms. Per seguretat, l’activació queda bloquejada fins que es puguin verificar tots els alumnes.';
+    }else{
+     livePreviewed=term;
+     liveState.textContent='Previsualització autoritzada: 16 alumnes identificats per a '+term+'. Revisa els noms, grups i destins abans d’activar. El servidor validarà l’ordre de les avaluacions.';
+    }
+   }catch(err){liveState.textContent='No es pot previsualitzar o activar: '+err.message}
+   finally{liveSetBusy(false)}
+  };
+  liveActivate.onclick=async()=>{
+   if(liveBusy||livePreviewed!==liveTerm.value)return;
+   const term=liveTerm.value;
+   if(!confirm('Activar '+term+' avaluació per als 16 alumnes de les optatives rotatives de 1r ESO? Això modificarà les matrícules actives a Supabase. Confirma només si has revisat la previsualització.'))return;
+   liveSetBusy(true);
+   try{
+    await liveRpc('activar_rotacio_optativa',{p_rotacio_id:liveRotationId,p_avaluacio:term});
+    liveClearPreview();
+    liveState.textContent='✓ La funció d’activació ha respost sense error per a '+term+'. Cal verificar les matrícules a les fitxes d’assignatura. No es mostra un registre d’activacions perquè la seva consulta directa està protegida.';
+   }catch(err){liveClearPreview();liveState.textContent='No s’ha pogut confirmar l’activació: '+err.message+'. Si hi ha un error de xarxa, comprova les matrícules abans de repetir-la.'}
+   finally{liveSetBusy(false)}
+  };
+  liveLoad();
   rotationExport.addEventListener('click',()=>{
    const noms=rotationInputs.map(x=>x.value.trim());
    if(noms.some(x=>!x)||new Set(noms.map(x=>x.toLocaleLowerCase('ca'))).size!==3){rotationMessage.textContent='Cal indicar tres noms d’assignatura diferents abans de preparar la prova.';return}
@@ -1321,7 +1412,72 @@ $('jediAdminButton').addEventListener('click',async()=>{
   const electionLocalList=document.createElement('section');electionLocalList.style.cssText='margin-top:14px;border:1px solid #dce4f0;border-radius:12px;padding:15px;background:#f8faff';
   function electionRead(){try{const x=JSON.parse(localStorage.getItem(electionKey)||'[]');return Array.isArray(x)?x:[]}catch{return []}}
   function electionWrite(x){localStorage.setItem(electionKey,JSON.stringify(x))}
-  function electionRenderList(){electionLocalList.replaceChildren();const h=document.createElement('h4');h.textContent='Optatives d’elecció de 4t · Proves locals';h.style.margin='0 0 8px';electionLocalList.append(h);const drafts=electionRead();if(!drafts.length){const p=document.createElement('p');p.className='note-hint';p.textContent='Encara no hi ha cap proposta desada.';electionLocalList.append(p);return}for(const d of drafts){const item=document.createElement('div');item.style.cssText='background:white;border:1px solid #e1e7f1;border-radius:9px;padding:12px;margin-top:9px';const title=document.createElement('strong');title.textContent='3 franges · 9 assignatures · '+d.alumnes.length+' alumnes';item.append(title);const details=document.createElement('details');const summary=document.createElement('summary');summary.textContent='Veure assignatures i eleccions';summary.style.cssText='cursor:pointer;margin-top:8px';details.append(summary);for(let b=0;b<3;b++){const p=document.createElement('p');p.style.fontSize='13px';p.textContent='Franja '+(b+1)+': '+d.franges[b].map(x=>x.nom).join(' / ');details.append(p)}for(const a of d.alumnes){const p=document.createElement('p');p.style.fontSize='12px';p.textContent=a.nom+': '+a.eleccions.map((choice,b)=>d.franges[b][choice].nom).join(' · ');details.append(p)}item.append(details);const remove=document.createElement('button');remove.type='button';remove.className='secondary';remove.textContent='Eliminar prova local';remove.onclick=()=>{if(confirm('Eliminar aquesta prova local? No es tocarà Supabase.')){electionWrite(electionRead().filter(x=>x.id!==d.id));electionRenderList()}};item.append(remove);electionLocalList.append(item)}}
+  function electionRenderList(){electionLocalList.replaceChildren();const h=document.createElement('h4');h.textContent='Optatives d’elecció de 4t · Proves locals';h.style.margin='0 0 8px';electionLocalList.append(h);const drafts=electionRead();if(!drafts.length){const p=document.createElement('p');p.className='note-hint';p.textContent='Encara no hi ha cap proposta desada.';electionLocalList.append(p);return}for(const d of drafts){const item=document.createElement('div');item.style.cssText='background:white;border:1px solid #e1e7f1;border-radius:9px;padding:12px;margin-top:9px';const title=document.createElement('strong');title.textContent='3 franges · 9 assignatures · '+d.alumnes.length+' alumnes';item.append(title);const details=document.createElement('details');const summary=document.createElement('summary');summary.textContent='Veure assignatures i eleccions';summary.style.cssText='cursor:pointer;margin-top:8px';details.append(summary);for(let b=0;b<3;b++){const p=document.createElement('p');p.style.fontSize='13px';p.textContent='Franja '+(b+1)+': '+d.franges[b].map(x=>x.nom).join(' / ');details.append(p)}for(const a of d.alumnes){const p=document.createElement('p');p.style.fontSize='12px';p.textContent=a.nom+': '+a.eleccions.map((choice,b)=>d.franges[b][choice].nom).join(' · ');details.append(p)}item.append(details);const remove=document.createElement('button');remove.type='button';remove.className='secondary';remove.textContent='Eliminar prova local';remove.onclick=()=>{if(confirm('Eliminar aquesta prova local? No es tocarà Supabase.')){electionWrite(electionRead().filter(x=>x.id!==d.id));electionRenderList();renderSubjectList()}};
+    const previewBtn=document.createElement('button');previewBtn.type='button';previewBtn.className='secondary';previewBtn.textContent='Previsualitzar activació · només lectura';previewBtn.style.margin='8px 8px 0 0';
+    const activateBtn=document.createElement('button');activateBtn.type='button';activateBtn.className='primary';activateBtn.textContent='Activar a Supabase · confirmació obligatòria';activateBtn.style.margin='8px 8px 0 0';activateBtn.disabled=true;activateBtn.hidden=!isAdmin;
+    let previewApproved=false;
+    const previewPanel=document.createElement('div');previewPanel.hidden=true;previewPanel.style.cssText='margin-top:12px;padding:14px;border:1px solid #d5dfee;border-radius:10px;background:#fff;font-size:13px;line-height:1.6;white-space:pre-wrap;overflow-wrap:anywhere';
+    previewBtn.onclick=async()=>{
+      previewApproved=false;activateBtn.disabled=true;previewBtn.disabled=true;previewPanel.hidden=false;previewPanel.textContent='Consultant Supabase sense modificar dades…';
+      try{
+        if(!Array.isArray(d.franges)||d.franges.length!==3||d.franges.some(b=>!Array.isArray(b)||b.length!==3))throw Error('La proposta no té exactament 3 franges de 3 assignatures.');
+        const students=d.alumnes||[];
+        if(!students.length||new Set(students.map(a=>a.alumne_id)).size!==students.length||students.some(a=>!a.alumne_id||!Array.isArray(a.eleccions)||a.eleccions.length!==3||a.eleccions.some(i=>!Number.isInteger(Number(i))||Number(i)<0||Number(i)>2)))throw Error('Eleccions de l’alumnat incompletes o duplicades.');
+        const subjects=d.franges.flatMap((band,b)=>band.map((a,i)=>({name:String(a.nom||'').trim(),band:b,option:i,room:a.aula_habitual,teacher:a.professor_id})));
+        if(subjects.some(x=>!x.name))throw Error('Hi ha assignatures sense nom.');
+        const norm=x=>String(x||'').normalize('NFD').replace(/[\u0300-\u036f]/g,'').trim().toLocaleLowerCase('ca');
+        if(new Set(subjects.map(x=>norm(x.name))).size!==9)throw Error('Hi ha noms d’assignatures repetits en la proposta: cal revisar-los abans de l’activació.');
+        const [cloudClasses,cloudLinks,cloudStudents]=await Promise.all([
+          api('/rest/v1/classes?select=id,nom,curs,tipus_assignatura,grup_id&curs=eq.4&limit=1000'),
+          api('/rest/v1/alumnes_classes?select=alumne_id,classe_id,activa&limit=10000'),
+          api('/rest/v1/alumnes?select=id,nom,grup_id&limit=1000')
+        ]);
+        const studentIds=new Set(cloudStudents.map(a=>String(a.id)));
+        const missing=students.filter(a=>!studentIds.has(String(a.alumne_id)));
+        const rows=[];let creates=0,reuses=0,adds=0,removes=0;const warnings=[];
+        for(const sub of subjects){
+          const matches=cloudClasses.filter(c=>norm(c.nom)===norm(sub.name));
+          const chosen=students.filter(a=>Number(a.eleccions[sub.band])===sub.option);
+          if(matches.length>1){warnings.push(sub.name+': '+matches.length+' assignatures existents amb el mateix nom; revisió manual necessària.');rows.push('⚠ '+sub.name+' · Franja '+(sub.band+1)+' · coincidència ambigua');continue}
+          if(!matches.length){creates++;rows.push('CREAR · '+sub.name+' · Franja '+(sub.band+1)+' · '+chosen.length+' alumnes previstos');continue}
+          reuses++;const current=cloudLinks.filter(l=>String(l.classe_id)===String(matches[0].id)&&l.activa!==false);
+          const currentIds=new Set(current.map(l=>String(l.alumne_id)));const desiredIds=new Set(chosen.map(a=>String(a.alumne_id)));
+          const toAdd=chosen.filter(a=>!currentIds.has(String(a.alumne_id)));
+          const toRemove=current.filter(l=>!desiredIds.has(String(l.alumne_id)));
+          adds+=toAdd.length;removes+=toRemove.length;
+          rows.push('REUTILITZAR · '+sub.name+' · Franja '+(sub.band+1)+' · actuals '+current.length+' · afegir '+toAdd.length+' · retirar '+toRemove.length);
+          if(toAdd.length)rows.push('  + '+toAdd.map(a=>a.nom).join(', '));
+          if(toRemove.length)rows.push('  − '+toRemove.map(l=>cloudStudents.find(a=>String(a.id)===String(l.alumne_id))?.nom||l.alumne_id).join(', '));
+          if(matches[0].tipus_assignatura!=='optativa_eleccio')warnings.push(sub.name+': tipus existent '+(matches[0].tipus_assignatura||'sense tipus')+'; comprovar abans de reutilitzar.');
+        }
+        if(missing.length)warnings.push('Alumnes no trobats a Supabase: '+missing.map(a=>a.nom).join(', '));
+        const lines=['PREVISUALITZACIÓ · CAP CANVI A SUPABASE','Proposta: '+students.length+' alumnes · 9 assignatures · 3 franges','Assignatures a crear: '+creates+' · a reutilitzar: '+reuses,'Matrícules a afegir a assignatures existents: '+adds+' · a retirar: '+removes,'Les assignatures noves necessitarien '+subjects.filter(x=>!cloudClasses.some(c=>norm(c.nom)===norm(x.name))).reduce((n,x)=>n+students.filter(a=>Number(a.eleccions[x.band])===x.option).length,0)+' matrícules inicials.','',...rows];
+        if(warnings.length)lines.push('','⚠ REVISIONS NECESSÀRIES:',...warnings);
+        lines.push('','Aquesta previsualització és informativa i no modifica Supabase.','El botó d’activació només s’habilita si no hi ha advertències; requereix dues confirmacions i executa una única crida a la funció de Supabase.','IMPORTANT: la previsualització no substitueix la validació de seguretat i integritat que ha de fer la funció SQL.');
+        previewPanel.textContent=lines.join('\n');
+        previewApproved=warnings.length===0&&isAdmin&&!!accessToken;activateBtn.disabled=!previewApproved;
+        if(!isAdmin||!accessToken)previewPanel.textContent+='\n\nACTIVACIÓ BLOQUEJADA: cal una sessió d’administrador.';
+        if(warnings.length)previewPanel.textContent+='\n\nACTIVACIÓ BLOQUEJADA: resol les advertències abans de continuar.';
+      }catch(err){previewPanel.textContent='No s’ha pogut completar la previsualització: '+(err?.message||String(err))+'\nNo s’ha modificat cap dada.'}
+      finally{previewBtn.disabled=false}
+    };
+    activateBtn.onclick=async()=>{
+      if(!isAdmin||!accessToken||!previewApproved){alert('Cal iniciar sessió com a administrador i completar una previsualització sense advertències.');return}
+      if(!confirm('ATENCIÓ: aquesta operació modificarà les assignatures i matrícules a Supabase. Has comprovat la previsualització i vols continuar?'))return;
+      const confirmation=prompt('Per confirmar l’activació definitiva de les optatives de 4t ESO, escriu exactament ACTIVAR 4T:');
+      if(confirmation!=='ACTIVAR 4T')return;
+      activateBtn.disabled=true;previewBtn.disabled=true;previewApproved=false;
+      previewPanel.hidden=false;previewPanel.textContent='Activant a Supabase… No tanquis aquesta finestra.';
+      try{
+        const payload={curs:d.curs,franges:d.franges,alumnes:d.alumnes};
+        const result=await api('/rest/v1/rpc/activar_optatives_eleccio_4t',accessToken,{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({p_proposta:payload})});
+        if(!result||result.estat!=='activat')throw Error('Supabase no ha confirmat l’activació. Resultat: '+JSON.stringify(result));
+        previewPanel.textContent='ACTIVACIÓ CONFIRMADA PER SUPABASE\n'+JSON.stringify(result,null,2)+'\n\nActualitza les dades de l’aplicació per veure les matrícules.';
+        activateBtn.textContent='Activació executada · comprova les dades';activateBtn.disabled=true;previewBtn.disabled=true;
+      }catch(err){previewPanel.textContent='NO S’HA POGUT CONFIRMAR L’ACTIVACIÓ\n'+(err?.message||String(err))+'\n\nConsulta les dades de Supabase abans de repetir l’operació.'}
+      finally{previewBtn.disabled=false}
+    };
+    item.append(previewBtn,activateBtn,remove,previewPanel);electionLocalList.append(item)}}
   function electionRenderStudents(){const old=new Map([...electionStudents.querySelectorAll('[data-election-student]')].map(x=>[x.dataset.electionStudent,[...x.querySelectorAll('select')].map(s=>s.value)]));electionStudents.replaceChildren();const students=subjectStudentCatalog.filter(a=>a.actiu!==false&&groupCourse(groups.find(g=>String(g.id)===String(a.grup_id))||{})===4).sort((a,b)=>(String(a.cognoms||'')+' '+String(a.nom||'')).localeCompare(String(b.cognoms||'')+' '+String(b.nom||''),'ca'));if(!subjectCatalogReady){electionStudents.textContent='Carregant alumnat…';return}if(!students.length){electionStudents.textContent='No hi ha alumnes actius de 4t ESO.';return}for(const a of students){const row=document.createElement('div');row.dataset.electionStudent=a.id;row.style.cssText='display:grid;grid-template-columns:minmax(160px,1.5fr) repeat(3,minmax(100px,1fr));gap:8px;align-items:center;padding:8px 4px;border-bottom:1px solid #edf0f3';const name=document.createElement('span');name.textContent=[a.nom,a.cognoms].filter(Boolean).join(' ');name.style.fontSize='12px';row.append(name);for(let b=0;b<3;b++){const select=document.createElement('select');select.style.cssText='min-width:0;width:100%;padding:7px;border:1px solid #dce2eb;border-radius:7px;font-size:12px';for(let j=0;j<3;j++)select.add(new Option(electionNames[b*3+j].value.trim()||'Opció '+(j+1),String(j)));select.value=old.get(String(a.id))?.[b]||'0';row.append(select)}electionStudents.append(row)}electionMsg.textContent=students.length+' alumnes de 4t ESO · una elecció per franja.'}
   function electionUpdateSummary(){electionSummary.replaceChildren();for(let b=0;b<3;b++){const p=document.createElement('p');p.style.cssText='font-size:13px;margin:5px 0';p.textContent='Franja '+(b+1)+': '+electionNames.slice(b*3,b*3+3).map((n,i)=>n.value.trim()||'Opció '+(i+1)).join(' · ');electionSummary.append(p)}for(const row of electionStudents.querySelectorAll('[data-election-student]')){const selects=row.querySelectorAll('select');selects.forEach((sel,b)=>{const prev=sel.value;for(let i=0;i<3;i++)sel.options[i].textContent=electionNames[b*3+i].value.trim()||'Opció '+(i+1);sel.value=prev})}}
   electionNames.forEach(n=>n.addEventListener('input',electionUpdateSummary));
@@ -1357,7 +1513,7 @@ $('jediAdminButton').addEventListener('click',async()=>{
   const closeCreate=()=>{if(subjectBusy)return;createOverlay.hidden=true;subjectForm.hidden=true;subjectNotice.textContent=''};
   createClose.onclick=closeCreate;
   createOverlay.addEventListener('click',e=>{if(e.target===createOverlay)closeCreate()});
-  subjectSection.append(subjectToggle,rotationDraftPanel,electionLocalList);content.firstElementChild.append(subjectSection);
+  subjectSection.append(subjectToggle,liveRotation,rotationDraftPanel,electionLocalList);content.firstElementChild.append(subjectSection);
   let subjectStudentCatalog=[];let subjectCatalogReady=false;let subjectBusy=false;
   const groupCourse=g=>Number((String(g.nom||'').match(/^\s*(\d+)/)||[])[1]);
   const subjectGroups=[...groups].sort((a,b)=>String(a.nom).localeCompare(String(b.nom),'ca',{numeric:true}));
@@ -1389,7 +1545,7 @@ $('jediAdminButton').addEventListener('click',async()=>{
      const alumnes=[...electionStudents.querySelectorAll('[data-election-student]')].map(row=>({alumne_id:row.dataset.electionStudent,nom:row.querySelector('span')?.textContent||'',eleccions:[...row.querySelectorAll('select')].map(x=>Number(x.value))}));
      if(!alumnes.length)throw Error('No hi ha alumnes de 4t ESO per a la prova.');
      const franges=[0,1,2].map(b=>[0,1,2].map(a=>{const i=b*3+a;return {nom:names[i],aula_habitual:electionRooms[i].value.trim()||null,professor_id:electionTeachers[i].value||null}}));
-     const drafts=electionRead();drafts.push({id:'eleccio-'+Date.now(),format:'paideia-eleccio-prova-local-v27.3',creada_at:new Date().toISOString(),curs:4,franges,alumnes});electionWrite(drafts);electionRenderList();
+     const drafts=electionRead();drafts.push({id:'eleccio-'+Date.now(),format:'paideia-eleccio-prova-local-v27.3',creada_at:new Date().toISOString(),curs:4,franges,alumnes});electionWrite(drafts);electionRenderList();renderSubjectList();
      createOverlay.hidden=true;subjectForm.hidden=true;v9Toast('Triplets de prova desats localment · Supabase sense canvis');
     }catch(err){subjectNotice.style.color='#a3454b';subjectNotice.textContent='No s’ha pogut desar la prova: '+err.message}
     return;
@@ -1627,18 +1783,63 @@ $('jediAdminButton').addEventListener('click',async()=>{
    const tbody=document.createElement('tbody');for(let i=0;i<3;i++){const tr=document.createElement('tr');for(const v of ['Grup '+(i+1),d.assignatures[i].nom,d.assignatures[(i+1)%3].nom,d.assignatures[(i+2)%3].nom,d.alumnes.filter(a=>a.grup_rotatiu===i+1).map(a=>a.nom).join(', ')||'—']){const td=document.createElement('td');td.textContent=v;tr.append(td)}tbody.append(tr)}table.append(tbody);
    const wrap=document.createElement('div');wrap.style.overflowX='auto';wrap.append(table);infoBody.append(wrap);
   }
+  async function openLocalElectionInfo(c){
+   const d=c._electionDraft, band=c._electionBand, option=c._electionOption;
+   const subject=d.franges[band][option];
+   const selected=(d.alumnes||[]).filter(a=>Number(a.eleccions?.[band])===option);
+   infoTitle.textContent=subject.nom+' · Prova local';infoBody.replaceChildren();infoOverlay.hidden=false;
+   const note=document.createElement('p');note.className='note-hint';note.textContent='Optativa d’elecció de 4t ESO · Prova local. No s’ha creat cap assignatura ni matrícula a Supabase.';infoBody.append(note);
+   const addLine=(label,value)=>{const p=document.createElement('p');const strong=document.createElement('strong');strong.textContent=label+': ';p.append(strong,document.createTextNode(value));infoBody.append(p)};
+   addLine('Franja',String(band+1)+' (franja de la proposta, no horari setmanal)');
+   const editor=document.createElement('section');editor.style.cssText='border:1px solid #dce4f0;border-radius:10px;padding:14px;margin:16px 0;background:#f8faff';
+   const editorTitle=document.createElement('strong');editorTitle.textContent='Editar configuració local';editor.append(editorTitle);
+   const roomLabel=document.createElement('label');roomLabel.textContent='Aula habitual';roomLabel.style.cssText='display:block;margin:12px 0;font-size:13px';
+   const roomInput=document.createElement('input');roomInput.value=subject.aula_habitual||'';roomInput.placeholder='Aula habitual';roomInput.style.cssText='display:block;width:100%;padding:10px;margin-top:5px;border:1px solid #dce2eb;border-radius:8px';roomLabel.append(roomInput);editor.append(roomLabel);
+   const teacherLabel=document.createElement('label');teacherLabel.textContent='Professor/a';teacherLabel.style.cssText='display:block;margin:12px 0;font-size:13px';
+   const teacherSelect=document.createElement('select');teacherSelect.style.cssText='display:block;width:100%;padding:10px;margin-top:5px;border:1px solid #dce2eb;border-radius:8px';teacherSelect.add(new Option('Sense professor assignat',''));
+   for(const t of [...teachers].sort((a,b)=>String(a.nom).localeCompare(String(b.nom),'ca'))){if(t.actiu!==false||String(t.id)===String(subject.professor_id))teacherSelect.add(new Option(t.nom+(t.actiu===false?' (de baixa)':''),t.id))}
+   teacherSelect.value=subject.professor_id||'';teacherLabel.append(teacherSelect);editor.append(teacherLabel);
+   const save=document.createElement('button');save.type='button';save.className='primary';save.textContent='Desar canvis locals';
+   const status=document.createElement('span');status.style.cssText='margin-left:12px;font-size:12px;color:#337b51';
+   save.onclick=()=>{const drafts=electionRead();const draft=drafts.find(x=>String(x.id)===String(d.id));if(!draft||!draft.franges?.[band]?.[option]){status.textContent='No s’ha trobat la proposta';return}draft.franges[band][option].aula_habitual=roomInput.value.trim()||null;draft.franges[band][option].professor_id=teacherSelect.value||null;try{electionWrite(drafts);status.textContent='Canvis locals desats';renderSubjectList()}catch(e){status.textContent='Error en desar: '+e.message}};
+   editor.append(save,status);infoBody.append(editor);
+   addLine('Alumnat que ha triat aquesta optativa',String(selected.length));
+   const table=document.createElement('table');table.className='v9-subject-table';
+   const head=document.createElement('thead');const tr=document.createElement('tr');for(const label of ['Alumne','Grup de referència']){const th=document.createElement('th');th.textContent=label;tr.append(th)}head.append(tr);table.append(head);
+   const tbody=document.createElement('tbody');const groupCells=[];for(const a of selected){const row=document.createElement('tr');const name=document.createElement('td');name.textContent=a.nom||'Alumne';const group=document.createElement('td');const student=subjectStudentCatalog.find(x=>String(x.id)===String(a.alumne_id));group.textContent=student?.grup_id?subjectGroupName(student.grup_id):'Carregant…';groupCells.push({id:String(a.alumne_id),cell:group});row.append(name,group);tbody.append(row)}
+   if(!selected.length){const row=document.createElement('tr');const cell=document.createElement('td');cell.colSpan=2;cell.textContent='Cap alumne ha triat aquesta assignatura.';row.append(cell);tbody.append(row)}table.append(tbody);
+   const wrap=document.createElement('div');wrap.style.overflowX='auto';wrap.append(table);infoBody.append(wrap);
+   // La consulta només llegeix l'alumnat real: no crea matrícules ni modifica Supabase.
+   if(groupCells.length){try{const ids=groupCells.map(x=>x.id).filter(x=>/^[0-9a-f-]{36}$/i.test(x));const found=ids.length?await api('/rest/v1/alumnes?select=id,grup_id&id=in.('+ids.join(',')+')'):[];const byId=new Map(found.map(a=>[String(a.id),a]));for(const {id,cell} of groupCells){const student=byId.get(id)||subjectStudentCatalog.find(x=>String(x.id)===id);cell.textContent=student?.grup_id?subjectGroupName(student.grup_id):'No disponible'}}catch(e){for(const {id,cell} of groupCells){const student=subjectStudentCatalog.find(x=>String(x.id)===id);cell.textContent=student?.grup_id?subjectGroupName(student.grup_id):'No disponible'}console.warn('No s’han pogut consultar els grups de referència',e)}}
+  }
+  // Consolidació segura: una proposta local que ja té totes les assignatures
+  // corresponents a Supabase no s'ha de mostrar com si fossin noves assignatures.
+  // La coincidència és visual; NO modifica ni esborra cap registre.
+  const paideiaNormSubjectName=value=>String(value||'').normalize('NFD').replace(/[\u0300-\u036f]/g,'').trim().toLocaleLowerCase('ca');
+  function paideiaCloudMatch(localName,course,type){
+    return classes.some(c=>Number(c.curs)===Number(course)&&
+      paideiaNormSubjectName(c.nom)===paideiaNormSubjectName(localName)&&
+      (c.tipus_assignatura===type || (type==='optativa_rotativa'&&c.tipus_assignatura==='optativa')));
+  }
   function renderSubjectList(){
    const body=listTable.tBodies[0];body.replaceChildren();
    const term=listSearch.value.trim().toLocaleLowerCase('ca');const course=listCourse.value;
-   const localRows=rotationReadDrafts().flatMap(d=>d.assignatures.map((a,i)=>({id:d.id+'-'+i,nom:a.nom,curs:d.curs,tipus_assignatura:'optativa_rotativa',_rotationDraft:d,_rotationPosition:i})));
-   const matches=[...classes,...localRows].filter(c=>(!course||String(c.curs)===course)&&[c.nom,c.grup_id?subjectGroupName(c.grup_id):'Tots els grups',typeLabel(c),c.curs==null?'Tots els cursos':String(c.curs)+' ESO'].some(v=>String(v||'').toLocaleLowerCase('ca').includes(term))).sort((a,b)=>{const ag=groups.find(g=>String(g.id)===String(a.grup_id)),bg=groups.find(g=>String(g.id)===String(b.grup_id));const ak=a.curs==null?99:Number(a.curs),bk=b.curs==null?99:Number(b.curs);return ak-bk||(a.grup_id?0:1)-(b.grup_id?0:1)||(ag&&bg?String(ag.nom).localeCompare(String(bg.nom),'ca',{numeric:true}):0)||String(a.nom).localeCompare(String(b.nom),'ca')});
-   editCount.textContent=classes.length+' assignatures del centre + '+localRows.length+' de prova';listResult.textContent=matches.length+' resultats';
+   const localRows=[
+    ...rotationReadDrafts().flatMap(d=>d.assignatures.map((a,i)=>({id:d.id+'-'+i,nom:a.nom,curs:d.curs,tipus_assignatura:'optativa_rotativa',_rotationDraft:d,_rotationPosition:i}))),
+    ...electionRead().flatMap(d=>(d.franges||[]).flatMap((band,b)=>band.map((a,i)=>({id:d.id+'-'+b+'-'+i,nom:a.nom,curs:4,tipus_assignatura:'optativa_eleccio',_electionDraft:d,_electionBand:b,_electionOption:i}))))
+   ];
+   // Exclou només els duplicats visuals que ja consten com a assignatures reals.
+   // Les propostes no activades continuen identificades com a proves.
+   const pendingLocalRows=localRows.filter(c=>!paideiaCloudMatch(c.nom,c.curs,c.tipus_assignatura));
+   const alreadyInCloud=localRows.length-pendingLocalRows.length;
+   const matches=[...classes,...pendingLocalRows].filter(c=>(!course||String(c.curs)===course)&&[c.nom,c.grup_id?subjectGroupName(c.grup_id):'Tots els grups',typeLabel(c),c.curs==null?'Tots els cursos':String(c.curs)+' ESO'].some(v=>String(v||'').toLocaleLowerCase('ca').includes(term))).sort((a,b)=>{const ag=groups.find(g=>String(g.id)===String(a.grup_id)),bg=groups.find(g=>String(g.id)===String(b.grup_id));const ak=a.curs==null?99:Number(a.curs),bk=b.curs==null?99:Number(b.curs);return ak-bk||(a.grup_id?0:1)-(b.grup_id?0:1)||(ag&&bg?String(ag.nom).localeCompare(String(bg.nom),'ca',{numeric:true}):0)||String(a.nom).localeCompare(String(b.nom),'ca')});
+   editCount.textContent=classes.length+' assignatures del centre'+(pendingLocalRows.length?' + '+pendingLocalRows.length+' propostes locals pendents':'')+(alreadyInCloud?' · '+alreadyInCloud+' coincidències locals ocultes':'');listResult.textContent=matches.length+' resultats';
    for(const c of matches){
     const tr=document.createElement('tr');
-    const nameTd=document.createElement('td');const nameBtn=document.createElement('button');nameBtn.type='button';nameBtn.className='pa-v22-subject-link';nameBtn.textContent=c.nom;nameBtn.title='Veure fitxa de '+c.nom;nameBtn.addEventListener('click',()=>c._rotationDraft?openLocalRotationInfo(c):openSubjectInfo(c));nameTd.append(nameBtn);tr.append(nameTd);
+    const nameTd=document.createElement('td');const nameBtn=document.createElement('button');nameBtn.type='button';nameBtn.className='pa-v22-subject-link';nameBtn.textContent=c.nom;nameBtn.title='Veure fitxa de '+c.nom;nameBtn.addEventListener('click',()=>c._rotationDraft?openLocalRotationInfo(c):c._electionDraft?openLocalElectionInfo(c):openSubjectInfo(c));nameTd.append(nameBtn);tr.append(nameTd);
     for(const value of [(c.curs==null?'Tots els cursos':({1:'1r ESO',2:'2n ESO',3:'3r ESO',4:'4t ESO'})[c.curs]||String(c.curs)),(c.grup_id?subjectGroupName(c.grup_id):'Tots els grups')]){const td=document.createElement('td');td.textContent=value;tr.append(td)}
-    const typeTd=document.createElement('td');const tag=document.createElement('span');tag.className='v10-type-tag';tag.dataset.type=c.tipus_assignatura||(c.es_optativa?'optativa':'obligatoria');tag.textContent=c._rotationDraft?'Optativa rotativa · Prova local':typeLabel(c);if(c._rotationDraft){tag.style.cssText='background:#fff3d9;color:#885d16;padding:5px 8px;border-radius:7px;font-weight:650'}typeTd.append(tag);tr.append(typeTd);
-    const td=document.createElement('td');const btn=document.createElement('button');btn.type='button';btn.className='secondary';btn.textContent=c._rotationDraft?'Veure prova':'Editar';btn.addEventListener('click',()=>c._rotationDraft?openLocalRotationInfo(c):openEdit(c.id));td.append(btn);tr.append(td);body.append(tr);
+    const typeTd=document.createElement('td');const tag=document.createElement('span');tag.className='v10-type-tag';tag.dataset.type=c.tipus_assignatura||(c.es_optativa?'optativa':'obligatoria');tag.textContent=c._rotationDraft?'Optativa rotativa · Prova local':c._electionDraft?'Optativa d’elecció · Prova local':typeLabel(c);if(c._rotationDraft||c._electionDraft){tag.style.cssText='background:#fff3d9;color:#885d16;padding:5px 8px;border-radius:7px;font-weight:650'}typeTd.append(tag);tr.append(typeTd);
+    const td=document.createElement('td');const btn=document.createElement('button');btn.type='button';btn.className='secondary';btn.textContent=(c._rotationDraft||c._electionDraft)?'Veure prova':'Editar';btn.addEventListener('click',()=>c._rotationDraft?openLocalRotationInfo(c):c._electionDraft?openLocalElectionInfo(c):openEdit(c.id));td.append(btn);tr.append(td);body.append(tr);
    }
    if(!matches.length){const tr=document.createElement('tr');const td=document.createElement('td');td.colSpan=5;td.textContent='No s’han trobat assignatures amb aquests filtres.';td.style.cssText='text-align:center!important;color:#7a8799;padding:24px';tr.append(td);body.append(tr)}
   }
