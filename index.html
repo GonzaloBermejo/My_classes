@@ -1648,7 +1648,118 @@ $('jediAdminButton').addEventListener('click',async()=>{
   const closeCreate=()=>{if(subjectBusy)return;createOverlay.hidden=true;subjectForm.hidden=true;subjectNotice.textContent=''};
   createClose.onclick=closeCreate;
   createOverlay.addEventListener('click',e=>{if(e.target===createOverlay)closeCreate()});
-  subjectSection.append(subjectToggle,liveRotation,rotationDraftPanel,electionLocalList);content.firstElementChild.append(subjectSection);
+  // Editor independent de triplets 4t ESO: dades del servidor, mai del localStorage.
+  const tripletEditor=document.createElement('section');
+  tripletEditor.style.cssText='margin-top:18px;border:1px solid #cbd8f0;border-radius:12px;padding:16px;background:#f7f9ff';
+  const tripletHeading=document.createElement('h4');tripletHeading.textContent='Optatives d’elecció de 4t · Edició per franges (Supabase)';tripletHeading.style.margin='0 0 8px';
+  const tripletHelp=document.createElement('p');tripletHelp.className='note-hint';tripletHelp.textContent='Carrega les assignatures i matrícules reals. Cada franja es desa independentment. El professorat no es pot modificar en aquesta versió. Les proves locals de sota són independents.';
+  const tripletLoad=document.createElement('button');tripletLoad.type='button';tripletLoad.className='secondary';tripletLoad.textContent='Carregar dades reals de Supabase';
+  const tripletNotice=document.createElement('p');tripletNotice.className='note-hint';tripletNotice.setAttribute('role','status');
+  const tripletCards=document.createElement('div');tripletCards.style.cssText='display:grid;gap:13px;margin-top:12px';
+  tripletEditor.append(tripletHeading,tripletHelp,tripletLoad,tripletNotice,tripletCards);
+  let tripletSnapshot=null;
+  const tripletUuid=/^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i;
+  const tripletInput=(value,max)=>{const el=document.createElement('input');el.value=value||'';el.maxLength=max;el.style.cssText='width:100%;min-width:0;padding:8px;border:1px solid #dce2eb;border-radius:7px';return el};
+  function tripletLabel(title,input){const label=document.createElement('label');label.style.cssText='display:block;font-size:12px;color:#526075';label.textContent=title;input.style.marginTop='5px';label.append(input);return label}
+  async function tripletFetch(){
+    if(!isAdmin||!accessToken)throw Error('Cal iniciar sessió com a administrador.');
+    // No utilitzar dades locals ni inferir l’ID d’una assignatura a partir del nom.
+    // Lectura mitjançant RPC SECURITY DEFINER, amb validació d'administrador al servidor.
+    // No concedim SELECT directe sobre les taules protegides.
+    const payload=await api('/rest/v1/rpc/llegir_triplets_optatives_eleccio_4t',accessToken,{method:'POST',headers:{'Content-Type':'application/json'},body:'{}'});
+    const root=Array.isArray(payload)&&payload.length===1?payload[0]:payload;
+    const franjes=Array.isArray(root)?root:(root?.franges||root?.triplets||root?.data?.franges);
+    if(!Array.isArray(franjes)||franjes.length!==3){
+      const keys=root&&typeof root==='object'?Object.keys(root).join(', '):typeof root;
+      throw Error('La funció de lectura ha respost, però cal adaptar el format de les dades ('+keys+'). No s’ha habilitat cap edició.');
+    }
+    const data=franjes.map((f,i)=>{
+      const number=Number(f.numero_franja??f.number??f.franja??i+1);
+      const rawSubjects=f.assignatures||f.subjects;
+      const rawStudents=f.matricules||f.alumnes||f.students;
+      if(number!==i+1||!Array.isArray(rawSubjects)||rawSubjects.length!==3||!Array.isArray(rawStudents)||rawStudents.length!==10)
+        throw Error('La franja '+number+' no té el format esperat (3 assignatures i 10 alumnes). No s’ha modificat res.');
+      const subjects=rawSubjects.map(c=>({classe_id:String(c.classe_id??c.id??''),nom:String(c.nom??''),aula_habitual:c.aula_habitual??null}));
+      if(subjects.some(c=>!tripletUuid.test(c.classe_id)||!c.nom)||new Set(subjects.map(c=>c.classe_id)).size!==3)
+        throw Error('Identificadors o noms d’assignatures invàlids a la franja '+number+'.');
+      const students=rawStudents.map(st=>({alumne_id:String(st.alumne_id??st.id??''),classe_id:String(st.classe_id??st.assignatura_id??''),nom:String(st.nom_complet??[st.nom,st.cognoms].filter(Boolean).join(' '))}));
+      if(students.some(st=>!tripletUuid.test(st.alumne_id)||!subjects.some(c=>c.classe_id===st.classe_id)||!st.nom)||new Set(students.map(st=>st.alumne_id)).size!==10)
+        throw Error('Matrícules invàlides o incompletes a la franja '+number+'.');
+      students.sort((a,b)=>a.nom.localeCompare(b.nom,'ca'));
+      return {number,subjects,students};
+    });
+    const base=data[0].students.map(a=>a.alumne_id).sort().join('|');
+    if(data.some(d=>d.students.map(a=>a.alumne_id).sort().join('|')!==base))throw Error('Les franges no tenen exactament els mateixos deu alumnes.');
+    return data;
+  }
+  function tripletRender(data){
+    tripletCards.replaceChildren();tripletSnapshot=data;
+    for(const band of data){
+      const card=document.createElement('section');card.style.cssText='border:1px solid #dce4f0;border-radius:10px;padding:14px;background:white';
+      const h=document.createElement('h5');h.textContent='Franja '+band.number+' · '+band.subjects.map(s=>s.nom).join(' / ');h.style.cssText='margin:0 0 12px;font-size:15px;color:#344d96';card.append(h);
+      const grid=document.createElement('div');grid.style.cssText='display:grid;grid-template-columns:repeat(auto-fit,minmax(180px,1fr));gap:10px';
+      const subjectInputs=band.subjects.map(sub=>{
+        const box=document.createElement('div');box.style.cssText='border:1px solid #e6eaf1;border-radius:8px;padding:10px';
+        const name=tripletInput(sub.nom,150),room=tripletInput(sub.aula_habitual||'',160);
+        box.append(tripletLabel('Assignatura',name),tripletLabel('Aula habitual',room));grid.append(box);return {classe_id:sub.classe_id,name,room};
+      });card.append(grid);
+      const caption=document.createElement('p');caption.className='note-hint';caption.textContent='Elecció de cada alumne (una assignatura per franja):';card.append(caption);
+      const studentRows=[];
+      for(const st of band.students){
+        const row=document.createElement('div');row.style.cssText='display:grid;grid-template-columns:minmax(130px,1fr) minmax(160px,1fr);gap:10px;align-items:center;padding:5px 0;border-bottom:1px solid #f0f2f5';
+        const name=document.createElement('span');name.textContent=st.nom;name.style.fontSize='13px';
+        const select=document.createElement('select');select.style.cssText='width:100%;min-width:0;padding:8px;border:1px solid #dce2eb;border-radius:7px';
+        subjectInputs.forEach((s,i)=>select.add(new Option(band.subjects[i].nom,s.classe_id)));select.value=st.classe_id;
+        row.append(name,select);card.append(row);studentRows.push({alumne_id:st.alumne_id,select});
+      }
+      subjectInputs.forEach((s,i)=>s.name.addEventListener('input',()=>{for(const r of studentRows)r.select.options[i].textContent=s.name.value.trim()||'Opció '+(i+1)}));
+      const actions=document.createElement('div');actions.style.cssText='display:flex;gap:9px;flex-wrap:wrap;margin-top:14px';
+      const preview=document.createElement('button');preview.type='button';preview.className='secondary';preview.textContent='Revisar canvis';
+      const save=document.createElement('button');save.type='button';save.className='primary';save.textContent='Desar només franja '+band.number+' a Supabase';save.disabled=true;
+      const report=document.createElement('p');report.style.cssText='font-size:12px;color:#526075;white-space:pre-wrap;overflow-wrap:anywhere';
+      let approved=null;
+      function proposal(){return {curs:4,numero_franja:band.number,assignatures:subjectInputs.map(s=>({classe_id:s.classe_id,nom:s.name.value.trim(),aula_habitual:s.room.value.trim()||null})),alumnes:studentRows.map(r=>({alumne_id:r.alumne_id,classe_id:r.select.value}))}}
+      function invalidate(){approved=null;save.disabled=true;report.textContent='Canvis pendents de revisar.'}
+      for(const s of subjectInputs){s.name.addEventListener('input',invalidate);s.room.addEventListener('input',invalidate)}
+      studentRows.forEach(r=>r.select.addEventListener('change',invalidate));
+      preview.onclick=()=>{
+        try{
+          const p=proposal();const names=p.assignatures.map(a=>a.nom.toLocaleLowerCase('ca'));
+          if(names.some(n=>!n)||new Set(names).size!==3)throw Error('Els tres noms han de ser diferents i no poden estar buits.');
+          if(p.alumnes.length!==10||new Set(p.alumnes.map(a=>a.alumne_id)).size!==10)throw Error('Calen deu alumnes diferents.');
+          const old=new Map(band.students.map(a=>[a.alumne_id,a.classe_id]));
+          const moves=p.alumnes.filter(a=>old.get(a.alumne_id)!==a.classe_id);
+          const changes=p.assignatures.flatMap((a,i)=>[...(a.nom!==band.subjects[i].nom?['Nom: '+band.subjects[i].nom+' → '+a.nom]:[]),...((a.aula_habitual||null)!==(band.subjects[i].aula_habitual||null)?['Aula de '+a.nom+': '+(band.subjects[i].aula_habitual||'—')+' → '+(a.aula_habitual||'—')]:[])]);
+          moves.forEach(a=>changes.push(band.students.find(s=>s.alumne_id===a.alumne_id).nom+': '+band.subjects.find(s=>s.classe_id===old.get(a.alumne_id)).nom+' → '+p.assignatures.find(s=>s.classe_id===a.classe_id).nom));
+          if(!changes.length){report.textContent='No hi ha canvis per desar.';save.disabled=true;approved=null;return}
+          report.textContent='PREVISUALITZACIÓ · Franja '+band.number+'\n'+changes.join('\n')+'\n\nLes altres dues franges no es modificaran.';
+          approved=JSON.stringify(p);save.disabled=false;
+        }catch(e){report.textContent='Revisió bloquejada: '+e.message;approved=null;save.disabled=true}
+      };
+      save.onclick=async()=>{
+        if(!approved||approved!==JSON.stringify(proposal())||!isAdmin||!accessToken){invalidate();return}
+        if(!confirm('Desar els canvis de la FRANJA '+band.number+' a Supabase? Es modificaran assignatures i/o matrícules reals. Les altres franges no es tocaran.'))return;
+        if(prompt('Escriu DESAR '+band.number+' per confirmar:')!=='DESAR '+band.number)return;
+        save.disabled=true;preview.disabled=true;tripletLoad.disabled=true;
+        report.textContent='Desant la franja '+band.number+'…';
+        try{
+          const result=await api('/rest/v1/rpc/editar_triplet_optatives_eleccio_4t',accessToken,{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({p_proposta:JSON.parse(approved)})});
+          if(!result||result.estat!=='desat'||Number(result.numero_franja)!==band.number)throw Error('El servidor no ha confirmat el desament.');
+          report.textContent='✓ Supabase ha confirmat el desament. Recarregant dades reals…';
+          const fresh=await tripletFetch();tripletRender(fresh);tripletNotice.textContent='✓ Franja '+band.number+' desada i dades actualitzades des de Supabase.';
+        }catch(e){report.textContent='No s’ha pogut confirmar el desament: '+e.message+'\nComprova l’estat del servidor abans de repetir-lo.'}
+        finally{preview.disabled=false;tripletLoad.disabled=false}
+      };
+      actions.append(preview,save);card.append(actions,report);tripletCards.append(card);
+    }
+  }
+  tripletLoad.onclick=async()=>{
+    tripletLoad.disabled=true;tripletNotice.textContent='Carregant les dades reals…';tripletCards.replaceChildren();tripletSnapshot=null;
+    try{const data=await tripletFetch();tripletRender(data);tripletNotice.textContent='✓ Dades llegides de Supabase. Cap canvi realitzat.'}
+    catch(e){tripletNotice.textContent='No es pot obrir l’editor: '+e.message+' No s’ha modificat res.'}
+    finally{tripletLoad.disabled=false}
+  };
+  subjectSection.append(subjectToggle,liveRotation,rotationDraftPanel,tripletEditor,electionLocalList);content.firstElementChild.append(subjectSection);
   let subjectStudentCatalog=[];let subjectCatalogReady=false;let subjectBusy=false;
   const groupCourse=g=>Number((String(g.nom||'').match(/^\s*(\d+)/)||[])[1]);
   const subjectGroups=[...groups].sort((a,b)=>String(a.nom).localeCompare(String(b.nom),'ca',{numeric:true}));
