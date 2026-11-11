@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html lang="ca">
 <head>
-<script id="paideia-restore-eleccio-4t">
+<script id="paideia-restore-eleccio-4t" type="text/plain">
 /* Recuperació de la simulació local exportada: no accedeix a Supabase. */
 (function(){
   try {
@@ -468,6 +468,26 @@ body.paideia-authenticated > header, body.paideia-authenticated > main {display:
 .jedi-students-table .pa-students-sort:hover{color:#344d96}
 .jedi-students-table .pa-students-sort:focus-visible{outline:2px solid #344d96;outline-offset:4px;border-radius:3px}
 .jedi-students-table .pa-students-sort-arrow{color:#6078ae;font-size:12px;min-width:12px}
+</style>
+<style id="paideia-consolidacio-assignatures-style">
+.pa-subject-type-launcher{margin:12px 0 16px;padding:14px;background:#f7f9fd;border:1px solid #e0e7f2;border-radius:11px}
+.pa-subject-type-launcher .note-hint{margin:0 0 10px}
+.pa-subject-type-buttons{display:flex;flex-wrap:wrap;gap:8px}
+.pa-subject-type-buttons button{white-space:nowrap}
+.v10-subject-tools{display:flex;flex-wrap:wrap;gap:9px;align-items:center}
+.v10-subject-tools select,.v10-subject-tools input{min-height:38px;max-width:100%}
+</style>
+<style id="pa-unified-manager-style">
+.pa-unified-manager{border:1px solid #dce4f0;border-radius:12px;background:#fff;padding:18px;margin:14px 0 20px}
+.pa-unified-manager[hidden]{display:none!important}.pa-unified-head{display:flex;gap:12px;align-items:center;flex-wrap:wrap}.pa-unified-head h4{flex:1;font-size:18px}
+.pa-manager-special>section{margin-top:16px}.pa-subject-type-buttons .pa-manager-active{background:#344d96;color:white;border-color:#344d96}
+.pa-manager-list{margin-top:16px}.pa-manager-list .v9-subject-table{min-width:540px}.pa-manager-list .v9-subject-table td:last-child{white-space:nowrap}
+
+.pa-manager-tabs{display:flex;gap:8px;flex-wrap:wrap;margin:16px 0 12px;border-bottom:1px solid #e3e9f3;padding-bottom:12px}
+.pa-manager-tabs button[aria-selected="true"]{background:#344d96;color:white;border-color:#344d96}
+.pa-manager-list[hidden],.pa-manager-special[hidden]{display:none!important}
+.pa-manager-special{padding-top:4px}
+.pa-manager-franja{display:inline-block;padding:4px 9px;border-radius:7px;background:#edf2ff;color:#344d96;font-size:12px;font-weight:650}
 </style>
 </head>
 <body>
@@ -1284,9 +1304,9 @@ $('jediAdminButton').addEventListener('click',async()=>{
   const rotationDraftPanel=document.createElement('section');rotationDraftPanel.style.cssText='margin-top:18px;border:1px solid #dce4f0;border-radius:12px;padding:16px;background:#f8faff';
   function rotationRenderDrafts(){
    rotationDraftPanel.replaceChildren();
-   const h=document.createElement('h4');h.textContent='Conjunts d’optatives rotatives · Supabase i simulacions locals';h.style.margin='0 0 9px';rotationDraftPanel.append(h);
-   const explanation=document.createElement('p');explanation.className='note-hint';explanation.textContent='Els conjunts de Supabase es recuperen automàticament. Pots preparar i descarregar una proposta d’edició sense modificar Supabase. La desada d’edicions està habilitada només per a administradors amb confirmació i validació del servidor; la matrícula i activació es gestionen per separat. Les simulacions locals no són dades del servidor.';rotationDraftPanel.append(explanation);
-   const drafts=rotationReadDrafts();if(!drafts.length){const p=document.createElement('p');p.className='note-hint';p.textContent=cloudRotationLoaded?'No hi ha conjunts ni simulacions locals.':'Carregant conjunts de Supabase…';rotationDraftPanel.append(p);return}
+   const h=document.createElement('h4');h.textContent='Conjunts d’optatives rotatives · Supabase';h.style.margin='0 0 9px';rotationDraftPanel.append(h);
+   const explanation=document.createElement('p');explanation.className='note-hint';explanation.textContent='Els conjunts de Supabase es recuperen automàticament. Pots preparar i descarregar una proposta d’edició sense modificar Supabase. La desada d’edicions està habilitada només per a administradors amb confirmació i validació del servidor; la matrícula i activació es gestionen per separat.';rotationDraftPanel.append(explanation);
+   const drafts=cloudRotationDrafts;if(!drafts.length){const p=document.createElement('p');p.className='note-hint';p.textContent=cloudRotationLoaded?'No hi ha conjunts desats a Supabase.':'Carregant conjunts de Supabase…';rotationDraftPanel.append(p);return}
    for(const draft of drafts){const item=document.createElement('div');item.style.cssText='background:white;border:1px solid #e1e7f1;border-radius:9px;padding:12px;margin-top:10px';
     const heading=document.createElement('strong');heading.textContent=draft.curs+'r ESO · '+draft.assignatures.map(a=>a.nom).join(' / ');item.append(heading);
     const meta=document.createElement('p');meta.className='note-hint';meta.textContent=draft.alumnes.length+' alumnes · '+(draft.format==='paideia-rotacio-esborrany-supabase-v1'?'Conjunt desat a Supabase · sense matrícules':'Simulació local · no desada a Supabase');item.append(meta);
@@ -1674,11 +1694,23 @@ $('jediAdminButton').addEventListener('click',async()=>{
       throw Error('La funció de lectura ha respost, però cal adaptar el format de les dades ('+keys+'). No s’ha habilitat cap edició.');
     }
     const data=franjes.map((f,i)=>{
-      const number=Number(f.numero_franja??f.number??f.franja??i+1);
-      const rawSubjects=f.assignatures||f.subjects;
-      const rawStudents=f.matricules||f.alumnes||f.students;
-      if(number!==i+1||!Array.isArray(rawSubjects)||rawSubjects.length!==3||!Array.isArray(rawStudents)||rawStudents.length!==10)
-        throw Error('La franja '+number+' no té el format esperat (3 assignatures i 10 alumnes). No s’ha modificat res.');
+      // La RPC actual retorna {id, curs, matricules}; versions anteriors
+      // podien retornar {numero_franja, assignatures, alumnes}.
+      const number=Number(f.numero_franja??f.number??f.franja??f.id??i+1);
+      const rawStudents=f.alumnes??f.students??f.matricules;
+      let rawSubjects=f.assignatures??f.subjects;
+      if(!Array.isArray(rawStudents))
+        throw Error('La franja '+number+' no inclou una llista de matrícules (camps: '+Object.keys(f).join(', ')+').');
+      // Si la RPC no inclou les assignatures, resoldre-les pel seu ID
+      // contra el catàleg de classes ja carregat. Mai per coincidència de noms.
+      if(!Array.isArray(rawSubjects)){
+        const ids=[...new Set(rawStudents.map(st=>String(st.classe_id??st.assignatura_id??'')))];
+        rawSubjects=ids.map(id=>classes.find(c=>String(c.id)===id)).filter(Boolean).map(c=>({classe_id:c.id,nom:c.nom,aula_habitual:c.aula_habitual??null}));
+        if(ids.length!==3||rawSubjects.length!==3)
+          throw Error('Franja '+number+': '+ids.length+' assignatures diferents a les matrícules, '+rawSubjects.length+' identificades al catàleg. Cal comprovar la lectura; no es permet editar.');
+      }
+      if(number!==i+1||rawSubjects.length!==3||rawStudents.length!==10)
+        throw Error('Franja '+number+': rebudes '+rawSubjects.length+' assignatures i '+rawStudents.length+' matrícules; s’esperen 3 i 10. No s’ha modificat res.');
       const subjects=rawSubjects.map(c=>({classe_id:String(c.classe_id??c.id??''),nom:String(c.nom??''),aula_habitual:c.aula_habitual??null}));
       if(subjects.some(c=>!tripletUuid.test(c.classe_id)||!c.nom)||new Set(subjects.map(c=>c.classe_id)).size!==3)
         throw Error('Identificadors o noms d’assignatures invàlids a la franja '+number+'.');
@@ -1694,6 +1726,13 @@ $('jediAdminButton').addEventListener('click',async()=>{
   }
   function tripletRender(data){
     tripletCards.replaceChildren();tripletSnapshot=data;
+    // Actualitza les etiquetes de franja del catàleg visible sense recarregar la pàgina.
+    if(typeof managerList!=='undefined' && managerTitle?.textContent==='Optatives d’elecció'){
+      managerList.querySelectorAll('tr[data-pa-subject-id]').forEach(row=>{
+       const match=data.find(b=>b.subjects.some(a=>String(a.classe_id)===row.dataset.paSubjectId));
+       const cell=row.querySelector('[data-pa-franja]');if(cell)cell.textContent=match?'Franja '+match.number:'No assignada';
+      });
+    }
     for(const band of data){
       const card=document.createElement('section');card.style.cssText='border:1px solid #dce4f0;border-radius:10px;padding:14px;background:white';
       const h=document.createElement('h5');h.textContent='Franja '+band.number+' · '+band.subjects.map(s=>s.nom).join(' / ');h.style.cssText='margin:0 0 12px;font-size:15px;color:#344d96';card.append(h);
@@ -1759,7 +1798,9 @@ $('jediAdminButton').addEventListener('click',async()=>{
     catch(e){tripletNotice.textContent='No es pot obrir l’editor: '+e.message+' No s’ha modificat res.'}
     finally{tripletLoad.disabled=false}
   };
-  subjectSection.append(subjectToggle,liveRotation,rotationDraftPanel,tripletEditor,electionLocalList);content.firstElementChild.append(subjectSection);
+  subjectSection.append(subjectToggle,liveRotation,rotationDraftPanel,tripletEditor);content.firstElementChild.append(subjectSection);
+  // Carrega l'editor de 4t automàticament en obrir administració (només lectura).
+  tripletLoad.textContent='Actualitzar dades de Supabase';tripletLoad.click();
   let subjectStudentCatalog=[];let subjectCatalogReady=false;let subjectBusy=false;
   const groupCourse=g=>Number((String(g.nom||'').match(/^\s*(\d+)/)||[])[1]);
   const subjectGroups=[...groups].sort((a,b)=>String(a.nom).localeCompare(String(b.nom),'ca',{numeric:true}));
@@ -1838,12 +1879,34 @@ $('jediAdminButton').addEventListener('click',async()=>{
     createdId=created?.[0]?.id;if(!createdId)throw Error('No s’ha retornat l’identificador. Comprova si s’ha creat abans de repetir.');
     await api('/rest/v1/professors_classes',accessToken,{method:'POST',headers:{'Content-Type':'application/json',Prefer:'return=minimal'},body:JSON.stringify(teacherIds.map(professor_id=>({professor_id,classe_id:createdId})))});
     if(studentIds.length)await api('/rest/v1/alumnes_classes',accessToken,{method:'POST',headers:{'Content-Type':'application/json',Prefer:'return=minimal'},body:JSON.stringify(studentIds.map(alumne_id=>({alumne_id,classe_id:createdId,activa:true})))});
-    subjectNotice.style.color='#286b43';subjectNotice.textContent='Assignatura creada i assignacions desades. Actualitza la pàgina per veure-la al menú.';
+    // V10: actualitzar el catàleg en memòria només després de confirmar
+    // la creació i totes les assignacions a Supabase.
+    const novaAssignatura=created[0];
+    if(!novaAssignatura||String(novaAssignatura.id)!==String(createdId))throw Error('La resposta de Supabase no coincideix amb l’assignatura creada.');
+    if(!classes.some(c=>String(c.id)===String(createdId)))classes.push(novaAssignatura);
+    renderSubjectList();
+    if(!manager.hidden){
+     const activeType=Object.keys(managerTypes).find(k=>managerTitle.textContent===managerTypes[k][0]);
+     if(activeType)openTypeManager(activeType);
+    }
+    const countBox=grid.querySelectorAll('.stats-tile')[1]?.querySelector('strong');
+    if(countBox)countBox.textContent=String(classes.length);
+    subjectNotice.style.color='#286b43';subjectNotice.textContent='Assignatura creada i visible al catàleg.';
     subjectForm.reset();refreshSubjectGroups();refreshSubjectSelection();subjectMode.onchange();updateRotationVisibility();createOverlay.hidden=true;subjectForm.hidden=true;v9Toast('Assignatura creada correctament');
-    const countBox=grid.querySelectorAll('.stats-tile')[1]?.querySelector('strong');if(countBox)countBox.textContent=String(Number(countBox.textContent||0)+1);
+
    }catch(err){subjectNotice.style.color='#a3454b';subjectNotice.textContent=(createdId?'ATENCIÓ: l’assignatura ja s’ha creat (ID '+createdId+'), però alguna assignació ha fallat. No tornis a crear-la; revisa les assignacions. ':'No s’ha pogut crear l’assignatura. ')+err.message}
    finally{subjectBusy=false;subjectSave.disabled=false}
   };
+  // Accés unificat als cinc tipus: reutilitza el formulari existent i les seves validacions.
+  const typeLauncher=document.createElement('div');typeLauncher.className='pa-subject-type-launcher';
+  const typeLauncherTitle=document.createElement('p');typeLauncherTitle.className='note-hint';typeLauncherTitle.textContent='Crear i gestionar per tipus · Les dades reals es consulten a Supabase.';typeLauncher.append(typeLauncherTitle);
+  const typeLauncherButtons=document.createElement('div');typeLauncherButtons.className='pa-subject-type-buttons';
+  for(const [label,value] of [['Obligatòries','obligatoria'],['Optatives rotatives','optativa_rotativa'],['Optatives d’elecció','optativa_eleccio'],['Reforç','reforc'],['Acollida','acollida']]){
+    const button=document.createElement('button');button.type='button';button.className='secondary';button.textContent=label;
+    button.onclick=()=>openTypeManager(value);
+    typeLauncherButtons.append(button);
+  }
+  typeLauncher.append(typeLauncherButtons);subjectSection.insertBefore(typeLauncher,subjectToggle);
   // V9: llistat d'assignatures i edició modal, sense perdre matrícules ni notes.
   const v9Toast=(message,error=false)=>{
    let node=document.getElementById('jediV9Toast');
@@ -1861,7 +1924,10 @@ $('jediAdminButton').addEventListener('click',async()=>{
   const listTools=document.createElement('div');listTools.className='v10-subject-tools';
   const listSearch=document.createElement('input');listSearch.type='search';listSearch.placeholder='Cercar assignatura, grup o tipus…';listSearch.setAttribute('aria-label','Cercar assignatures');
   const listCourse=document.createElement('select');listCourse.setAttribute('aria-label','Filtrar per curs');listCourse.add(new Option('Tots els cursos',''));for(let i=1;i<=4;i++)listCourse.add(new Option(i+'r ESO'.replace('2r','2n').replace('3r','3r').replace('4r','4t'),String(i)));
-  const listResult=document.createElement('span');listResult.className='v10-result-count';listTools.append(listSearch,listCourse,listResult);
+  const listGroup=document.createElement('select');listGroup.setAttribute('aria-label','Filtrar per grup');listGroup.add(new Option('Tots els grups',''));for(const g of [...groups].sort((a,b)=>String(a.nom).localeCompare(String(b.nom),'ca',{numeric:true})))listGroup.add(new Option(g.nom,String(g.id)));listGroup.add(new Option('Sense grup específic','__all__'));
+  const listType=document.createElement('select');listType.setAttribute('aria-label','Filtrar per tipus');for(const [label,value] of [['Tots els tipus',''],['Obligatòria','obligatoria'],['Optativa rotativa','optativa_rotativa'],['Optativa d’elecció','optativa_eleccio'],['Reforç','reforc'],['Acollida','acollida'],['Optativa (tipus antic)','optativa']])listType.add(new Option(label,value));
+  const listOrder=document.createElement('select');listOrder.setAttribute('aria-label','Ordenar assignatures');listOrder.add(new Option('Curs, grup i nom','group'));listOrder.add(new Option('Ordre alfabètic','name'));listOrder.add(new Option('Tipus i nom','type'));
+  const listResult=document.createElement('span');listResult.className='v10-result-count';listTools.append(listSearch,listCourse,listGroup,listType,listOrder,listResult);
   const listWrap=document.createElement('div');listWrap.className='v9-subject-list';
   const listTable=document.createElement('table');listTable.className='v9-subject-table';
   listTable.innerHTML='<thead><tr><th>Assignatura</th><th>Curs</th><th>Grup de referència</th><th>Tipus</th><th>Accions</th></tr></thead><tbody></tbody>';
@@ -2035,7 +2101,8 @@ $('jediAdminButton').addEventListener('click',async()=>{
   const editStatus=document.createElement('p');editStatus.setAttribute('role','status');editStatus.className='v9-edit-status';
   const editSave=document.createElement('button');editSave.className='primary';editSave.type='submit';editSave.textContent='Desar canvis';
   const editCancel=document.createElement('button');editCancel.className='secondary';editCancel.type='button';editCancel.textContent='Cancel·lar';
-  const editButtons=document.createElement('div');editButtons.className='v9-modal-actions';editButtons.append(editCancel,editSave);
+  const editDelete=document.createElement('button');editDelete.type='button';editDelete.className='secondary';editDelete.textContent='Eliminar assignatura';editDelete.style.cssText='color:#a3454b;border-color:#e8c6ca;margin-right:auto';
+  const editButtons=document.createElement('div');editButtons.className='v9-modal-actions';editButtons.append(editDelete,editCancel,editSave);
   editForm.append(subjectField('Tipus d’assignatura',editType),subjectField('Nom de l’assignatura',editName),subjectField('Curs de referència',editCourse),subjectField('Grup de referència',editGroup),subjectField('Aula habitual',editRoom),editStaffBox,editStatus,editButtons);
   modal.append(modalHead,editForm);overlay.append(modal);document.body.append(overlay);
   let editingId=null,editBusy=false;
@@ -2091,15 +2158,11 @@ $('jediAdminButton').addEventListener('click',async()=>{
   function renderSubjectList(){
    const body=listTable.tBodies[0];body.replaceChildren();
    const term=listSearch.value.trim().toLocaleLowerCase('ca');const course=listCourse.value;
-   const localRows=[
-    ...rotationReadDrafts().flatMap(d=>d.assignatures.map((a,i)=>({id:d.id+'-'+i,nom:a.nom,curs:d.curs,tipus_assignatura:'optativa_rotativa',_rotationDraft:d,_rotationPosition:i}))),
-    ...electionRead().flatMap(d=>(d.franges||[]).flatMap((band,b)=>band.map((a,i)=>({id:d.id+'-'+b+'-'+i,nom:a.nom,curs:4,tipus_assignatura:'optativa_eleccio',_electionDraft:d,_electionBand:b,_electionOption:i}))))
-   ];
-   // Exclou només els duplicats visuals que ja consten com a assignatures reals.
-   // Les propostes no activades continuen identificades com a proves.
-   const pendingLocalRows=localRows.filter(c=>!paideiaCloudMatch(c.nom,c.curs,c.tipus_assignatura));
-   const alreadyInCloud=localRows.length-pendingLocalRows.length;
-   const matches=[...classes,...pendingLocalRows].filter(c=>(!course||String(c.curs)===course)&&[c.nom,c.grup_id?subjectGroupName(c.grup_id):'Tots els grups',typeLabel(c),c.curs==null?'Tots els cursos':String(c.curs)+' ESO'].some(v=>String(v||'').toLocaleLowerCase('ca').includes(term))).sort((a,b)=>{const ag=groups.find(g=>String(g.id)===String(a.grup_id)),bg=groups.find(g=>String(g.id)===String(b.grup_id));const ak=a.curs==null?99:Number(a.curs),bk=b.curs==null?99:Number(b.curs);return ak-bk||(a.grup_id?0:1)-(b.grup_id?0:1)||(ag&&bg?String(ag.nom).localeCompare(String(bg.nom),'ca',{numeric:true}):0)||String(a.nom).localeCompare(String(b.nom),'ca')});
+   // Consolidació: el llistat habitual mostra només assignatures reals de Supabase.
+   // Les propostes locals es conserven al codi, però no es mostren aquí.
+   const pendingLocalRows=[];
+   const alreadyInCloud=0;
+   const matches=[...classes,...pendingLocalRows].filter(c=>(!course||String(c.curs)===course)&&(!listGroup.value||(listGroup.value==='__all__'?!c.grup_id:String(c.grup_id)===listGroup.value))&&(!listType.value||(c.tipus_assignatura||(c.es_optativa?'optativa':'obligatoria'))===listType.value)&&[c.nom,c.grup_id?subjectGroupName(c.grup_id):'Tots els grups',typeLabel(c),c.curs==null?'Tots els cursos':String(c.curs)+' ESO'].some(v=>String(v||'').toLocaleLowerCase('ca').includes(term))).sort((a,b)=>{if(listOrder.value==='name')return String(a.nom).localeCompare(String(b.nom),'ca')||Number(a.curs||99)-Number(b.curs||99);if(listOrder.value==='type')return typeLabel(a).localeCompare(typeLabel(b),'ca')||String(a.nom).localeCompare(String(b.nom),'ca');const ag=groups.find(g=>String(g.id)===String(a.grup_id)),bg=groups.find(g=>String(g.id)===String(b.grup_id));const ak=a.curs==null?99:Number(a.curs),bk=b.curs==null?99:Number(b.curs);return ak-bk||(a.grup_id?0:1)-(b.grup_id?0:1)||(ag&&bg?String(ag.nom).localeCompare(String(bg.nom),'ca',{numeric:true}):0)||String(a.nom).localeCompare(String(b.nom),'ca')});
    editCount.textContent=classes.length+' assignatures del centre'+(pendingLocalRows.length?' + '+pendingLocalRows.length+' propostes locals pendents':'')+(alreadyInCloud?' · '+alreadyInCloud+' coincidències locals ocultes':'');listResult.textContent=matches.length+' resultats';
    for(const c of matches){
     const tr=document.createElement('tr');
@@ -2110,17 +2173,180 @@ $('jediAdminButton').addEventListener('click',async()=>{
    }
    if(!matches.length){const tr=document.createElement('tr');const td=document.createElement('td');td.colSpan=5;td.textContent='No s’han trobat assignatures amb aquests filtres.';td.style.cssText='text-align:center!important;color:#7a8799;padding:24px';tr.append(td);body.append(tr)}
   }
-  listSearch.addEventListener('input',renderSubjectList);listCourse.addEventListener('change',renderSubjectList);
+  listSearch.addEventListener('input',renderSubjectList);for(const filter of [listCourse,listGroup,listType,listOrder])filter.addEventListener('change',renderSubjectList);
+  // Gestors unificats: un únic punt d'entrada per tipus, sense duplicar
+  // operacions ni modificar l'esquema de Supabase.
+  const manager=document.createElement('section');manager.className='pa-unified-manager';manager.hidden=true;
+  const managerHead=document.createElement('div');managerHead.className='pa-unified-head';
+  const managerBack=document.createElement('button');managerBack.type='button';managerBack.className='secondary';managerBack.textContent='← Tots els tipus';
+  const managerTitle=document.createElement('h4');managerTitle.style.margin='0';
+  const managerNew=document.createElement('button');managerNew.type='button';managerNew.className='primary';managerNew.textContent='+ Crear assignatura';
+  managerHead.append(managerBack,managerTitle,managerNew);
+  const managerDesc=document.createElement('p');managerDesc.className='note-hint';
+  const managerList=document.createElement('div');managerList.className='pa-manager-list';
+  const managerSpecial=document.createElement('div');managerSpecial.className='pa-manager-special';
+  const managerTabs=document.createElement('div');managerTabs.className='pa-manager-tabs';managerTabs.hidden=true;
+  const tabSubjects=document.createElement('button');tabSubjects.type='button';tabSubjects.className='secondary';tabSubjects.textContent='Assignatures';
+  const tabSpecific=document.createElement('button');tabSpecific.type='button';tabSpecific.className='secondary';
+  managerTabs.append(tabSubjects,tabSpecific);
+  function showManagerTab(which){
+   const specific=which==='specific';managerList.hidden=specific;managerSpecial.hidden=!specific;
+   tabSubjects.setAttribute('aria-selected',String(!specific));tabSpecific.setAttribute('aria-selected',String(specific));
+   if(specific&&managerTitle.textContent==='Optatives d’elecció'&&!tripletSnapshot){tripletLoad.click()}
+  }
+  tabSubjects.onclick=()=>showManagerTab('subjects');tabSpecific.onclick=()=>showManagerTab('specific');
+  manager.append(managerHead,managerDesc,managerTabs,managerList,managerSpecial);
+  typeLauncher.after(manager);
+  const managerTypes={
+   obligatoria:['Obligatòries','Assignatures dels grups de referència. Edita les dades i consulta la fitxa des del mateix llistat.'],
+   optativa_rotativa:['Optatives rotatives','Configura els conjunts i gestiona les avaluacions en un únic apartat. Les activacions requereixen previsualització i validació del servidor.'],
+   optativa_eleccio:['Optatives d’elecció','Gestiona les assignatures i les tres franges de 4t ESO amb les dades de Supabase.'],
+   reforc:['Reforç','Gestiona les assignatures de reforç i les seves matrícules.'],
+   acollida:['Acollida','Assignatures transversals de tots els cursos i grups.']
+  };
+  // V3: els editors viuen en un contenidor ocult mentre no està seleccionat
+  // el seu tipus. No es retornen mai al peu de Gestió d’assignatures.
+  const editorParking=document.createElement('div');editorParking.hidden=true;editorParking.style.display='none';
+  editorParking.setAttribute('aria-hidden','true');
+  subjectSection.append(editorParking);
+  editorParking.append(liveRotation,cloudRotationTools,rotationDraftPanel,tripletEditor);
+  const rotationAdvanced=document.createElement('details');
+  rotationAdvanced.className='pa-rotation-advanced';
+  const rotationSummary=document.createElement('summary');
+  rotationSummary.textContent='Configuració avançada de conjunts (editor auxiliar)';
+  const rotationClarification=document.createElement('p');
+  rotationClarification.className='note-hint';
+  rotationClarification.textContent='La rotació activa de 1r ESO i les seves 3 assignatures es mostren a dalt. Aquest editor auxiliar consulta propostes de configuració per una via diferent; que no hi hagi propostes aquí no significa que la rotació real no existeixi.';
+  rotationAdvanced.append(rotationSummary,rotationClarification);
+  function parkEditors(){
+   editorParking.append(liveRotation,cloudRotationTools,rotationDraftPanel,tripletEditor);
+   rotationAdvanced.open=false;
+  }
+  function managerClose(){
+   parkEditors();manager.hidden=true;
+   typeLauncherButtons.querySelectorAll('button').forEach(b=>b.classList.remove('pa-manager-active'));
+   managerSpecial.replaceChildren();managerTabs.hidden=true;
+  }
+  managerBack.onclick=()=>{
+   managerClose();listPanel.hidden=true;
+   showList.textContent='Mostrar assignatures';showList.setAttribute('aria-expanded','false');
+  };
+  function openTypeManager(type){
+   if(!managerTypes[type])return;
+   parkEditors();managerSpecial.replaceChildren();manager.hidden=false;
+   managerTabs.hidden=!['optativa_rotativa','optativa_eleccio'].includes(type);
+   tabSpecific.textContent=type==='optativa_rotativa'?'Rotacions i avaluacions':'Franges i matrícules';
+   showManagerTab('subjects');
+   managerTitle.textContent=managerTypes[type][0];managerDesc.textContent=managerTypes[type][1];
+   typeLauncherButtons.querySelectorAll('button').forEach((b,i)=>b.classList.toggle('pa-manager-active',['obligatoria','optativa_rotativa','optativa_eleccio','reforc','acollida'][i]===type));
+   managerList.replaceChildren();
+   const subset=classes.filter(c=>(c.tipus_assignatura||(c.es_optativa?'optativa':'obligatoria'))===type).sort((a,b)=>Number(a.curs??99)-Number(b.curs??99)||String(a.nom).localeCompare(String(b.nom),'ca'));
+   const info=document.createElement('p');info.className='note-hint';info.textContent=subset.length+' assignatura(es) de Supabase';managerList.append(info);
+   const table=document.createElement('table');table.className='v9-subject-table';
+   const hasRelation=type==='optativa_eleccio'||type==='optativa_rotativa';
+   table.innerHTML='<thead><tr><th>Assignatura</th><th>Curs</th><th>Grup</th>'+(hasRelation?'<th>'+(type==='optativa_eleccio'?'Franja':'Conjunt')+'</th>':'')+'<th>Accions</th></tr></thead><tbody></tbody>';
+   for(const c of subset){
+    const tr=document.createElement('tr');tr.dataset.paSubjectId=String(c.id);
+    for(const v of [c.nom,c.curs==null?'Tots':({1:'1r',2:'2n',3:'3r',4:'4t'}[c.curs]||c.curs)+' ESO',type==='optativa_eleccio'?'Tots els grups':(c.grup_id?subjectGroupName(c.grup_id):'Tots els grups')]){const td=document.createElement('td');td.textContent=v;tr.append(td)}
+    if(hasRelation){const rel=document.createElement('td');
+     if(type==='optativa_eleccio'){rel.dataset.paFranja='';
+      const match=tripletSnapshot?.find(b=>b.subjects.some(a=>String(a.classe_id)===String(c.id)));
+      rel.textContent=match?'Franja '+match.number:'Pendent de carregar';
+      if(match)rel.className='pa-manager-franja';
+     }else{rel.textContent=Number(c.curs)===1?'Optatives rotatives 1r ESO':'Consultar rotació'}
+     tr.append(rel)}
+    const td=document.createElement('td');
+    const view=document.createElement('button');view.className='secondary';view.textContent='Fitxa';view.onclick=()=>openSubjectInfo(c);
+    const edit=document.createElement('button');edit.className='secondary';edit.textContent='Editar';edit.style.marginLeft='6px';edit.onclick=()=>openEdit(c.id);
+    td.append(view,edit);tr.append(td);table.tBodies[0].append(tr);
+   }
+   if(!subset.length){const tr=table.tBodies[0].insertRow();const td=tr.insertCell();td.colSpan=hasRelation?5:4;td.textContent='No hi ha assignatures d’aquest tipus al catàleg.';td.style.padding='16px'}
+   const wrap=document.createElement('div');wrap.className='v9-subject-list';wrap.append(table);managerList.append(wrap);
+   if(type==='optativa_rotativa'){
+    const heading=document.createElement('h4');heading.textContent='Rotació de 1r ESO · distribució i avaluacions';heading.style.margin='18px 0 8px';
+    managerSpecial.append(heading,liveRotation);
+    rotationAdvanced.append(cloudRotationTools,rotationDraftPanel);
+    managerSpecial.append(rotationAdvanced);
+   }
+   if(type==='optativa_eleccio'){
+    tripletHeading.textContent='Franges i matrícules · 4t ESO';
+    tripletHelp.textContent='Una assignatura de cada franja per alumne, tant de 4t A com de 4t B. Els canvis es revisen i es desen per franja. L’aula habitual és independent del grup de procedència.';
+    managerSpecial.append(tripletEditor);
+    // La relació assignatura-franja prové de la lectura protegida del servidor,
+    // mai d'una deducció basada en el nom o en el grup administratiu.
+    if(!tripletSnapshot)tripletLoad.click();
+   }
+   managerNew.textContent=type==='optativa_rotativa'?'+ Crear conjunt / assignatura':'+ Crear assignatura';
+   manager.scrollIntoView({behavior:'smooth',block:'start'});
+  }
+  managerNew.onclick=()=>{
+   const type=Object.keys(managerTypes).find(k=>managerTitle.textContent===managerTypes[k][0]);
+   if(!type)return;
+   if(subjectForm.hidden)subjectToggle.click();
+   subjectType.value=type;subjectType.dispatchEvent(new Event('change'));
+   subjectToggle.scrollIntoView({behavior:'smooth',block:'center'});
+  };
   function refreshEditGroups(preferred){if(['acollida','reforc','optativa','optativa_rotativa','optativa_eleccio'].includes(editType.value)){editCourse.disabled=editType.value==='acollida';editGroup.disabled=true;editGroup.required=false;editGroup.replaceChildren(new Option('Tot el curs (A + B)',''));return}editCourse.disabled=false;editGroup.disabled=false;editGroup.required=true;editGroup.replaceChildren();for(const g of subjectGroups.filter(g=>groupCourse(g)===Number(editCourse.value)))editGroup.add(new Option(g.nom,g.id));if([...editGroup.options].some(o=>o.value===String(preferred)))editGroup.value=String(preferred)}
   editCourse.onchange=()=>refreshEditGroups(editGroup.value);editType.onchange=()=>refreshEditGroups(editGroup.value);
   function closeEdit(){if(editBusy)return;overlay.hidden=true;editingId=null;editStatus.textContent=''}
+  // V8: eliminació atòmica exclusivament via RPC protegida de Supabase.
+  // Les dades acadèmiques bloquegen l'operació; només es poden netejar
+  // matrícules, assignacions docents i sessions d'horari.
+  editDelete.onclick=async()=>{
+   if(!isAdmin||editBusy||!editingId)return;
+   const c=classes.find(x=>String(x.id)===String(editingId));if(!c)return;
+   editBusy=true;editDelete.disabled=true;editSave.disabled=true;editCancel.disabled=true;modalClose.disabled=true;
+   editStatus.style.color='#526075';editStatus.textContent='Comprovant les dependències a Supabase…';
+   try{
+    const check=await api('/rest/v1/rpc/comprovar_dependencies_assignatura',accessToken,{
+     method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({p_classe_id:c.id})
+    });
+    if(!check||!Array.isArray(check['dependències'])||check['dependències'].length!==13)throw Error('La comprovació no és completa.');
+    const rows=check['dependències'];
+    if(rows.some(d=>!d||typeof d.taula!=='string'||!Number.isSafeInteger(Number(d.registres))||Number(d.registres)<0))throw Error('Comptadors no vàlids.');
+    const counts=Object.fromEntries(rows.map(d=>[d.taula,Number(d.registres)]));
+    if(Object.keys(counts).length!==13)throw Error('Hi ha dependències duplicades.');
+    const total=Object.values(counts).reduce((a,b)=>a+b,0);
+    if(total!==Number(check['total_dependències']))throw Error('El recompte no coincideix.');
+    const allowed=['alumnes_classes','professors_classes','sessions_horari'];
+    const protectedRows=rows.filter(d=>!allowed.includes(d.taula)&&Number(d.registres)>0);
+    if(protectedRows.length){
+     editStatus.style.color='#a3454b';
+     editStatus.textContent='Eliminació bloquejada: hi ha dades acadèmiques o altres dependències ('+protectedRows.map(d=>d.taula+': '+d.registres).join(', ')+'). No s’ha modificat res.';
+     return;
+    }
+    const detail='Matrícules: '+counts.alumnes_classes+'\nProfessorat assignat: '+counts.professors_classes+'\nSessions d’horari: '+counts.sessions_horari;
+    if(!window.confirm('ATENCIÓ · ELIMINACIÓ DEFINITIVA\n\nAssignatura: '+c.nom+' · '+(c.curs?c.curs+'n ESO':'Tots els cursos')+'\n\n'+detail+'\n\nS’eliminaran aquesta assignatura i els vincles indicats. NO s’eliminaran les fitxes d’alumnes ni de professors.\n\nAquesta acció és irreversible. Vols continuar?')){
+     editStatus.textContent='Eliminació cancel·lada.';return;
+    }
+    const typed=window.prompt('CONFIRMACIÓ FINAL\n\nEscriu exactament el nom de l’assignatura per eliminar-la definitivament:\n'+c.nom);
+    if(typed!==c.nom){editStatus.textContent='Eliminació cancel·lada: el nom no coincideix.';return;}
+    editStatus.textContent='Eliminant de manera segura a Supabase…';
+    const result=await api('/rest/v1/rpc/eliminar_assignatura_segura',accessToken,{
+     method:'POST',headers:{'Content-Type':'application/json'},
+     body:JSON.stringify({p_classe_id:c.id,p_nom_confirmat:c.nom,p_matricules:counts.alumnes_classes,p_professors:counts.professors_classes,p_sessions:counts.sessions_horari})
+    });
+    if(!result||result.eliminada!==true||String(result.classe_id)!==String(c.id))throw Error('Supabase no ha confirmat l’eliminació.');
+    const idx=classes.findIndex(x=>String(x.id)===String(c.id));if(idx>=0)classes.splice(idx,1);
+    overlay.hidden=true;editingId=null;
+    // V9: refresquem tant el catàleg general com el gestor per tipus que
+    // estava obert. El gestor conserva files DOM antigues si no es reconstrueix.
+    renderSubjectList();
+    if(!manager.hidden){
+     const activeType=Object.keys(managerTypes).find(k=>managerTitle.textContent===managerTypes[k][0]);
+     if(activeType)openTypeManager(activeType);
+    }
+    v9Toast('Assignatura eliminada correctament de Supabase.');
+   }catch(err){editStatus.style.color='#a3454b';editStatus.textContent='Eliminació bloquejada: '+err.message+' No s’ha modificat cap registre des d’aquesta pantalla.';}
+   finally{editBusy=false;editDelete.disabled=false;editSave.disabled=false;editCancel.disabled=false;modalClose.disabled=false;}
+  };
   function openEdit(id){const c=classes.find(c=>String(c.id)===String(id));if(!c)return;editingId=c.id;editName.value=c.nom||'';editRoom.value=c.aula_habitual||'';editCourse.value=String(c.curs??1);// Manté el tipus històric 'optativa' només si l'assignatura ja el tenia.
    // No s'ofereix en crear assignatures ni en editar-ne d'altres.
    const legacyOption=[...editType.options].find(o=>o.value==='optativa');
    if(legacyOption)legacyOption.remove();
    const currentType=c.tipus_assignatura||(c.es_optativa?'optativa':'obligatoria');
    if(currentType==='optativa')editType.add(new Option('Optativa (tipus antic)','optativa'));
-   editType.value=currentType;refreshEditGroups(c.grup_id);editStatus.textContent='';overlay.hidden=false;loadEditStaff(c.id);editName.focus()}
+   editType.value=currentType;refreshEditGroups(c.grup_id);editStatus.textContent='';editDelete.hidden=!isAdmin;overlay.hidden=false;loadEditStaff(c.id);editName.focus()}
   modalClose.onclick=closeEdit;editCancel.onclick=closeEdit;
   overlay.addEventListener('click',e=>{if(e.target===overlay)closeEdit()});
   editForm.onsubmit=async e=>{
