@@ -833,7 +833,10 @@ $('paSchoolCalendar').onclick=paShowCalendar;
  nav.insertAdjacentElement('afterend',agendaButton);
  let displayed=new Date();displayed.setDate(1);
  let selected=null,events=[],recipients=[],loadId=0;
- const types={examen:'Examen',lliurament:'Lliurament',activitat_assignatura:'Activitat d’assignatura',sortida:'Sortida',activitat_tutoria:'Activitat de tutoria',reunio:'Reunió'};
+ const types={examen:'Examen',lliurament:'Lliurament',activitat_assignatura:'Activitat d’assignatura',sortida:'Sortida',activitat_tutoria:'Activitat de tutoria',reunio:'Reunió',activitat_centre:'Activitat de centre',festiu:'Festiu',lliure_disposicio:'Dia de lliure disposició',data_important:'Data important'};
+ const academicTypes=['examen','lliurament','activitat_assignatura'];
+ const organisationalTypes=['sortida','activitat_tutoria','reunio','activitat_centre'];
+ const schoolTypes=['festiu','lliure_disposicio','data_important'];
  function iso(y,m,d){return y+'-'+String(m+1).padStart(2,'0')+'-'+String(d).padStart(2,'0')}
  function dateKey(d){const x=new Date(d);return iso(x.getFullYear(),x.getMonth(),x.getDate())}
  function toLocalDatetime(date,time){return new Date(date+'T'+time+':00').toISOString()}
@@ -843,7 +846,7 @@ $('paSchoolCalendar').onclick=paShowCalendar;
   const query='/rest/v1/esdeveniments_calendari?select=*&inici=lt.'+encodeURIComponent(until)+'&final=gte.'+encodeURIComponent(from)+'&order=inici.asc&limit=500';
   const rows=await api(query);
   const ids=rows.map(x=>x.id).filter(Boolean);
-  const dest=ids.length?await api('/rest/v1/esdeveniments_destinataris?select=esdeveniment_id,classe_id,grup_id&esdeveniment_id=in.('+ids.join(',')+')&limit=1000'):[];
+  const dest=ids.length?await api('/rest/v1/esdeveniments_destinataris?select=esdeveniment_id,classe_id,grup_id,tot_el_centre&esdeveniment_id=in.('+ids.join(',')+')&limit=1000'):[];
   return {rows,dest};
  }
  function showAgenda(){
@@ -908,11 +911,11 @@ $('paSchoolCalendar').onclick=paShowCalendar;
    for(const e of dayEvents){
     const entry=paEl('div','','pa-agenda-entry');
     entry.append(paEl('strong',e.titol||'Esdeveniment'));
-    const when=new Date(e.inici).toLocaleTimeString('ca-ES',{hour:'2-digit',minute:'2-digit'});
+    const when=e.tot_el_dia?'Tot el dia':new Date(e.inici).toLocaleTimeString('ca-ES',{hour:'2-digit',minute:'2-digit'});
     entry.append(paEl('small',(types[e.tipus]||e.tipus||'Activitat')+' · '+when));
     if(e.descripcio)entry.append(paEl('p',e.descripcio));
     const d=recipients.filter(x=>x.esdeveniment_id===e.id);
-    if(d.length)entry.append(paEl('small',d.map(x=>x.classe_id?classLabel(allClasses.find(c=>c.id===x.classe_id)||{nom:'Assignatura',id:x.classe_id},teacherGroups):(teacherGroups.find(g=>g.id===x.grup_id)?.nom||'Grup')).join(' · ')));
+    if(d.length)entry.append(paEl('small',d.map(x=>x.classe_id?classLabel(allClasses.find(c=>c.id===x.classe_id)||{nom:'Assignatura',id:x.classe_id},teacherGroups):(x.tot_el_centre?'Tot el centre':(teacherGroups.find(g=>g.id===x.grup_id)?.nom||'Grup'))).join(' · ')));
     // El botó és orientatiu: la funció RPC comprova els permisos al servidor.
     if(isAdmin || (profile?.id && e.creat_per===profile.id)){
      const actions=paEl('div');actions.style.cssText='display:flex;justify-content:flex-end;margin-top:7px';
@@ -932,61 +935,118 @@ $('paSchoolCalendar').onclick=paShowCalendar;
       }
      },'secondary');
      remove.style.cssText='color:#a3454b;border-color:#eccbd0';
-     actions.append(remove);entry.append(actions);
+     const edit=paButton('✎ Editar',()=>openEditor(e),'secondary');
+     actions.append(edit,remove);entry.append(actions);
     }
     detail.append(entry);
    }
   }
-  function openEditor(){
-   const {shade,box}=paModal('＋ Afegir esdeveniment');
-   box.append(paEl('p','En aquesta fase es poden crear exàmens, lliuraments i activitats d’assignatura. Les sortides, tutories i reunions requereixen el selector de grups, que afegirem després.','note-hint'));
-   const title=paField(box,'Títol',paEl('input'));title.maxLength=160;
-   const type=paField(box,'Tipus',paSelect(Object.entries(types).filter(([v])=>['examen','lliurament','activitat_assignatura'].includes(v)).map(([v,t])=>[v,t]),'examen'));
-   const desc=paField(box,'Descripció',paEl('textarea'));desc.rows=3;
-   const day=paField(box,'Data',paEl('input'));day.type='date';day.value=selected||localToday();
-   const from=paField(box,'Hora d’inici',paEl('input'));from.type='time';from.value='09:00';
-   const to=paField(box,'Hora de finalització',paEl('input'));to.type='time';to.value='10:00';
-   const subject=paField(box,'Assignatura destinatària',paSelect([['','Carregant assignatures…']],''));
-   subject.disabled=true;
+  function openEditor(existing=null){
+   const editing=!!existing;
+   const originalDest=editing?recipients.find(x=>x.esdeveniment_id===existing.id):null;
+   const originalScope=originalDest?(originalDest.tot_el_centre?'centre':originalDest.classe_id?'classe':'grup'):null;
+   const originalRecipient=originalDest?(originalDest.classe_id||originalDest.grup_id||'centre'):null;
+   const originalCategory=editing?(academicTypes.includes(existing.tipus)?'academic':organisationalTypes.includes(existing.tipus)?'organisational':'school'):'academic';
+   const {shade,box}=paModal(editing?'✎ Editar esdeveniment':'＋ Afegir esdeveniment');
+   box.append(paEl('p','Tria la categoria, el tipus i els destinataris. Els permisos es validen a Supabase en desar.','note-hint'));
+   const title=paField(box,'Títol',paEl('input'));title.maxLength=160;if(editing)title.value=existing.titol||'';
+   const category=paField(box,'Categoria',paSelect([['academic','Acadèmics'],['organisational','Organitzatius'],['school','Calendari escolar']],originalCategory));
+   const type=paField(box,'Tipus',paSelect([],''));
+   const desc=paField(box,'Descripció',paEl('textarea'));desc.rows=3;if(editing)desc.value=existing.descripcio||'';
+   const day=paField(box,'Data',paEl('input'));day.type='date';day.value=editing?dateKey(existing.inici):(selected||localToday());
+   const allDayRow=paEl('label');allDayRow.style.cssText='display:flex;align-items:center;gap:9px;margin:12px 0';
+   const allDay=document.createElement('input');allDay.type='checkbox';allDay.style.width='auto';if(editing)allDay.checked=!!existing.tot_el_dia;allDayRow.append(allDay,paEl('span','Tot el dia'));box.append(allDayRow);
+   const from=paField(box,'Hora d’inici',paEl('input'));from.type='time';from.value=editing?new Date(existing.inici).toLocaleTimeString('en-GB',{hour:'2-digit',minute:'2-digit',hour12:false}):'09:00';
+   const to=paField(box,'Hora de finalització',paEl('input'));to.type='time';to.value=editing?new Date(existing.final).toLocaleTimeString('en-GB',{hour:'2-digit',minute:'2-digit',hour12:false}):'10:00';
+   const scope=paField(box,'Àmbit destinatari',paSelect([],''));
+   const recipient=paField(box,'Destinatari',paSelect([['','Carregant…']],'') );recipient.disabled=true;
    const msg=paEl('p','','error');box.append(msg);
-   // Administració pot triar qualsevol assignatura; un docent només les seves.
-   // El servidor comprova de nou els permisos en desar.
-   (async()=>{
-    try{
-     const [classes,groups]=await Promise.all([
-      api('/rest/v1/classes?select=id,nom,curs,grup_id&order=nom.asc&limit=1000'),
-      api('/rest/v1/grups?select=id,nom&limit=1000')
-     ]);
-     if(!shade.isConnected)return;
+   from.disabled=to.disabled=allDay.checked;
+   let classes=[],groups=[],tutorGroupIds=new Set();
+   const groupLabel=g=>g.nom||'Grup';
+   const updateRecipient=()=>{
+    recipient.replaceChildren();
+    if(scope.value==='centre'){
+     recipient.add(new Option('Tot el centre','centre'));recipient.disabled=true;return;
+    }
+    recipient.add(new Option(scope.value==='classe'?'Selecciona una assignatura…':'Selecciona un grup…',''));
+    if(scope.value==='classe'){
      const allowed=isAdmin?classes:classes.filter(c=>allClasses.some(a=>a.id===c.id));
      allowed.sort((a,b)=>classOrder(a,b,groups));
-     subject.replaceChildren(new Option('Selecciona una assignatura…',''));
-     for(const c of allowed)subject.add(new Option(classLabel(c,groups),c.id));
-     subject.disabled=!allowed.length;
-     if(!allowed.length)msg.textContent='No hi ha assignatures disponibles per al teu perfil.';
-    }catch(e){if(shade.isConnected)msg.textContent='Error en carregar assignatures: '+e.message;}
+     for(const c of allowed)recipient.add(new Option(classLabel(c,groups),c.id));
+    }else{
+     for(const g of groups.filter(g=>isAdmin||tutorGroupIds.has(g.id)))recipient.add(new Option(groupLabel(g),g.id));
+    }
+    recipient.disabled=recipient.options.length<=1;
+   };
+   const updateScope=()=>{
+    const academic=academicTypes.includes(type.value);
+    const options=academic?(isAdmin?[['classe','Assignatura'],['centre','Tot el centre']]:[['classe','Assignatura']]):isAdmin?[['grup','Grup'],['centre','Tot el centre']]:[['grup','Grup']];
+    scope.replaceChildren();for(const [v,t] of options)scope.add(new Option(t,v));
+    updateRecipient();
+   };
+   const updateType=()=>{
+    const choices=category.value==='academic'?academicTypes:category.value==='organisational'?organisationalTypes:schoolTypes;
+    type.replaceChildren();for(const v of choices.filter(v=>isAdmin||!['activitat_centre','festiu','lliure_disposicio','data_important'].includes(v)))type.add(new Option(types[v],v));
+    updateScope();
+   };
+   category.onchange=updateType;type.onchange=updateScope;scope.onchange=updateRecipient;
+   allDay.onchange=()=>{from.disabled=to.disabled=allDay.checked;};
+   if(!isAdmin){category.querySelector('option[value="school"]').remove();}
+   updateType();
+   if(editing && [...type.options].some(o=>o.value===existing.tipus)){
+    type.value=existing.tipus;updateScope();
+    if(originalScope && [...scope.options].some(o=>o.value===originalScope)){
+     scope.value=originalScope;updateRecipient();
+    }
+   }
+   (async()=>{
+    try{
+     const calls=[api('/rest/v1/classes?select=id,nom,curs,grup_id&order=nom.asc&limit=1000'),api('/rest/v1/grups?select=id,nom&limit=1000')];
+     if(!isAdmin && profile?.id)calls.push(api('/rest/v1/tutories?select=grup_id&professor_id=eq.'+encodeURIComponent(profile.id)+'&limit=100'));
+     const result=await Promise.all(calls);
+     if(!shade.isConnected)return;
+     classes=result[0];groups=result[1];tutorGroupIds=new Set((result[2]||[]).map(t=>t.grup_id));
+     if(!isAdmin&&!tutorGroupIds.size){category.querySelector('option[value="organisational"]').remove();if(category.value==='organisational')category.value='academic';}
+     updateType();
+     if(editing){
+      if([...type.options].some(o=>o.value===existing.tipus)){
+       type.value=existing.tipus;updateScope();
+       if(originalScope && [...scope.options].some(o=>o.value===originalScope)){
+        scope.value=originalScope;updateRecipient();
+        if(originalRecipient && [...recipient.options].some(o=>o.value===originalRecipient))recipient.value=originalRecipient;
+        else if(scope.value!=='centre')msg.textContent='El destinatari anterior no està disponible per al teu perfil. Selecciona un destinatari autoritzat.';
+       }
+      }else msg.textContent='Aquest tipus d’esdeveniment no està disponible per al teu perfil.';
+     }
+     if(!isAdmin && !classes.some(c=>allClasses.some(a=>a.id===c.id)) && !tutorGroupIds.size)msg.textContent='No hi ha destinataris disponibles per al teu perfil.';
+    }catch(e){if(shade.isConnected)msg.textContent='Error en carregar destinataris: '+e.message;}
    })();
    const actions=paActions(box);
    actions.append(paButton('Cancel·lar',()=>shade.remove(),'secondary'));
-   const save=paButton('Desar a Supabase',async()=>{
-    if(!title.value.trim()){msg.textContent='Cal indicar un títol.';return}
-    if(!subject.value){msg.textContent='Selecciona una assignatura destinatària.';return}
-    if(!day.value||!from.value||!to.value||to.value<=from.value){msg.textContent='Comprova la data i les hores.';return}
-    if(!confirm('Vols crear aquest esdeveniment a Supabase per a '+subject.options[subject.selectedIndex].text+'?'))return;
+   const save=paButton(editing?'Desar canvis':'Desar a Supabase',async()=>{
+    if(!title.value.trim()){msg.textContent='Cal indicar un títol.';return;}
+    if(!type.value){msg.textContent='Selecciona un tipus.';return;}
+    if(!day.value||(!allDay.checked&&(!from.value||!to.value||to.value<=from.value))){msg.textContent='Comprova la data i les hores.';return;}
+    if(scope.value!=='centre'&&!recipient.value){msg.textContent='Selecciona un destinatari.';return;}
+    const dest=scope.value==='centre'?[{tot_el_centre:true}]:scope.value==='classe'?[{classe_id:recipient.value}]:[{grup_id:recipient.value}];
+    const destName=scope.value==='centre'?'Tot el centre':recipient.options[recipient.selectedIndex].text;
+    if(!confirm((editing?'Vols desar els canvis de «':'Vols crear «')+title.value.trim()+'» ('+types[type.value]+') per a '+destName+'?'))return;
     save.disabled=true;msg.textContent='Desant…';
     try{
-     await api('/rest/v1/rpc/crear_esdeveniment_calendari',accessToken,{
+     await api(editing?'/rest/v1/rpc/editar_esdeveniment_calendari':'/rest/v1/rpc/crear_esdeveniment_calendari',accessToken,{
       method:'POST',headers:{'Content-Type':'application/json'},
       body:JSON.stringify({
+       ...(editing?{p_esdeveniment_id:existing.id}:{}),
        p_titol:title.value.trim(),p_tipus:type.value,p_descripcio:desc.value.trim(),
-       p_inici:toLocalDatetime(day.value,from.value),p_final:toLocalDatetime(day.value,to.value),
-       p_tot_el_dia:false,p_destinataris:[{classe_id:subject.value}]
+       p_inici:toLocalDatetime(day.value,allDay.checked?'00:00':from.value),
+       p_final:allDay.checked?new Date(new Date(day.value+'T00:00:00').getTime()+86400000).toISOString():toLocalDatetime(day.value,to.value),
+       p_tot_el_dia:allDay.checked,p_destinataris:dest
       })
      });
-     shade.remove();
-     displayed=new Date(day.value+'T12:00:00');displayed.setDate(1);selected=day.value;
+     shade.remove();displayed=new Date(day.value+'T12:00:00');displayed.setDate(1);selected=day.value;
      await refresh();
-    }catch(e){msg.textContent='No s’ha pogut desar: '+e.message+'. No tornis a prémer Desar fins a comprovar el resultat.';save.disabled=false}
+    }catch(e){msg.textContent='No s’ha pogut desar: '+e.message+'. Comprova el resultat abans de tornar-ho a provar.';save.disabled=false;}
    },'primary');
    actions.append(save);
   }
