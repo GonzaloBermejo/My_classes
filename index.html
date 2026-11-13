@@ -507,6 +507,13 @@ body.paideia-authenticated > header, body.paideia-authenticated > main {display:
 #jediShell .pa-agenda-detail{margin-top:17px;padding:16px;border-radius:10px;border:1px solid #e1e7f0;background:#fafcff;color:#53627b;font-size:13px}
 @media(max-width:650px){#jediShell .pa-agenda{padding:12px}#jediShell .pa-agenda-grid{gap:3px}#jediShell .pa-agenda-day{min-height:55px;padding:6px}#jediShell .pa-agenda-blank{min-height:55px}}
 </style>
+<style id="pa-v13-calendar-groups">.pa-v13-group-panel{margin:14px 0;padding:15px;border:1px solid #dce4f0;border-radius:11px;background:#f9fbff}.pa-v13-group-panel[hidden]{display:none!important}.pa-v13-group-options{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px}.pa-v13-course{border:1px solid #e0e6f0;border-radius:9px;padding:11px;background:white}.pa-v13-course-children{padding-left:20px}.pa-v13-check-label{display:flex!important;align-items:center;gap:9px;margin:6px 0!important;cursor:pointer;font-size:13px!important}.pa-v13-check-label input{width:17px!important;height:17px;flex:0 0 17px;accent-color:#344d96}.pa-v13-group-panel>.note-hint{margin:7px 0 12px}.pa-v13-group-panel>.note-hint:last-child{margin:12px 0 0}@media(max-width:580px){.pa-v13-group-options{grid-template-columns:1fr}}</style>
+<style id="pa-v14-calendar-polish">
+/* Selector de centre en una fila pròpia; els cursos queden en una graella regular. */
+.pa-v13-group-options>.pa-v14-all-centre{grid-column:1/-1;padding:4px 3px 8px;border-bottom:1px solid #dce4f0}
+.pa-v14-all-centre .pa-v13-check-label{margin:4px 0;font-weight:650}
+</style>
+<style id="pa-agenda-v15-recipients">#jediShell .pa-agenda-recipients{font-size:13px;color:#536584;display:flex;gap:5px;flex-wrap:wrap;align-items:baseline;margin:4px 0 3px}#jediShell .pa-agenda-recipients strong{color:#344d96;font-weight:650}</style>
 </head>
 <body>
 <style id="jedi-hierarchy-style">
@@ -832,7 +839,7 @@ $('paSchoolCalendar').onclick=paShowCalendar;
  agendaButton.id='paAgendaEvents';
  nav.insertAdjacentElement('afterend',agendaButton);
  let displayed=new Date();displayed.setDate(1);
- let selected=null,events=[],recipients=[],loadId=0;
+ let selected=null,events=[],recipients=[],agendaGroups=[],loadId=0;
  const types={examen:'Examen',lliurament:'Lliurament',activitat_assignatura:'Activitat d’assignatura',sortida:'Sortida',activitat_tutoria:'Activitat de tutoria',reunio:'Reunió',activitat_centre:'Activitat de centre',festiu:'Festiu',lliure_disposicio:'Dia de lliure disposició',data_important:'Data important'};
  const academicTypes=['examen','lliurament','activitat_assignatura'];
  const organisationalTypes=['sortida','activitat_tutoria','reunio','activitat_centre'];
@@ -847,7 +854,8 @@ $('paSchoolCalendar').onclick=paShowCalendar;
   const rows=await api(query);
   const ids=rows.map(x=>x.id).filter(Boolean);
   const dest=ids.length?await api('/rest/v1/esdeveniments_destinataris?select=esdeveniment_id,classe_id,grup_id,tot_el_centre&esdeveniment_id=in.('+ids.join(',')+')&limit=1000'):[];
-  return {rows,dest};
+  const groupRows=await api('/rest/v1/grups?select=id,nom&limit=1000');
+  return {rows,dest,groupRows};
  }
  function showAgenda(){
   const request=++paScheduleRequest;
@@ -871,14 +879,46 @@ $('paSchoolCalendar').onclick=paShowCalendar;
    try{
     const data=await fetchEvents();
     if(token!==loadId||request!==paScheduleRequest)return;
-    events=data.rows;recipients=data.dest;
+    events=data.rows;recipients=data.dest;agendaGroups=data.groupRows;
     note.textContent=events.length?events.length+' esdeveniment(s) visibles aquest mes.':'Encara no hi ha esdeveniments visibles aquest mes.';
    }catch(e){
     if(token!==loadId||request!==paScheduleRequest)return;
-    events=[];recipients=[];
+    events=[];recipients=[];agendaGroups=[];
     note.textContent='No s’han pogut carregar els esdeveniments: '+e.message;
    }
    paint();
+  }
+  // V15: resumeix els destinataris reals, sense modificar-ne el desament.
+  function recipientSummary(destinations){
+   if(!destinations.length)return 'Destinataris no especificats';
+   if(destinations.some(d=>d.tot_el_centre))return 'Tot el centre';
+   const labels=[];
+   const classes=destinations.filter(d=>d.classe_id);
+   for(const d of classes){
+    const c=allClasses.find(c=>String(c.id)===String(d.classe_id));
+    const label=c?classLabel(c,teacherGroups):'Assignatura no disponible';
+    if(!labels.includes(label))labels.push(label);
+   }
+   const groupDests=destinations.filter(d=>d.grup_id);
+   const groupNames=groupDests.map(d=>agendaGroups.find(g=>String(g.id)===String(d.grup_id))?.nom||teacherGroups.find(g=>String(g.id)===String(d.grup_id))?.nom||null);
+   const parse=name=>{const m=String(name||'').match(/(?:^|\b)([1-4])\s*(?:r|n|t)?\s*(?:d['’]?)?\s*ESO\s*([AB])\b/i);return m?{year:Number(m[1]),letter:m[2].toUpperCase()}:null;};
+   const parsed=groupNames.map(parse);
+   if(groupDests.length && parsed.every(Boolean)){
+    const selected=new Set(parsed.map(x=>x.year+x.letter));
+    const all=new Set(agendaGroups.map(g=>parse(g.nom)).filter(Boolean).map(x=>x.year+x.letter));
+    if(all.size===8 && selected.size===8 && [...all].every(x=>selected.has(x)))labels.push('Tot el centre');
+    else for(let year=1;year<=4;year++){
+     const prefix=year+(year===1?'r':year===2?'n':'t')+' ESO';
+     if(selected.has(year+'A')&&selected.has(year+'B'))labels.push(prefix+' (A i B)');
+     else for(const letter of ['A','B'])if(selected.has(year+letter))labels.push(prefix+' '+letter);
+    }
+   }else{
+    for(let i=0;i<groupDests.length;i++){
+     const label=groupNames[i]||'Grup no disponible';
+     if(!labels.includes(label))labels.push(label);
+    }
+   }
+   return labels.join(' · ');
   }
   function paint(){
    const y=displayed.getFullYear(),m=displayed.getMonth();
@@ -915,7 +955,9 @@ $('paSchoolCalendar').onclick=paShowCalendar;
     entry.append(paEl('small',(types[e.tipus]||e.tipus||'Activitat')+' · '+when));
     if(e.descripcio)entry.append(paEl('p',e.descripcio));
     const d=recipients.filter(x=>x.esdeveniment_id===e.id);
-    if(d.length)entry.append(paEl('small',d.map(x=>x.classe_id?classLabel(allClasses.find(c=>c.id===x.classe_id)||{nom:'Assignatura',id:x.classe_id},teacherGroups):(x.tot_el_centre?'Tot el centre':(teacherGroups.find(g=>g.id===x.grup_id)?.nom||'Grup'))).join(' · ')));
+    const destLine=paEl('div','','pa-agenda-recipients');
+    destLine.append(paEl('strong','Destinataris: '),paEl('span',recipientSummary(d)));
+    entry.append(destLine);
     // El botó és orientatiu: la funció RPC comprova els permisos al servidor.
     if(isAdmin || (profile?.id && e.creat_per===profile.id)){
      const actions=paEl('div');actions.style.cssText='display:flex;justify-content:flex-end;margin-top:7px';
@@ -943,7 +985,8 @@ $('paSchoolCalendar').onclick=paShowCalendar;
   }
   function openEditor(existing=null){
    const editing=!!existing;
-   const originalDest=editing?recipients.find(x=>x.esdeveniment_id===existing.id):null;
+   const originalDests=editing?recipients.filter(x=>x.esdeveniment_id===existing.id):[];
+   const originalDest=originalDests[0]||null;
    const originalScope=originalDest?(originalDest.tot_el_centre?'centre':originalDest.classe_id?'classe':'grup'):null;
    const originalRecipient=originalDest?(originalDest.classe_id||originalDest.grup_id||'centre'):null;
    const originalCategory=editing?(academicTypes.includes(existing.tipus)?'academic':organisationalTypes.includes(existing.tipus)?'organisational':'school'):'academic';
@@ -960,12 +1003,61 @@ $('paSchoolCalendar').onclick=paShowCalendar;
    const to=paField(box,'Hora de finalització',paEl('input'));to.type='time';to.value=editing?new Date(existing.final).toLocaleTimeString('en-GB',{hour:'2-digit',minute:'2-digit',hour12:false}):'10:00';
    const scope=paField(box,'Àmbit destinatari',paSelect([],''));
    const recipient=paField(box,'Destinatari',paSelect([['','Carregant…']],'') );recipient.disabled=true;
+   const groupPanel=paEl('div','','pa-v13-group-panel');groupPanel.hidden=true;
+   const groupHeading=paEl('strong','Grups destinataris');groupPanel.append(groupHeading);
+   const groupHint=paEl('p','Selecciona tot el centre, cursos complets o grups individuals.','note-hint');groupPanel.append(groupHint);
+   const groupOptions=paEl('div','','pa-v13-group-options');groupPanel.append(groupOptions);
+   const groupSummary=paEl('p','Cap grup seleccionat','note-hint');groupPanel.append(groupSummary);
+   recipient.parentElement.after(groupPanel);
+   const selectedGroupIds=new Set();
+   let groupsInitialized=false;
+   function renderGroupChecks(){
+    groupOptions.replaceChildren();
+    const allowed=groups.filter(g=>isAdmin||tutorGroupIds.has(g.id));
+    const mk=(text,ids,emphasis=false)=>{
+     const label=paEl('label','','pa-v13-check-label');
+     const check=document.createElement('input');check.type='checkbox';check.checked=ids.length>0&&ids.every(id=>selectedGroupIds.has(id));
+     // V14: les caselles agregades només tenen dos estats: marcat o desmarcat.
+     check.onchange=()=>{for(const id of ids){if(check.checked)selectedGroupIds.add(id);else selectedGroupIds.delete(id);}renderGroupChecks();};
+     label.append(check,paEl(emphasis?'strong':'span',text));return label;
+    };
+    if(isAdmin&&allowed.length){const allRow=paEl('div','','pa-v14-all-centre');allRow.append(mk('Tot el centre (1r–4t ESO)',allowed.map(g=>g.id),true));groupOptions.append(allRow);}
+    for(let year=1;year<=4;year++){
+     const yearGroups=allowed.filter(g=>courseOf(g)?.year===year).sort((a,b)=>(courseOf(a)?.letter||'').localeCompare(courseOf(b)?.letter||''));
+     if(!yearGroups.length)continue;
+     const block=paEl('div','','pa-v13-course');
+     const yearName=year+(year===1?'r':year===2?'n':'t')+' ESO';
+     block.append(mk(yearName+' (A i B)',yearGroups.map(g=>g.id),true));
+     const children=paEl('div','','pa-v13-course-children');
+     for(const g of yearGroups)children.append(mk('Grup '+courseOf(g).letter,[g.id]));
+     block.append(children);groupOptions.append(block);
+    }
+    const n=selectedGroupIds.size;
+    groupSummary.textContent=n===0?'Cap grup seleccionat':n===allowed.length?'Tots els grups seleccionats':n+' de '+allowed.length+' grups seleccionats';
+   }
    const msg=paEl('p','','error');box.append(msg);
    from.disabled=to.disabled=allDay.checked;
    let classes=[],groups=[],tutorGroupIds=new Set();
    const groupLabel=g=>g.nom||'Grup';
+   // Un curs complet és un sol esdeveniment amb dos destinataris de grup.
+   const courseOf=g=>{const m=String(g.nom||'').match(/(?:^|\b)([1-4])\s*(?:r|n|t)?\s*(?:d['’]?)?\s*ESO\s*([AB])\b/i);return m?{year:Number(m[1]),letter:m[2].toUpperCase()}:null;};
+   const courseGroups=()=>{
+    const result=[];
+    for(let year=1;year<=4;year++){
+     const matches=groups.filter(g=>courseOf(g)?.year===year && (isAdmin||tutorGroupIds.has(g.id)));
+     if(matches.some(g=>courseOf(g)?.letter==='A')&&matches.some(g=>courseOf(g)?.letter==='B'))
+      result.push({year,ids:matches.filter(g=>['A','B'].includes(courseOf(g)?.letter)).map(g=>g.id)});
+    }
+    return result;
+   };
+   const originalCourse=()=>{
+    if(!editing||originalDests.length!==2||originalDests.some(d=>!d.grup_id))return null;
+    return courseGroups().find(c=>c.ids.length===2&&c.ids.every(id=>originalDests.some(d=>d.grup_id===id)));
+   };
    const updateRecipient=()=>{
     recipient.replaceChildren();
+    if(scope.value==='grup'){recipient.parentElement.style.display='none';groupPanel.hidden=false;renderGroupChecks();return;}
+    recipient.parentElement.style.display='grid';groupPanel.hidden=true;
     if(scope.value==='centre'){
      recipient.add(new Option('Tot el centre','centre'));recipient.disabled=true;return;
     }
@@ -975,13 +1067,16 @@ $('paSchoolCalendar').onclick=paShowCalendar;
      allowed.sort((a,b)=>classOrder(a,b,groups));
      for(const c of allowed)recipient.add(new Option(classLabel(c,groups),c.id));
     }else{
+     const courses=courseGroups();
+     for(const c of courses)recipient.add(new Option(c.year+(c.year===1?'r':c.year===2?'n':'t')+' ESO (A i B)','course:'+c.year));
      for(const g of groups.filter(g=>isAdmin||tutorGroupIds.has(g.id)))recipient.add(new Option(groupLabel(g),g.id));
     }
     recipient.disabled=recipient.options.length<=1;
    };
    const updateScope=()=>{
     const academic=academicTypes.includes(type.value);
-    const options=academic?(isAdmin?[['classe','Assignatura'],['centre','Tot el centre']]:[['classe','Assignatura']]):isAdmin?[['grup','Grup'],['centre','Tot el centre']]:[['grup','Grup']];
+    const options=academic?(isAdmin?[['classe','Assignatura'],['centre','Tot el centre']]:[['classe','Assignatura']]):[['grup','Grup']];
+    scope.parentElement.style.display=academic?'grid':'none';
     scope.replaceChildren();for(const [v,t] of options)scope.add(new Option(t,v));
     updateRecipient();
    };
@@ -1009,13 +1104,19 @@ $('paSchoolCalendar').onclick=paShowCalendar;
      classes=result[0];groups=result[1];tutorGroupIds=new Set((result[2]||[]).map(t=>t.grup_id));
      if(!isAdmin&&!tutorGroupIds.size){category.querySelector('option[value="organisational"]').remove();if(category.value==='organisational')category.value='academic';}
      updateType();
+     if(!groupsInitialized){
+      groupsInitialized=true;
+      if(editing){for(const d of originalDests)if(d.grup_id)selectedGroupIds.add(d.grup_id);}
+      renderGroupChecks();
+     }
      if(editing){
       if([...type.options].some(o=>o.value===existing.tipus)){
        type.value=existing.tipus;updateScope();
        if(originalScope && [...scope.options].some(o=>o.value===originalScope)){
         scope.value=originalScope;updateRecipient();
-        if(originalRecipient && [...recipient.options].some(o=>o.value===originalRecipient))recipient.value=originalRecipient;
-        else if(scope.value!=='centre')msg.textContent='El destinatari anterior no està disponible per al teu perfil. Selecciona un destinatari autoritzat.';
+        if(originalCourse() && [...recipient.options].some(o=>o.value==='course:'+originalCourse().year))recipient.value='course:'+originalCourse().year;
+        else if(originalRecipient && [...recipient.options].some(o=>o.value===originalRecipient))recipient.value=originalRecipient;
+        else if(scope.value==='classe')msg.textContent='L’assignatura destinatària anterior no està disponible per al teu perfil. Selecciona una assignatura autoritzada.';
        }
       }else msg.textContent='Aquest tipus d’esdeveniment no està disponible per al teu perfil.';
      }
@@ -1028,9 +1129,10 @@ $('paSchoolCalendar').onclick=paShowCalendar;
     if(!title.value.trim()){msg.textContent='Cal indicar un títol.';return;}
     if(!type.value){msg.textContent='Selecciona un tipus.';return;}
     if(!day.value||(!allDay.checked&&(!from.value||!to.value||to.value<=from.value))){msg.textContent='Comprova la data i les hores.';return;}
-    if(scope.value!=='centre'&&!recipient.value){msg.textContent='Selecciona un destinatari.';return;}
-    const dest=scope.value==='centre'?[{tot_el_centre:true}]:scope.value==='classe'?[{classe_id:recipient.value}]:[{grup_id:recipient.value}];
-    const destName=scope.value==='centre'?'Tot el centre':recipient.options[recipient.selectedIndex].text;
+    if(scope.value==='grup'&&!selectedGroupIds.size){msg.textContent='Selecciona almenys un grup.';return;}
+    if(scope.value==='classe'&&!recipient.value){msg.textContent='Selecciona una assignatura.';return;}
+    const dest=scope.value==='centre'?[{tot_el_centre:true}]:scope.value==='classe'?[{classe_id:recipient.value}]:[...selectedGroupIds].map(id=>({grup_id:id}));
+    const destName=scope.value==='centre'?'Tot el centre':scope.value==='classe'?recipient.options[recipient.selectedIndex].text:(selectedGroupIds.size===groups.length?'tots els grups':selectedGroupIds.size+' grup(s)');
     if(!confirm((editing?'Vols desar els canvis de «':'Vols crear «')+title.value.trim()+'» ('+types[type.value]+') per a '+destName+'?'))return;
     save.disabled=true;msg.textContent='Desant…';
     try{
@@ -1502,7 +1604,7 @@ $('jediAdminButton').addEventListener('click',async()=>{
   subjectForm.append(subjectField('Tipus d’assignatura',subjectType),subjectField('Nom de l’assignatura',subjectName),subjectField('Curs de referència',subjectCourse),subjectField('Grup de referència',subjectGroup),subjectField('Aula habitual',subjectRoom),subjectTypeHelp,subjectField('Professorat (pots marcar-ne més d’un)',subjectTeachers),subjectField('Matrícula inicial',subjectMode),subjectSelection,subjectNotice,subjectActions);
   // V25.8: assistent de planificació local; encara no escriu rotacions a Supabase.
   const rotationBox=document.createElement('section');rotationBox.hidden=true;rotationBox.style.cssText='border:1px solid #cbd8f0;background:#f7f9ff;border-radius:12px;padding:18px;display:none;grid-column:1/-1';
-  const rotationTitle=document.createElement('h4');rotationTitle.textContent='Assistent · Optatives rotatives';rotationTitle.style.margin='0 0 8px';
+  const rotationTitle=document.createElement('h4');rotationTitle.textContent='Configurar les tres optatives i els grups';rotationTitle.style.margin='0 0 8px';
   const rotationHelp=document.createElement('p');rotationHelp.className='note-hint';rotationHelp.textContent='Configura tres optatives, professorat i grups. En crear el conjunt, es desarà a Supabase amb els seus grups estables, sense matricular alumnes ni activar avaluacions.';
   const rotationNames=document.createElement('div');rotationNames.style.cssText='display:grid;grid-template-columns:repeat(auto-fit,minmax(180px,1fr));gap:10px';
   // V26.9: cada optativa té nom, aula habitual i professorat propis (amb codocència).
@@ -1527,7 +1629,7 @@ $('jediAdminButton').addEventListener('click',async()=>{
   const rotationStudents=document.createElement('div');rotationStudents.style.cssText='max-height:290px;overflow:auto;border:1px solid #dce2eb;background:white;border-radius:9px;padding:10px;margin-top:12px';
   const rotationPreview=document.createElement('div');rotationPreview.style.cssText='overflow-x:auto;margin-top:12px';
   const rotationMessage=document.createElement('p');rotationMessage.className='note-hint';
-  const rotationExport=document.createElement('button');rotationExport.type='button';rotationExport.className='secondary';rotationExport.textContent='Descarregar proposta de prova (JSON)';
+  const rotationExport=document.createElement('button');rotationExport.type='button';rotationExport.className='secondary';rotationExport.textContent='Descarregar còpia de la configuració (JSON)';
   // V27.1: proves de rotatives exclusivament locals, sense cap POST a Supabase.
   const rotationDraftKey='paideia-rotatives-proves-v27.1';
   // Els esborranys del servidor tenen prioritat. Les proves antigues locals es conserven.
@@ -1634,6 +1736,11 @@ $('jediAdminButton').addEventListener('click',async()=>{
        const old=original.alumnes.find(x=>String(x.alumne_id)===String(a.alumne_id));
        if(old&&Number(old.grup_rotatiu)!==Number(a.grup_rotatiu))changes.push(a.nom+': grup '+old.grup_rotatiu+' → '+a.grup_rotatiu);
       });
+      if(original.assignatures.some(a=>a.nom==='Assignatura no accessible')){
+       saveStatus.style.color='#a3454b';
+       saveStatus.textContent='Edició bloquejada: hi ha assignatures no accessibles. Cal resoldre primer les referències del conjunt per evitar sobreescriure noms reals.';
+       return;
+      }
       if(!changes.length){saveStatus.textContent='No hi ha modificacions per desar.';return}
       if(!confirm('CONFIRMA DESAR A SUPABASE\n\nConjunt: '+draft.assignatures.map(a=>a.nom).join(' / ')+'\n\nCanvis ('+changes.length+'):\n'+changes.join('\n')+'\n\nAquesta operació modifica dades del servidor. Continuar?'))return;
       save.disabled=true;save.textContent='Desant…';saveStatus.style.color='#526075';saveStatus.textContent='Validant i desant a Supabase…';
@@ -1670,7 +1777,17 @@ $('jediAdminButton').addEventListener('click',async()=>{
     if(![rotations,links,rotGroups,members].every(Array.isArray))throw Error('Resposta inesperada de Supabase');
     const catalog=subjectStudentCatalog.length?subjectStudentCatalog:await api('/rest/v1/alumnes?select=id,nom,cognoms&limit=1000');
     const byStudent=new Map(catalog.map(a=>[String(a.id),[a.nom,a.cognoms].filter(Boolean).join(' ')]));
+    // Recupera les assignatures vinculades directament pels UUID de la rotació.
+    // El catàleg inicial pot ser incomplet (RLS, càrrega parcial o referències antigues).
+    const linkedClassIds=[...new Set(links.map(x=>String(x.classe_id)).filter(Boolean))];
     const byClass=new Map(classes.map(c=>[String(c.id),c]));
+    if(linkedClassIds.length){
+     try{
+      const extra=await api('/rest/v1/classes?select=id,nom,curs,grup_id,es_optativa,tipus_assignatura,aula_habitual&id=in.('+linkedClassIds.join(',')+')&limit=1000');
+      if(Array.isArray(extra))for(const c of extra)byClass.set(String(c.id),c);
+     }catch(err){console.warn('No es poden consultar les assignatures de les rotacions:',err)}
+    }
+    const missingClassIds=linkedClassIds.filter(id=>!byClass.has(id));
     const reconstructed=[];
     for(const r of rotations){
      const ordered=links.filter(x=>String(x.rotacio_id)===String(r.id)).sort((a,b)=>Number(a.posicio)-Number(b.posicio));
@@ -1683,7 +1800,7 @@ $('jediAdminButton').addEventListener('click',async()=>{
      reconstructed.push({id:r.id,format:'paideia-rotacio-esborrany-supabase-v1',curs:Number(r.curs),creada_at:r.created_at||null,assignatures:subjects,alumnes:students});
     }
     cloudRotationDrafts=reconstructed;cloudRotationLoaded=true;
-    cloudRotationStatus.textContent=reconstructed.length+' conjunt(s) recuperat(s) de Supabase';
+    cloudRotationStatus.textContent=reconstructed.length+' conjunt(s) recuperat(s) de Supabase'+(missingClassIds.length?' · Atenció: '+missingClassIds.length+' assignatura(es) referenciada(es) no accessibles al catàleg (comprova els identificadors a Supabase).':'');
     rotationRenderDrafts();renderSubjectList();
    }catch(err){cloudRotationLoaded=true;cloudRotationStatus.textContent='No s’han pogut recuperar els conjunts: '+err.message;cloudRotationStatus.style.color='#a3454b';rotationRenderDrafts();}
    finally{cloudRotationRefresh.disabled=false}
@@ -1767,12 +1884,12 @@ $('jediAdminButton').addEventListener('click',async()=>{
   liveLoad();
   rotationExport.addEventListener('click',()=>{
    const noms=rotationInputs.map(x=>x.value.trim());
-   if(noms.some(x=>!x)||new Set(noms.map(x=>x.toLocaleLowerCase('ca'))).size!==3){rotationMessage.textContent='Cal indicar tres noms d’assignatura diferents abans de preparar la prova.';return}
+   if(noms.some(x=>!x)||new Set(noms.map(x=>x.toLocaleLowerCase('ca'))).size!==3){rotationMessage.textContent='Cal indicar tres noms d’assignatura diferents abans de descarregar la configuració.';return}
    const assignments=[...rotationStudents.querySelectorAll('select[data-rotation-student]')].map(x=>({alumne_id:x.dataset.rotationStudent,grup_rotatiu:Number(x.value)}));
-   if(!assignments.length){rotationMessage.textContent='No hi ha alumnat per preparar la prova.';return}
+   if(!assignments.length){rotationMessage.textContent='No hi ha alumnat per preparar la configuració.';return}
    const data={format:'paideia-rotacio-proposta-v27',mode:'prova-sense-escriptura',curs:Number(subjectCourse.value),assignatures:rotationInputs.map((x,i)=>({posicio:i+1,nom:x.value.trim(),aula_habitual:rotationRooms[i].value.trim()||null,professor_ids:[...rotationTeacherBoxes[i].querySelectorAll('input:checked')].map(c=>c.value)})),alumnes:assignments,avaluacions:['1a','2a','3a']};
    const blob=new Blob([JSON.stringify(data,null,2)],{type:'application/json'});const url=URL.createObjectURL(blob);const a=document.createElement('a');a.href=url;a.download='paideia-proposta-rotativa-'+data.curs+'ESO.json';document.body.append(a);a.click();a.remove();setTimeout(()=>URL.revokeObjectURL(url),1000);
-   rotationMessage.textContent='Proposta descarregada. No s’ha modificat cap matrícula ni cap nota a Supabase.';
+   rotationMessage.textContent='Còpia JSON descarregada. Aquesta descàrrega no modifica Supabase; per crear el conjunt, utilitza «Revisar i crear conjunt a Supabase».';
   });
   function renderRotation(){
    if(subjectType.value!=='optativa_rotativa')return;
@@ -1780,7 +1897,7 @@ $('jediAdminButton').addEventListener('click',async()=>{
    const prior=new Map([...rotationStudents.querySelectorAll('select[data-rotation-student]')].map(x=>[x.dataset.rotationStudent,x.value]));rotationStudents.replaceChildren();
    if(!subjectCatalogReady){rotationStudents.textContent='Carregant alumnat…';}else if(!students.length){rotationStudents.textContent='No hi ha alumnes actius d’aquest curs.';}
    else for(let i=0;i<students.length;i++){const a=students[i],r=document.createElement('div');r.style.cssText='display:flex;align-items:center;justify-content:space-between;gap:10px;padding:7px;border-bottom:1px solid #edf0f3';const name=document.createElement('span');name.textContent=[a.nom,a.cognoms].filter(Boolean).join(' ');name.style.fontSize='13px';const select=document.createElement('select');select.dataset.rotationStudent=String(a.id);select.style.cssText='padding:7px;border:1px solid #dce2eb;border-radius:7px';for(let j=1;j<=3;j++)select.add(new Option('Grup rotatiu '+j,String(j)));select.value=prior.get(String(a.id))||String(i%3+1);r.append(name,select);rotationStudents.append(r)}
-   const names=rotationInputs.map((x,i)=>x.value.trim()||'Optativa '+(i+1));const table=document.createElement('table');table.style.cssText='width:100%;border-collapse:collapse;background:white';const head=document.createElement('tr');for(const label of ['Grup estable','1r trimestre','2n trimestre','3r trimestre']){const th=document.createElement('th');th.textContent=label;th.style.padding='10px';head.append(th)}table.append(head);for(let i=0;i<3;i++){const tr=document.createElement('tr');for(const val of ['Grup rotatiu '+(i+1),names[i],names[(i+1)%3],names[(i+2)%3]]){const td=document.createElement('td');td.textContent=val;td.style.cssText='padding:10px;border-bottom:1px solid #edf0f3;font-size:13px';tr.append(td)}table.append(tr)}rotationPreview.replaceChildren(table);refreshRotationCombined();rotationMessage.textContent='Proposta local: '+students.length+' alumnes. Pots canviar el grup estable de cada alumne; la rotació de les assignatures és automàtica.';
+   const names=rotationInputs.map((x,i)=>x.value.trim()||'Optativa '+(i+1));const table=document.createElement('table');table.style.cssText='width:100%;border-collapse:collapse;background:white';const head=document.createElement('tr');for(const label of ['Grup estable','1r trimestre','2n trimestre','3r trimestre']){const th=document.createElement('th');th.textContent=label;th.style.padding='10px';head.append(th)}table.append(head);for(let i=0;i<3;i++){const tr=document.createElement('tr');for(const val of ['Grup rotatiu '+(i+1),names[i],names[(i+1)%3],names[(i+2)%3]]){const td=document.createElement('td');td.textContent=val;td.style.cssText='padding:10px;border-bottom:1px solid #edf0f3;font-size:13px';tr.append(td)}table.append(tr)}rotationPreview.replaceChildren(table);refreshRotationCombined();rotationMessage.textContent='Distribució preparada: '+students.length+' alumnes. Pots canviar el grup estable de cada alumne; la rotació és automàtica. Només es desarà a Supabase després de revisar i confirmar.';
   }
   rotationInputs.forEach(x=>x.addEventListener('input',renderRotation));
   rotationStudents.addEventListener('change',e=>{if(e.target.matches('select[data-rotation-student]'))renderRotation()});
@@ -1894,9 +2011,11 @@ $('jediAdminButton').addEventListener('click',async()=>{
    rotationBox.hidden=!rotating;rotationBox.style.display=rotating?'block':'none';electionBox.hidden=!electing;electionBox.style.display=electing?'block':'none';
    for(const field of [subjectName.parentElement,subjectRoom.parentElement,subjectTeachers.parentElement,subjectMode.parentElement,subjectSelection]){field.hidden=special;field.style.display=special?'none':''}
    subjectName.required=!special;subjectSave.disabled=false;
-   subjectSave.textContent=rotating?'Crear assignatura de prova (local)':electing?'Desar triplets de prova (local)':'Crear assignatura';
-   subjectSave.title=special?'Desa la proposta només en aquest navegador, sense tocar Supabase':'';
-   subjectNotice.textContent=special?'Prova local: no es crearà cap assignatura ni matrícula a Supabase.':'';
+   subjectSave.textContent=rotating?'Revisar i crear conjunt a Supabase':electing?'Desar triplets de prova (local)':'Crear assignatura';
+   subjectSave.title=rotating?'Després de revisar i confirmar, el conjunt es desarà a Supabase. No activa avaluacions ni matrícules.':electing?'Aquesta modalitat de 4t ESO només desa una prova local.':'';
+   subjectNotice.style.color='#526075';
+   subjectNotice.textContent=rotating?'En confirmar, es crearà el conjunt a Supabase. No s’activaran avaluacions ni es modificaran matrícules.':electing?'Prova local de 4t ESO: no es desarà cap canvi a Supabase.':'';
+   createTitle.textContent=rotating?'Nou triplet d’optatives rotatives':electing?'Nova configuració d’optatives de 4t':'Nova assignatura';
    if(rotating)renderRotation();if(electing){electionRenderStudents();electionUpdateSummary()}
   }
   subjectType.addEventListener('change',updateRotationVisibility);
@@ -2459,14 +2578,14 @@ $('jediAdminButton').addEventListener('click',async()=>{
   const rotationAdvanced=document.createElement('details');
   rotationAdvanced.className='pa-rotation-advanced';
   const rotationSummary=document.createElement('summary');
-  rotationSummary.textContent='Configuració avançada de conjunts (editor auxiliar)';
+  rotationSummary.textContent='Conjunts desats a Supabase · consultar i editar';
   const rotationClarification=document.createElement('p');
   rotationClarification.className='note-hint';
   rotationClarification.textContent='La rotació activa de 1r ESO i les seves 3 assignatures es mostren a dalt. Aquest editor auxiliar consulta propostes de configuració per una via diferent; que no hi hagi propostes aquí no significa que la rotació real no existeixi.';
   rotationAdvanced.append(rotationSummary,rotationClarification);
   function parkEditors(){
    editorParking.append(liveRotation,cloudRotationTools,rotationDraftPanel,tripletEditor);
-   rotationAdvanced.open=false;
+   rotationAdvanced.open=true;
   }
   function managerClose(){
    parkEditors();manager.hidden=true;
@@ -2481,9 +2600,9 @@ $('jediAdminButton').addEventListener('click',async()=>{
    if(!managerTypes[type])return;
    parkEditors();managerSpecial.replaceChildren();manager.hidden=false;
    managerTabs.hidden=!['optativa_rotativa','optativa_eleccio'].includes(type);
-   tabSpecific.textContent=type==='optativa_rotativa'?'Rotacions i avaluacions':'Franges i matrícules';
+   tabSpecific.textContent=type==='optativa_rotativa'?'Rotacions trimestrals':'Franges i matrícules';
    showManagerTab('subjects');
-   managerTitle.textContent=managerTypes[type][0];managerDesc.textContent=managerTypes[type][1];
+   managerTitle.textContent=managerTypes[type][0];managerDesc.textContent=type==='optativa_rotativa'?'Consulta els conjunts, crea un triplet i gestiona les rotacions. Els canvis es confirmen abans de desar-los a Supabase.':managerTypes[type][1];
    typeLauncherButtons.querySelectorAll('button').forEach((b,i)=>b.classList.toggle('pa-manager-active',['obligatoria','optativa_rotativa','optativa_eleccio','reforc','acollida'][i]===type));
    managerList.replaceChildren();
    const subset=classes.filter(c=>(c.tipus_assignatura||(c.es_optativa?'optativa':'obligatoria'))===type).sort((a,b)=>Number(a.curs??99)-Number(b.curs??99)||String(a.nom).localeCompare(String(b.nom),'ca'));
@@ -2499,7 +2618,7 @@ $('jediAdminButton').addEventListener('click',async()=>{
       const match=tripletSnapshot?.find(b=>b.subjects.some(a=>String(a.classe_id)===String(c.id)));
       rel.textContent=match?'Franja '+match.number:'Pendent de carregar';
       if(match)rel.className='pa-manager-franja';
-     }else{rel.textContent=Number(c.curs)===1?'Optatives rotatives 1r ESO':'Consultar rotació'}
+     }else{rel.textContent='Rotacions trimestrals'}
      tr.append(rel)}
     const td=document.createElement('td');
     const view=document.createElement('button');view.className='secondary';view.textContent='Fitxa';view.onclick=()=>openSubjectInfo(c);
@@ -2509,10 +2628,10 @@ $('jediAdminButton').addEventListener('click',async()=>{
    if(!subset.length){const tr=table.tBodies[0].insertRow();const td=tr.insertCell();td.colSpan=hasRelation?5:4;td.textContent='No hi ha assignatures d’aquest tipus al catàleg.';td.style.padding='16px'}
    const wrap=document.createElement('div');wrap.className='v9-subject-list';wrap.append(table);managerList.append(wrap);
    if(type==='optativa_rotativa'){
-    const heading=document.createElement('h4');heading.textContent='Rotació de 1r ESO · distribució i avaluacions';heading.style.margin='18px 0 8px';
+    const heading=document.createElement('h4');heading.textContent='Rotació activa de 1r ESO · distribució i avaluacions';heading.style.margin='18px 0 8px';
     managerSpecial.append(heading,liveRotation);
     rotationAdvanced.append(cloudRotationTools,rotationDraftPanel);
-    managerSpecial.append(rotationAdvanced);
+    managerSpecial.append(rotationAdvanced);rotationAdvanced.open=true;
    }
    if(type==='optativa_eleccio'){
     tripletHeading.textContent='Franges i matrícules · 4t ESO';
@@ -2522,12 +2641,22 @@ $('jediAdminButton').addEventListener('click',async()=>{
     // mai d'una deducció basada en el nom o en el grup administratiu.
     if(!tripletSnapshot)tripletLoad.click();
    }
-   managerNew.textContent=type==='optativa_rotativa'?'+ Crear conjunt / assignatura':'+ Crear assignatura';
+   managerNew.textContent=type==='optativa_rotativa'?'+ Crear triplet d’optatives rotatives':'+ Crear assignatura';
+   subjectToggle.hidden=type==='optativa_rotativa';
    manager.scrollIntoView({behavior:'smooth',block:'start'});
   }
   managerNew.onclick=()=>{
    const type=Object.keys(managerTypes).find(k=>managerTitle.textContent===managerTypes[k][0]);
    if(!type)return;
+   if(type==='optativa_rotativa'){
+    // El mateix formulari ja invoca crear_rotacio_optativa (RPC protegida).
+    // Obrim directament l'assistent real, no l'editor auxiliar de propostes.
+    subjectType.value='optativa_rotativa';
+    subjectType.dispatchEvent(new Event('change'));
+    subjectToggle.click();
+    subjectCourse.focus();
+    return;
+   }
    if(subjectForm.hidden)subjectToggle.click();
    subjectType.value=type;subjectType.dispatchEvent(new Event('change'));
    subjectToggle.scrollIntoView({behavior:'smooth',block:'center'});
