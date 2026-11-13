@@ -174,6 +174,7 @@ header .brand-context{font-size:13px;color:#8a929f;text-align:right}
 </style>
 
 <style id="pa-v18-style">.pa-comms-people-tools{display:flex;align-items:center;gap:12px;flex-wrap:wrap}.pa-comms-people-tools input{flex:1;min-width:210px;max-width:430px}.pa-comms-toolbar .pa-comms-hint{margin-left:auto}.pa-comms-people-tools[hidden]{display:none!important}</style>
+<style id="pa-agenda-live-style">#jediShell .pa-agenda-day{display:flex;flex-direction:column;gap:4px;overflow:hidden}#jediShell .pa-agenda-chip{display:block;font-size:10px;line-height:1.3;padding:3px 5px;background:#eaf0ff;color:#344d96;border-radius:4px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;font-weight:500}#jediShell .pa-agenda-chip[data-type="examen"]{background:#fff0ee;color:#a54d42}#jediShell .pa-agenda-chip[data-type="sortida"]{background:#e7f6eb;color:#337b51}#jediShell .pa-agenda-chip[data-type="lliurament"]{background:#fff5dc;color:#876223}#jediShell .pa-agenda-entry{padding:11px 0;border-top:1px solid #e5eaf2;display:grid;gap:4px}#jediShell .pa-agenda-entry:first-of-type{margin-top:12px}#jediShell .pa-agenda-entry small{color:#728098}#jediShell .pa-agenda-entry p{margin:3px 0;white-space:pre-wrap}#jediShell .pa-agenda textarea{width:100%;border:1px solid #dce2eb;border-radius:8px;padding:10px}</style>
 <style id="paideia-auth-style">
 body:not(.paideia-authenticated) > header,body:not(.paideia-authenticated) > main,body:not(.paideia-authenticated) > #modalRoot{display:none!important}
 #paideiaAuth{position:fixed;inset:0;background:#f7f8fa;z-index:999999;display:flex;align-items:center;justify-content:center;padding:20px;overflow:auto}
@@ -488,6 +489,23 @@ body.paideia-authenticated > header, body.paideia-authenticated > main {display:
 .pa-manager-list[hidden],.pa-manager-special[hidden]{display:none!important}
 .pa-manager-special{padding-top:4px}
 .pa-manager-franja{display:inline-block;padding:4px 9px;border-radius:7px;background:#edf2ff;color:#344d96;font-size:12px;font-weight:650}
+</style>
+
+<style id="pa-agenda-preview-style">
+#jediShell .pa-agenda{padding:22px;max-width:1050px;margin:auto}
+#jediShell .pa-agenda-bar{display:flex;align-items:center;justify-content:space-between;gap:15px;flex-wrap:wrap}
+#jediShell .pa-agenda-bar h3{margin:0;text-transform:capitalize;color:#344d96;font-size:23px}
+#jediShell .pa-agenda-controls{display:flex;gap:7px;flex-wrap:wrap}
+#jediShell .pa-agenda-note{background:#f3f6fc;border:1px solid #e1e8f5;border-radius:9px;padding:12px;color:#65738a;font-size:12px;line-height:1.5;margin:16px 0}
+#jediShell .pa-agenda-grid{display:grid;grid-template-columns:repeat(7,minmax(0,1fr));gap:6px}
+#jediShell .pa-agenda-weekday{text-align:center;color:#64748b;font-size:12px;font-weight:700;padding:12px 0}
+#jediShell .pa-agenda-blank{min-height:82px}
+#jediShell .pa-agenda-day{border:1px solid #e1e7f0;background:#fff;border-radius:9px;min-height:82px;text-align:left;vertical-align:top;padding:10px;font-size:13px;color:#44536b;cursor:pointer}
+#jediShell .pa-agenda-day:hover{background:#f3f6ff;border-color:#aabbe2}
+#jediShell .pa-agenda-day.is-today{border:2px solid #344d96;font-weight:700}
+#jediShell .pa-agenda-day.is-selected{background:#eaf0ff;box-shadow:inset 0 0 0 1px #344d96}
+#jediShell .pa-agenda-detail{margin-top:17px;padding:16px;border-radius:10px;border:1px solid #e1e7f0;background:#fafcff;color:#53627b;font-size:13px}
+@media(max-width:650px){#jediShell .pa-agenda{padding:12px}#jediShell .pa-agenda-grid{gap:3px}#jediShell .pa-agenda-day{min-height:55px;padding:6px}#jediShell .pa-agenda-blank{min-height:55px}}
 </style>
 </head>
 <body>
@@ -807,6 +825,174 @@ $('paMySchedule').onclick=()=>paShowSchedule('teacher');
 $('paGroupSchedule').onclick=()=>paShowSchedule('group');
 $('paSchoolCalendar').onclick=paShowCalendar;
 
+// Agenda mensual connectada a Supabase. Les autoritzacions depenen de RLS i de la funció RPC.
+(function(){
+ const nav=$('paSchoolCalendar');
+ const agendaButton=paButton('🗓 Agenda d’esdeveniments',()=>showAgenda(),'class-btn');
+ agendaButton.id='paAgendaEvents';
+ nav.insertAdjacentElement('afterend',agendaButton);
+ let displayed=new Date();displayed.setDate(1);
+ let selected=null,events=[],recipients=[],loadId=0;
+ const types={examen:'Examen',lliurament:'Lliurament',activitat_assignatura:'Activitat d’assignatura',sortida:'Sortida',activitat_tutoria:'Activitat de tutoria',reunio:'Reunió'};
+ function iso(y,m,d){return y+'-'+String(m+1).padStart(2,'0')+'-'+String(d).padStart(2,'0')}
+ function dateKey(d){const x=new Date(d);return iso(x.getFullYear(),x.getMonth(),x.getDate())}
+ function toLocalDatetime(date,time){return new Date(date+'T'+time+':00').toISOString()}
+ async function fetchEvents(){
+  const y=displayed.getFullYear(),m=displayed.getMonth();
+  const from=new Date(y,m,1).toISOString(),until=new Date(y,m+1,1).toISOString();
+  const query='/rest/v1/esdeveniments_calendari?select=*&inici=lt.'+encodeURIComponent(until)+'&final=gte.'+encodeURIComponent(from)+'&order=inici.asc&limit=500';
+  const rows=await api(query);
+  const ids=rows.map(x=>x.id).filter(Boolean);
+  const dest=ids.length?await api('/rest/v1/esdeveniments_destinataris?select=esdeveniment_id,classe_id,grup_id&esdeveniment_id=in.('+ids.join(',')+')&limit=1000'):[];
+  return {rows,dest};
+ }
+ function showAgenda(){
+  const request=++paScheduleRequest;
+  const root=paScheduleLayout('🗓 Agenda d’esdeveniments','Vista mensual · esdeveniments de Supabase segons els teus permisos');
+  const wrap=paEl('div');wrap.className='pa-agenda';
+  const bar=paEl('div');bar.className='pa-agenda-bar';
+  const month=paEl('h3');
+  const previous=paButton('‹ Anterior',()=>{displayed.setMonth(displayed.getMonth()-1);selected=null;refresh()},'secondary');
+  const today=paButton('Avui',()=>{displayed=new Date();displayed.setDate(1);selected=null;refresh()},'secondary');
+  const next=paButton('Següent ›',()=>{displayed.setMonth(displayed.getMonth()+1);selected=null;refresh()},'secondary');
+  const add=paButton('＋ Afegir esdeveniment',()=>openEditor(),'primary');
+  const buttons=paEl('div');buttons.className='pa-agenda-controls';buttons.append(previous,today,next,add);
+  bar.append(month,buttons);
+  const note=paEl('p','Carregant esdeveniments…','pa-agenda-note');
+  const grid=paEl('div');grid.className='pa-agenda-grid';
+  const detail=paEl('div');detail.className='pa-agenda-detail';
+  wrap.append(bar,note,grid,detail);root.append(wrap);
+  async function refresh(){
+   const token=++loadId;
+   note.textContent='Carregant esdeveniments…';
+   try{
+    const data=await fetchEvents();
+    if(token!==loadId||request!==paScheduleRequest)return;
+    events=data.rows;recipients=data.dest;
+    note.textContent=events.length?events.length+' esdeveniment(s) visibles aquest mes.':'Encara no hi ha esdeveniments visibles aquest mes.';
+   }catch(e){
+    if(token!==loadId||request!==paScheduleRequest)return;
+    events=[];recipients=[];
+    note.textContent='No s’han pogut carregar els esdeveniments: '+e.message;
+   }
+   paint();
+  }
+  function paint(){
+   const y=displayed.getFullYear(),m=displayed.getMonth();
+   month.textContent=new Intl.DateTimeFormat('ca-ES',{month:'long',year:'numeric'}).format(displayed);
+   grid.replaceChildren();
+   ['Dl','Dt','Dc','Dj','Dv','Ds','Dg'].forEach(d=>grid.append(paEl('div',d,'pa-agenda-weekday')));
+   const offset=(new Date(y,m,1).getDay()+6)%7;
+   for(let i=0;i<offset;i++)grid.append(paEl('div','','pa-agenda-blank'));
+   const now=new Date(),todayKey=iso(now.getFullYear(),now.getMonth(),now.getDate());
+   for(let d=1;d<=new Date(y,m+1,0).getDate();d++){
+    const key=iso(y,m,d);
+    const cell=paButton(String(d),()=>{selected=key;paint()},'pa-agenda-day');
+    if(key===todayKey)cell.classList.add('is-today');
+    if(key===selected)cell.classList.add('is-selected');
+    cell.setAttribute('aria-label',new Intl.DateTimeFormat('ca-ES',{dateStyle:'full'}).format(new Date(y,m,d)));
+    const dayEvents=events.filter(e=>dateKey(e.inici)===key);
+    for(const e of dayEvents.slice(0,3)){
+     const chip=paEl('span',e.titol||'Esdeveniment','pa-agenda-chip');
+     chip.dataset.type=e.tipus||'';
+     cell.append(chip);
+    }
+    if(dayEvents.length>3)cell.append(paEl('small','+'+(dayEvents.length-3)+' més'));
+    grid.append(cell);
+   }
+   detail.replaceChildren();
+   if(!selected){detail.append(paEl('span','Selecciona un dia per veure’n el detall.'));return}
+   detail.append(paEl('strong',new Intl.DateTimeFormat('ca-ES',{dateStyle:'full'}).format(new Date(selected+'T12:00:00'))));
+   const dayEvents=events.filter(e=>dateKey(e.inici)===selected);
+   if(!dayEvents.length){detail.append(paEl('p','No hi ha esdeveniments visibles aquest dia.'));return}
+   for(const e of dayEvents){
+    const entry=paEl('div','','pa-agenda-entry');
+    entry.append(paEl('strong',e.titol||'Esdeveniment'));
+    const when=new Date(e.inici).toLocaleTimeString('ca-ES',{hour:'2-digit',minute:'2-digit'});
+    entry.append(paEl('small',(types[e.tipus]||e.tipus||'Activitat')+' · '+when));
+    if(e.descripcio)entry.append(paEl('p',e.descripcio));
+    const d=recipients.filter(x=>x.esdeveniment_id===e.id);
+    if(d.length)entry.append(paEl('small',d.map(x=>x.classe_id?classLabel(allClasses.find(c=>c.id===x.classe_id)||{nom:'Assignatura',id:x.classe_id},teacherGroups):(teacherGroups.find(g=>g.id===x.grup_id)?.nom||'Grup')).join(' · ')));
+    // El botó és orientatiu: la funció RPC comprova els permisos al servidor.
+    if(isAdmin || (profile?.id && e.creat_per===profile.id)){
+     const actions=paEl('div');actions.style.cssText='display:flex;justify-content:flex-end;margin-top:7px';
+     const remove=paButton('🗑 Eliminar',async()=>{
+      if(!confirm('Vols eliminar definitivament l’esdeveniment «'+(e.titol||'Sense títol')+'»?\n\nAquesta acció també eliminarà els seus destinataris i no es pot desfer.'))return;
+      remove.disabled=true;
+      remove.textContent='Eliminant…';
+      try{
+       await api('/rest/v1/rpc/eliminar_esdeveniment_calendari',accessToken,{
+        method:'POST',headers:{'Content-Type':'application/json'},
+        body:JSON.stringify({p_esdeveniment_id:e.id})
+       });
+       await refresh();
+      }catch(err){
+       remove.disabled=false;remove.textContent='🗑 Eliminar';
+       alert('No s’ha pogut eliminar l’esdeveniment: '+err.message+'\n\nActualitza l’agenda abans de tornar-ho a provar.');
+      }
+     },'secondary');
+     remove.style.cssText='color:#a3454b;border-color:#eccbd0';
+     actions.append(remove);entry.append(actions);
+    }
+    detail.append(entry);
+   }
+  }
+  function openEditor(){
+   const {shade,box}=paModal('＋ Afegir esdeveniment');
+   box.append(paEl('p','En aquesta fase es poden crear exàmens, lliuraments i activitats d’assignatura. Les sortides, tutories i reunions requereixen el selector de grups, que afegirem després.','note-hint'));
+   const title=paField(box,'Títol',paEl('input'));title.maxLength=160;
+   const type=paField(box,'Tipus',paSelect(Object.entries(types).filter(([v])=>['examen','lliurament','activitat_assignatura'].includes(v)).map(([v,t])=>[v,t]),'examen'));
+   const desc=paField(box,'Descripció',paEl('textarea'));desc.rows=3;
+   const day=paField(box,'Data',paEl('input'));day.type='date';day.value=selected||localToday();
+   const from=paField(box,'Hora d’inici',paEl('input'));from.type='time';from.value='09:00';
+   const to=paField(box,'Hora de finalització',paEl('input'));to.type='time';to.value='10:00';
+   const subject=paField(box,'Assignatura destinatària',paSelect([['','Carregant assignatures…']],''));
+   subject.disabled=true;
+   const msg=paEl('p','','error');box.append(msg);
+   // Administració pot triar qualsevol assignatura; un docent només les seves.
+   // El servidor comprova de nou els permisos en desar.
+   (async()=>{
+    try{
+     const [classes,groups]=await Promise.all([
+      api('/rest/v1/classes?select=id,nom,curs,grup_id&order=nom.asc&limit=1000'),
+      api('/rest/v1/grups?select=id,nom&limit=1000')
+     ]);
+     if(!shade.isConnected)return;
+     const allowed=isAdmin?classes:classes.filter(c=>allClasses.some(a=>a.id===c.id));
+     allowed.sort((a,b)=>classOrder(a,b,groups));
+     subject.replaceChildren(new Option('Selecciona una assignatura…',''));
+     for(const c of allowed)subject.add(new Option(classLabel(c,groups),c.id));
+     subject.disabled=!allowed.length;
+     if(!allowed.length)msg.textContent='No hi ha assignatures disponibles per al teu perfil.';
+    }catch(e){if(shade.isConnected)msg.textContent='Error en carregar assignatures: '+e.message;}
+   })();
+   const actions=paActions(box);
+   actions.append(paButton('Cancel·lar',()=>shade.remove(),'secondary'));
+   const save=paButton('Desar a Supabase',async()=>{
+    if(!title.value.trim()){msg.textContent='Cal indicar un títol.';return}
+    if(!subject.value){msg.textContent='Selecciona una assignatura destinatària.';return}
+    if(!day.value||!from.value||!to.value||to.value<=from.value){msg.textContent='Comprova la data i les hores.';return}
+    if(!confirm('Vols crear aquest esdeveniment a Supabase per a '+subject.options[subject.selectedIndex].text+'?'))return;
+    save.disabled=true;msg.textContent='Desant…';
+    try{
+     await api('/rest/v1/rpc/crear_esdeveniment_calendari',accessToken,{
+      method:'POST',headers:{'Content-Type':'application/json'},
+      body:JSON.stringify({
+       p_titol:title.value.trim(),p_tipus:type.value,p_descripcio:desc.value.trim(),
+       p_inici:toLocalDatetime(day.value,from.value),p_final:toLocalDatetime(day.value,to.value),
+       p_tot_el_dia:false,p_destinataris:[{classe_id:subject.value}]
+      })
+     });
+     shade.remove();
+     displayed=new Date(day.value+'T12:00:00');displayed.setDate(1);selected=day.value;
+     await refresh();
+    }catch(e){msg.textContent='No s’ha pogut desar: '+e.message+'. No tornis a prémer Desar fins a comprovar el resultat.';save.disabled=false}
+   },'primary');
+   actions.append(save);
+  }
+  paint();refresh();
+ }
+})();
 // V12 · Enllaços compartits del centre. Les polítiques RLS controlen les escriptures.
 let paLinksRequest=0;
 const paLinksCategories=['Centre','Recursos educatius','Administració','Altres'];
