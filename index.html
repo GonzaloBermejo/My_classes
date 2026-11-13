@@ -839,7 +839,7 @@ $('paSchoolCalendar').onclick=paShowCalendar;
  agendaButton.id='paAgendaEvents';
  nav.insertAdjacentElement('afterend',agendaButton);
  let displayed=new Date();displayed.setDate(1);
- let selected=null,events=[],recipients=[],agendaGroups=[],loadId=0;
+ let selected=null,events=[],recipients=[],agendaGroups=[],agendaClasses=[],loadId=0;
  const types={examen:'Examen',lliurament:'Lliurament',activitat_assignatura:'Activitat d’assignatura',sortida:'Sortida',activitat_tutoria:'Activitat de tutoria',reunio:'Reunió',activitat_centre:'Activitat de centre',festiu:'Festiu',lliure_disposicio:'Dia de lliure disposició',data_important:'Data important'};
  const academicTypes=['examen','lliurament','activitat_assignatura'];
  const organisationalTypes=['sortida','activitat_tutoria','reunio','activitat_centre'];
@@ -855,7 +855,15 @@ $('paSchoolCalendar').onclick=paShowCalendar;
   const ids=rows.map(x=>x.id).filter(Boolean);
   const dest=ids.length?await api('/rest/v1/esdeveniments_destinataris?select=esdeveniment_id,classe_id,grup_id,tot_el_centre&esdeveniment_id=in.('+ids.join(',')+')&limit=1000'):[];
   const groupRows=await api('/rest/v1/grups?select=id,nom&limit=1000');
-  return {rows,dest,groupRows};
+  // V17: recuperar també les assignatures vinculades als esdeveniments.
+  // allClasses només conté les classes pròpies del docent i no serveix per a l'agenda global.
+  const classIds=[...new Set(dest.map(d=>d.classe_id).filter(Boolean))];
+  let classRows=[];
+  if(classIds.length){
+   try{classRows=await api('/rest/v1/classes?select=id,nom,curs,grup_id&id=in.('+classIds.map(encodeURIComponent).join(',')+')&limit=1000');}
+   catch(err){console.warn('Agenda: no es poden consultar algunes assignatures',err);}
+  }
+  return {rows,dest,groupRows,classRows};
  }
  function showAgenda(){
   const request=++paScheduleRequest;
@@ -879,11 +887,11 @@ $('paSchoolCalendar').onclick=paShowCalendar;
    try{
     const data=await fetchEvents();
     if(token!==loadId||request!==paScheduleRequest)return;
-    events=data.rows;recipients=data.dest;agendaGroups=data.groupRows;
+    events=data.rows;recipients=data.dest;agendaGroups=data.groupRows;agendaClasses=data.classRows;
     note.textContent=events.length?events.length+' esdeveniment(s) visibles aquest mes.':'Encara no hi ha esdeveniments visibles aquest mes.';
    }catch(e){
     if(token!==loadId||request!==paScheduleRequest)return;
-    events=[];recipients=[];agendaGroups=[];
+    events=[];recipients=[];agendaGroups=[];agendaClasses=[];
     note.textContent='No s’han pogut carregar els esdeveniments: '+e.message;
    }
    paint();
@@ -895,8 +903,8 @@ $('paSchoolCalendar').onclick=paShowCalendar;
    const labels=[];
    const classes=destinations.filter(d=>d.classe_id);
    for(const d of classes){
-    const c=allClasses.find(c=>String(c.id)===String(d.classe_id));
-    const label=c?classLabel(c,teacherGroups):'Assignatura no disponible';
+    const c=agendaClasses.find(c=>String(c.id)===String(d.classe_id)) || allClasses.find(c=>String(c.id)===String(d.classe_id));
+    const label=c?classLabel(c,agendaGroups):'Assignatura no accessible';
     if(!labels.includes(label))labels.push(label);
    }
    const groupDests=destinations.filter(d=>d.grup_id);
