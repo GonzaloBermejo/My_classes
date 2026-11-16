@@ -745,8 +745,12 @@ function paEditSession(data,mode,id,day,slot,record,refresh){
   String(a.nom||'').localeCompare(String(b.nom||''),'ca',{sensitivity:'base',numeric:true}) ||
   String(a.id).localeCompare(String(b.id))
  );
- const classOptions=[['','— Sense assignatura —'],...orderedClasses.map(c=>[c.id,classLabelForSchedule(c)])];
- const classSelect=paField(box,'Assignatura',paSelect(classOptions,record?.classe_id||''));
+ const rotatingCourses=[...new Set(data.classes.filter(c=>c.tipus_assignatura==='optativa_rotativa'&&[1,2,3].includes(Number(c.curs))).map(c=>Number(c.curs)))].sort();
+ const rotationKey=course=>'__paideia_rotatives_'+course+'__';
+ const rotationLabel=course=>'Optatives rotatives · '+({1:'1r ESO',2:'2n ESO',3:'3r ESO'})[course];
+ const classOptions=[['','— Sense assignatura —'],...orderedClasses.map(c=>[c.id,classLabelForSchedule(c)]),...rotatingCourses.map(course=>[rotationKey(course),rotationLabel(course)])];
+ const existingRotation=record&&!record.classe_id?rotatingCourses.find(course=>String(record.etiqueta||'')===rotationLabel(course)):null;
+ const classSelect=paField(box,'Assignatura',paSelect(classOptions,existingRotation?rotationKey(existingRotation):(record?.classe_id||'')));
  const initialTeacherId=record?.professor_id||(mode==='teacher'?id:'');
  const groupSelect=paField(box,'Grup classe',paSelect([['','— Sense grup —'],...data.groups.map(g=>[g.id,g.nom])],record?.grup_id||(mode==='group'?id:'')));
  const coWrap=paEl('div');coWrap.style.cssText='margin:14px 0;padding:12px;border:1px solid #dce3ed;border-radius:9px';
@@ -756,7 +760,13 @@ function paEditSession(data,mode,id,day,slot,record,refresh){
  box.append(coWrap);
 
  const name=paField(box,'Etiqueta de la sessió',document.createElement('input'));name.value=record?.etiqueta||'';name.placeholder='Ex.: Tecnologia, Guàrdia, Projecte…';
- classSelect.onchange=()=>{const c=data.classes.find(x=>x.id===classSelect.value);if(c&&c.grup_id)groupSelect.value=c.grup_id;if(c&&!name.value)name.value=c.nom};
+ classSelect.onchange=()=>{
+  const rotationCourse=rotatingCourses.find(course=>classSelect.value===rotationKey(course));
+  if(rotationCourse){name.value=rotationLabel(rotationCourse);return}
+  const c=data.classes.find(x=>x.id===classSelect.value);
+  if(c&&c.grup_id)groupSelect.value=c.grup_id;
+  if(c&&!name.value)name.value=c.nom
+ };
  const msg=paEl('p','','note-hint');box.append(msg);const actions=paActions(box);
  actions.append(paButton('Cancel·lar',()=>shade.remove()));
  if(record)actions.append(paButton('Eliminar sessió',async()=>{if(!confirm('Eliminar aquesta sessió?'))return;try{await api('/rest/v1/sessions_horari?id=eq.'+encodeURIComponent(record.id),accessToken,{method:'DELETE'});shade.remove();refresh()}catch(e){msg.textContent=e.message}}));
@@ -765,7 +775,13 @@ function paEditSession(data,mode,id,day,slot,record,refresh){
   // professor_id és un camp tècnic de compatibilitat; no representa cap jerarquia docent.
   // Es manté un docent ja vinculat, si encara és seleccionat, per reduir canvis innecessaris.
   const primary=(record?.professor_id&&chosen.includes(String(record.professor_id)))?String(record.professor_id):(chosen[0]||null);
-  const payload={dia:day,franja_id:slot.id,professor_id:primary,grup_id:groupSelect.value||null,classe_id:classSelect.value||null,etiqueta:name.value.trim()||'Sessió'};
+  const rotationCourse=rotatingCourses.find(course=>classSelect.value===rotationKey(course));
+  const payload={dia:day,franja_id:slot.id,professor_id:primary,grup_id:groupSelect.value||null,classe_id:rotationCourse?null:(classSelect.value||null),etiqueta:rotationCourse?rotationLabel(rotationCourse):(name.value.trim()||'Sessió')};
+  if(rotationCourse){
+   const selectedGroup=data.groups.find(g=>String(g.id)===String(payload.grup_id));
+   const groupCourse=Number(String(selectedGroup?.nom||'').match(/[1-4]/)?.[0]);
+   if(groupCourse!==rotationCourse){msg.textContent='Selecciona un grup de '+rotationLabel(rotationCourse).split(' · ')[1]+'.';return}
+  }
   if(!primary&&!payload.grup_id){msg.textContent='Selecciona un professor o un grup.';return}
   // Un professor itinerant pot figurar en dos grups de la mateixa assignatura.
   const others=data.sessions.filter(x=>String(x.id)!==String(record?.id)&&Number(x.dia)===day&&String(x.franja_id)===String(slot.id));
