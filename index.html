@@ -780,7 +780,7 @@ function paEditSession(data,mode,id,day,slot,record,refresh){
   if(rotationCourse){
    const selectedGroup=data.groups.find(g=>String(g.id)===String(payload.grup_id));
    const groupCourse=Number(String(selectedGroup?.nom||'').match(/[1-4]/)?.[0]);
-   if(groupCourse!==rotationCourse){msg.textContent='Selecciona un grup de '+rotationLabel(rotationCourse).split(' · ')[1]+'.';return}
+   if(payload.grup_id&&groupCourse!==rotationCourse){msg.textContent='El grup seleccionat ha de ser de '+rotationLabel(rotationCourse).split(' · ')[1]+'. Si l’optativa barreja A i B, deixa «Sense grup». ';return}
   }
   if(!primary&&!payload.grup_id){msg.textContent='Selecciona un professor o un grup.';return}
   // Un professor itinerant pot figurar en dos grups de la mateixa assignatura.
