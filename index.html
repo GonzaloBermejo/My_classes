@@ -529,6 +529,10 @@ body.paideia-authenticated > header, body.paideia-authenticated > main {display:
 #jediShell .pa-agenda-recipients{font-size:14px}
 @media(max-width:650px){#jediShell .pa-agenda-day{min-height:60px;padding:6px}#jediShell .pa-agenda-chip{font-size:10px;padding:3px}}
 </style>
+<style id="pa-v25-triplet-style">
+#jediShell .pa-v25-triplet-heading td{background:#eef2fb!important;color:#344d96!important;font-size:14px!important;font-weight:750!important;letter-spacing:.01em;padding:12px 17px!important;border-top:1px solid #dce5f4!important;border-bottom:1px solid #dce5f4!important;text-align:left!important}
+#jediShell .pa-v25-triplet-heading:hover td{background:#eef2fb!important}
+</style>
 </head>
 <body>
 <style id="jedi-hierarchy-style">
@@ -2166,6 +2170,8 @@ $('jediAdminButton').addEventListener('click',async()=>{
   }
   function tripletRender(data){
     tripletCards.replaceChildren();tripletSnapshot=data;
+    if(typeof renderSubjectList==='function')renderSubjectList();
+    if(typeof manager!=='undefined'&&!manager.hidden&&managerTitle.textContent==='Optatives d’elecció'&&typeof openTypeManager==='function')openTypeManager('optativa_eleccio');
     // Actualitza les etiquetes de franja del catàleg visible sense recarregar la pàgina.
     if(typeof managerList!=='undefined' && managerTitle?.textContent==='Optatives d’elecció'){
       managerList.querySelectorAll('tr[data-pa-subject-id]').forEach(row=>{
@@ -2603,8 +2609,18 @@ $('jediAdminButton').addEventListener('click',async()=>{
    const pendingLocalRows=[];
    const alreadyInCloud=0;
    const matches=[...classes,...pendingLocalRows].filter(c=>(!course||String(c.curs)===course)&&(!listGroup.value||(listGroup.value==='__all__'?!c.grup_id:String(c.grup_id)===listGroup.value))&&(!listType.value||(c.tipus_assignatura||(c.es_optativa?'optativa':'obligatoria'))===listType.value)&&[c.nom,c.grup_id?subjectGroupName(c.grup_id):'Tots els grups',typeLabel(c),c.curs==null?'Tots els cursos':String(c.curs)+' ESO'].some(v=>String(v||'').toLocaleLowerCase('ca').includes(term))).sort((a,b)=>{if(listOrder.value==='name')return String(a.nom).localeCompare(String(b.nom),'ca')||Number(a.curs||99)-Number(b.curs||99);if(listOrder.value==='type')return typeLabel(a).localeCompare(typeLabel(b),'ca')||String(a.nom).localeCompare(String(b.nom),'ca');const ag=groups.find(g=>String(g.id)===String(a.grup_id)),bg=groups.find(g=>String(g.id)===String(b.grup_id));const ak=a.curs==null?99:Number(a.curs),bk=b.curs==null?99:Number(b.curs);return ak-bk||(a.grup_id?0:1)-(b.grup_id?0:1)||(ag&&bg?String(ag.nom).localeCompare(String(bg.nom),'ca',{numeric:true}):0)||String(a.nom).localeCompare(String(b.nom),'ca')});
+   // V25: les optatives d’elecció de 4t es mostren agrupades per franja real.
+   // La relació procedeix exclusivament de la lectura Supabase, mai dels noms.
+   const electionOnly=course==='4'&&listType.value==='optativa_eleccio';
+   const franjaById=new Map((tripletSnapshot||[]).flatMap(b=>b.subjects.map(a=>[String(a.classe_id),Number(b.number)])));
+   if(electionOnly&&franjaById.size){matches.sort((a,b)=>(franjaById.get(String(a.id))??99)-(franjaById.get(String(b.id))??99)||String(a.nom).localeCompare(String(b.nom),'ca'));}
+   let previousFranja=null;
    editCount.textContent=classes.length+' assignatures del centre'+(pendingLocalRows.length?' + '+pendingLocalRows.length+' propostes locals pendents':'')+(alreadyInCloud?' · '+alreadyInCloud+' coincidències locals ocultes':'');listResult.textContent=matches.length+' resultats';
    for(const c of matches){
+    if(electionOnly&&franjaById.size){
+     const franja=franjaById.get(String(c.id))??null;
+     if(franja!==previousFranja){const heading=document.createElement('tr');heading.className='pa-v25-triplet-heading';const cell=document.createElement('td');cell.colSpan=5;cell.textContent=franja==null?'Sense franja assignada':'Triplet '+franja;heading.append(cell);body.append(heading);previousFranja=franja;}
+    }
     const tr=document.createElement('tr');
     const nameTd=document.createElement('td');const nameBtn=document.createElement('button');nameBtn.type='button';nameBtn.className='pa-v22-subject-link';nameBtn.textContent=c.nom;nameBtn.title='Veure fitxa de '+c.nom;nameBtn.addEventListener('click',()=>c._rotationDraft?openLocalRotationInfo(c):c._electionDraft?openLocalElectionInfo(c):openSubjectInfo(c));nameTd.append(nameBtn);tr.append(nameTd);
     for(const value of [(c.curs==null?'Tots els cursos':({1:'1r ESO',2:'2n ESO',3:'3r ESO',4:'4t ESO'})[c.curs]||String(c.curs)),(c.grup_id?subjectGroupName(c.grup_id):'Tots els grups')]){const td=document.createElement('td');td.textContent=value;tr.append(td)}
@@ -2681,11 +2697,21 @@ $('jediAdminButton').addEventListener('click',async()=>{
    typeLauncherButtons.querySelectorAll('button').forEach((b,i)=>b.classList.toggle('pa-manager-active',['obligatoria','optativa_rotativa','optativa_eleccio','reforc','acollida'][i]===type));
    managerList.replaceChildren();
    const subset=classes.filter(c=>(c.tipus_assignatura||(c.es_optativa?'optativa':'obligatoria'))===type).sort((a,b)=>Number(a.curs??99)-Number(b.curs??99)||String(a.nom).localeCompare(String(b.nom),'ca'));
+   if(type==='optativa_eleccio'&&tripletSnapshot){
+    const order=new Map(tripletSnapshot.flatMap(b=>b.subjects.map(a=>[String(a.classe_id),Number(b.number)])));
+    subset.sort((a,b)=>(order.get(String(a.id))??99)-(order.get(String(b.id))??99)||String(a.nom).localeCompare(String(b.nom),'ca'));
+   }
    const info=document.createElement('p');info.className='note-hint';info.textContent=subset.length+' assignatura(es) de Supabase';managerList.append(info);
    const table=document.createElement('table');table.className='v9-subject-table';
    const hasRelation=type==='optativa_eleccio'||type==='optativa_rotativa';
    table.innerHTML='<thead><tr><th>Assignatura</th><th>Curs</th><th>Grup</th>'+(hasRelation?'<th>'+(type==='optativa_eleccio'?'Franja':'Conjunt')+'</th>':'')+'<th>Accions</th></tr></thead><tbody></tbody>';
+   let previousManagerFranja=null;
    for(const c of subset){
+    if(type==='optativa_eleccio'&&tripletSnapshot){
+     const block=tripletSnapshot.find(b=>b.subjects.some(a=>String(a.classe_id)===String(c.id)));
+     const n=block?Number(block.number):null;
+     if(n!==previousManagerFranja){const h=document.createElement('tr');h.className='pa-v25-triplet-heading';const cell=document.createElement('td');cell.colSpan=5;cell.textContent=n==null?'Sense franja assignada':'Triplet '+n;h.append(cell);table.tBodies[0].append(h);previousManagerFranja=n;}
+    }
     const tr=document.createElement('tr');tr.dataset.paSubjectId=String(c.id);
     for(const v of [c.nom,c.curs==null?'Tots':({1:'1r',2:'2n',3:'3r',4:'4t'}[c.curs]||c.curs)+' ESO',type==='optativa_eleccio'?'Tots els grups':(c.grup_id?subjectGroupName(c.grup_id):'Tots els grups')]){const td=document.createElement('td');td.textContent=v;tr.append(td)}
     if(hasRelation){const rel=document.createElement('td');
