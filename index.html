@@ -494,7 +494,7 @@ body.paideia-authenticated > header, body.paideia-authenticated > main {display:
 <style id="pa-agenda-preview-style">
 #jediShell .pa-agenda{padding:22px;max-width:1050px;margin:auto}
 #jediShell .pa-agenda-bar{display:flex;align-items:center;justify-content:space-between;gap:15px;flex-wrap:wrap}
-#jediShell .pa-agenda-bar h3{margin:0;text-transform:capitalize;color:#344d96;font-size:23px}
+#jediShell .pa-agenda-bar h3{margin:0;text-transform:none;color:#344d96;font-size:23px}
 #jediShell .pa-agenda-controls{display:flex;gap:7px;flex-wrap:wrap}
 #jediShell .pa-agenda-note{background:#f3f6fc;border:1px solid #e1e8f5;border-radius:9px;padding:12px;color:#65738a;font-size:12px;line-height:1.5;margin:16px 0}
 #jediShell .pa-agenda-grid{display:grid;grid-template-columns:repeat(7,minmax(0,1fr));gap:6px}
@@ -514,6 +514,21 @@ body.paideia-authenticated > header, body.paideia-authenticated > main {display:
 .pa-v14-all-centre .pa-v13-check-label{margin:4px 0;font-weight:650}
 </style>
 <style id="pa-agenda-v15-recipients">#jediShell .pa-agenda-recipients{font-size:13px;color:#536584;display:flex;gap:5px;flex-wrap:wrap;align-items:baseline;margin:4px 0 3px}#jediShell .pa-agenda-recipients strong{color:#344d96;font-weight:650}</style>
+
+<style id="pa-agenda-legibility-v22">
+/* Llegibilitat de l’agenda, sense alterar les dades ni els permisos */
+#jediShell .pa-agenda-weekday{font-size:14px}
+#jediShell .pa-agenda-day{font-size:15px;min-height:96px;padding:11px}
+#jediShell .pa-agenda-chip{font-size:12px;line-height:1.4;padding:4px 6px}
+#jediShell .pa-agenda-note{font-size:13px}
+#jediShell .pa-agenda-detail{font-size:15px;line-height:1.55;padding:20px}
+#jediShell .pa-agenda-detail>strong{font-size:16px}
+#jediShell .pa-agenda-entry{gap:6px;padding:15px 0}
+#jediShell .pa-agenda-entry>strong{font-size:16px}
+#jediShell .pa-agenda-entry small{font-size:13px}
+#jediShell .pa-agenda-recipients{font-size:14px}
+@media(max-width:650px){#jediShell .pa-agenda-day{min-height:60px;padding:6px}#jediShell .pa-agenda-chip{font-size:10px;padding:3px}}
+</style>
 </head>
 <body>
 <style id="jedi-hierarchy-style">
@@ -982,7 +997,7 @@ $('paSchoolCalendar').onclick=paShowCalendar;
   }
   function paint(){
    const y=displayed.getFullYear(),m=displayed.getMonth();
-   month.textContent=new Intl.DateTimeFormat('ca-ES',{month:'long',year:'numeric'}).format(displayed);
+   month.textContent=new Intl.DateTimeFormat('ca-ES',{month:'long'}).format(displayed).replace(/^./,c=>c.toLocaleUpperCase('ca-ES'))+' del '+y;
    grid.replaceChildren();
    ['Dl','Dt','Dc','Dj','Dv','Ds','Dg'].forEach(d=>grid.append(paEl('div',d,'pa-agenda-weekday')));
    const offset=(new Date(y,m,1).getDay()+6)%7;
@@ -1011,7 +1026,7 @@ $('paSchoolCalendar').onclick=paShowCalendar;
    for(const e of dayEvents){
     const entry=paEl('div','','pa-agenda-entry');
     entry.append(paEl('strong',e.titol||'Esdeveniment'));
-    const when=e.tot_el_dia?'Tot el dia':new Date(e.inici).toLocaleTimeString('ca-ES',{hour:'2-digit',minute:'2-digit'});
+    const when=e.tot_el_dia?'Tot el dia':new Date(e.inici).toLocaleTimeString('ca-ES',{hour:'2-digit',minute:'2-digit'})+(e.final?' – '+new Date(e.final).toLocaleTimeString('ca-ES',{hour:'2-digit',minute:'2-digit'}):'');
     entry.append(paEl('small',(types[e.tipus]||e.tipus||'Activitat')+' · '+when));
     if(e.descripcio)entry.append(paEl('p',e.descripcio));
     const d=recipients.filter(x=>x.esdeveniment_id===e.id);
