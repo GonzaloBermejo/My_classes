@@ -175,6 +175,19 @@ header .brand-context{font-size:13px;color:#8a929f;text-align:right}
 
 <style id="pa-v18-style">.pa-comms-people-tools{display:flex;align-items:center;gap:12px;flex-wrap:wrap}.pa-comms-people-tools input{flex:1;min-width:210px;max-width:430px}.pa-comms-toolbar .pa-comms-hint{margin-left:auto}.pa-comms-people-tools[hidden]{display:none!important}</style>
 <style id="pa-agenda-live-style">#jediShell .pa-agenda-day{display:flex;flex-direction:column;gap:4px;overflow:hidden}#jediShell .pa-agenda-chip{display:block;font-size:10px;line-height:1.3;padding:3px 5px;background:#eaf0ff;color:#344d96;border-radius:4px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;font-weight:500}#jediShell .pa-agenda-chip[data-type="examen"]{background:#fff0ee;color:#a54d42}#jediShell .pa-agenda-chip[data-type="sortida"]{background:#e7f6eb;color:#337b51}#jediShell .pa-agenda-chip[data-type="lliurament"]{background:#fff5dc;color:#876223}#jediShell .pa-agenda-entry{padding:11px 0;border-top:1px solid #e5eaf2;display:grid;gap:4px}#jediShell .pa-agenda-entry:first-of-type{margin-top:12px}#jediShell .pa-agenda-entry small{color:#728098}#jediShell .pa-agenda-entry p{margin:3px 0;white-space:pre-wrap}#jediShell .pa-agenda textarea{width:100%;border:1px solid #dce2eb;border-radius:8px;padding:10px}</style>
+<style id="pa-v26-home-style">
+#jediShell .pa-v26-home{padding:25px;min-height:400px;color:#344054}
+#jediShell .pa-v26-home h3{font-size:19px;color:#344d96;margin:25px 0 13px}
+#jediShell .pa-v26-home-top{display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:12px}
+#jediShell .pa-v26-actions{display:flex;gap:8px;flex-wrap:wrap}
+#jediShell .pa-v26-muted{color:#758298;font-size:14px;line-height:1.6;margin:10px 0}
+#jediShell .pa-v26-list{display:grid;gap:9px}
+#jediShell .pa-v26-row{display:grid;grid-template-columns:140px 1fr;align-items:center;gap:16px;padding:14px 17px;border:1px solid #e1e7f0;border-radius:10px;background:#fafcff}
+#jediShell .pa-v26-time{font-size:13px;color:#546c9e}
+#jediShell .pa-v26-row small,#jediShell .pa-v26-reminder small{display:block;color:#7b8798;margin-top:5px;font-size:12px}
+#jediShell .pa-v26-reminder{padding:15px 17px;border:1px solid #e1e7f0;border-radius:10px;background:white}
+@media(max-width:600px){#jediShell .pa-v26-home{padding:15px}#jediShell .pa-v26-row{grid-template-columns:1fr;gap:5px}}
+</style>
 <style id="paideia-auth-style">
 body:not(.paideia-authenticated) > header,body:not(.paideia-authenticated) > main,body:not(.paideia-authenticated) > #modalRoot{display:none!important}
 #paideiaAuth{position:fixed;inset:0;background:#f7f8fa;z-index:999999;display:flex;align-items:center;justify-content:center;padding:20px;overflow:auto}
@@ -603,7 +616,7 @@ async function api(path,token=accessToken,opts={}){
  return result;
 }
 const shell=document.createElement('div');shell.id='jediShell';shell.hidden=true;
-shell.innerHTML=`<header class="brand-header"><div class="brand-identity"><div class="brand-logo" style="font-size:30px">⚔️</div><div class="brand-copy"><strong>Paideia · Jedi</strong><span class="brand-subtitle">Acadèmia de proves · dades fictícies</span></div></div><div><span id="jediWho"></span><button id="jediLogout" class="secondary" style="margin-left:12px">Tancar sessió</button></div></header><main><div class="top"><div><h1>Les meves classes</h1><p class="sub">Classes, alumnat, qualificacions, assistència i incidències · dades fictícies</p></div></div><div class="layout"><aside class="panel side"><div id="jediClassList"></div><div style="margin-top:18px;padding-top:14px;border-top:1px solid #e8ebef"><div class="side-title">Horaris i calendari</div><button type="button" id="paMySchedule" class="class-btn">🗓 El meu horari</button><button type="button" id="paGroupSchedule" class="class-btn">🏫 Horari de grups classe</button><button type="button" id="paSchoolCalendar" class="class-btn">📅 Calendari escolar</button></div><div style="margin-top:18px;padding-top:14px;border-top:1px solid #e8ebef"><div class="side-title">Recursos</div><button type="button" id="paUsefulLinks" class="class-btn">🔗 Enllaços d’interès</button><button type="button" id="paComms" class="class-btn">✉ Comunicats a famílies</button></div><div id="jediAdminNav" hidden style="margin-top:18px;padding-top:14px;border-top:1px solid #e8ebef"><div class="side-title">Gestió del centre</div><button type="button" id="jediAdminButton" class="class-btn">⚙ Administració</button></div></aside><section class="panel"><div class="content-head"><div><h2 id="jediTitle">Selecciona una classe</h2><p id="jediSubtitle" class="hint"></p></div><div class="actions"><button type="button" id="jediGradesTab" class="primary">Qualificacions</button><button type="button" id="jediAttendanceTab" class="secondary">✓ Passar llista</button><button type="button" id="jediIncidentsTab" class="secondary">Incidències i reconeixements</button><button type="button" id="jediSeatsTab" class="secondary">🪑 Distribució de l’aula</button></div></div><div id="jediContent" class="empty">Selecciona una classe del menú.</div></section></div><p id="jediStatus" class="footer" role="status"></p></main>`;
+shell.innerHTML=`<header class="brand-header"><div class="brand-identity"><div class="brand-logo" style="font-size:30px">⚔️</div><div class="brand-copy"><strong>Paideia · Jedi</strong><span class="brand-subtitle">Acadèmia de proves · dades fictícies</span></div></div><div><span id="jediWho"></span><button id="jediLogout" class="secondary" style="margin-left:12px">Tancar sessió</button></div></header><main><div class="top"><div><h1>Les meves classes</h1><p class="sub">Classes, alumnat, qualificacions, assistència i incidències · dades fictícies</p></div></div><div class="layout"><aside class="panel side"><div class="side-title">Principal</div><button type="button" id="paHome" class="class-btn">🏠 Inici</button><div id="jediClassList"></div><div style="margin-top:18px;padding-top:14px;border-top:1px solid #e8ebef"><div class="side-title">Horaris i calendari</div><button type="button" id="paMySchedule" class="class-btn">🗓 El meu horari</button><button type="button" id="paGroupSchedule" class="class-btn">🏫 Horari de grups classe</button><button type="button" id="paSchoolCalendar" class="class-btn">📅 Calendari escolar</button></div><div style="margin-top:18px;padding-top:14px;border-top:1px solid #e8ebef"><div class="side-title">Recursos</div><button type="button" id="paUsefulLinks" class="class-btn">🔗 Enllaços d’interès</button><button type="button" id="paComms" class="class-btn">✉ Comunicats a famílies</button></div><div id="jediAdminNav" hidden style="margin-top:18px;padding-top:14px;border-top:1px solid #e8ebef"><div class="side-title">Gestió del centre</div><button type="button" id="jediAdminButton" class="class-btn">⚙ Administració</button></div></aside><section class="panel"><div class="content-head"><div><h2 id="jediTitle">Selecciona una classe</h2><p id="jediSubtitle" class="hint"></p></div><div class="actions"><button type="button" id="jediGradesTab" class="primary">Qualificacions</button><button type="button" id="jediAttendanceTab" class="secondary">✓ Passar llista</button><button type="button" id="jediIncidentsTab" class="secondary">Incidències i reconeixements</button><button type="button" id="jediSeatsTab" class="secondary">🪑 Distribució de l’aula</button></div></div><div id="jediContent" class="empty">Selecciona una classe del menú.</div></section></div><p id="jediStatus" class="footer" role="status"></p></main>`;
 document.body.append(shell);
 const $=id=>document.getElementById(id);
 function status(t){$('jediStatus').textContent=t}
@@ -649,7 +662,7 @@ function showApp(){document.body.classList.add('paideia-authenticated');shell.hi
    status('Accés d’administració verificat.');
   }
   // Un administrador sense assignatures entra directament al seu panell.
-  if(isAdmin&&!allClasses.length)$('jediAdminButton').click();
+  if(isAdmin&&!allClasses.length)await paShowHome();
  }
 
  async function loadClasses(){
@@ -666,9 +679,126 @@ function showApp(){document.body.classList.add('paideia-authenticated');shell.hi
   $('jediClassList').replaceChildren();
   for(const c of allClasses){const b=document.createElement('button');b.className='class-btn';b.textContent=classLabel(c,teacherGroups);b.dataset.id=c.id;b.onclick=()=>{activeEvaluation='1a';showClass(c)};$('jediClassList').append(b)}
   status(allClasses.length+' classes visibles segons els permisos RLS.');
-  if(allClasses.length)await showClass(allClasses[0]);
+  if(allClasses.length)await paShowHome();
   else $('jediContent').textContent='Aquest usuari no té classes assignades.';
  }
+
+// V27 · Presentació de sessions compartides (només lectura, sense alterar Supabase).
+function paV27Normal(v){return String(v||'').normalize('NFD').replace(/[\u0300-\u036f]/g,'').trim().toLowerCase();}
+function paV27ProjectPair(a,b,data){
+ if(!a||!b||String(a.id)===String(b.id)||Number(a.dia)!==Number(b.dia)||String(a.franja_id)!==String(b.franja_id))return false;
+ const ca=data.classes.find(c=>String(c.id)===String(a.classe_id)),cb=data.classes.find(c=>String(c.id)===String(b.classe_id));
+ if(!ca||!cb||paV27Normal(ca.nom)!=='projecte interdisciplinar'||paV27Normal(cb.nom)!=='projecte interdisciplinar'||Number(ca.curs)!==Number(cb.curs))return false;
+ const ga=data.groups.find(g=>String(g.id)===String(a.grup_id)),gb=data.groups.find(g=>String(g.id)===String(b.grup_id));
+ const na=paV27Normal(ga?.nom),nb=paV27Normal(gb?.nom);
+ return Boolean(na&&nb&&na!==nb&&/\b[a]$/.test(na)&&/\b[b]$/.test(nb)||na&&nb&&na!==nb&&/\b[b]$/.test(na)&&/\b[a]$/.test(nb));
+}
+function paV27Display(sessions,data){
+ const used=new Set(),result=[];
+ for(const a of sessions){
+  if(used.has(String(a.id)))continue;
+  const partner=sessions.find(b=>!used.has(String(b.id))&&paV27ProjectPair(a,b,data));
+  if(partner){
+   used.add(String(a.id));used.add(String(partner.id));
+   const c=data.classes.find(x=>String(x.id)===String(a.classe_id));
+   const course=({1:'1r',2:'2n',3:'3r',4:'4t'})[Number(c?.curs)]||'';
+   result.push({session:a,title:c?.nom||'Projecte interdisciplinar',subtitle:course+' ESO A i B',paired:true});
+  }else{
+   used.add(String(a.id));
+   const c=data.classes.find(x=>String(x.id)===String(a.classe_id));
+   const g=data.groups.find(x=>String(x.id)===String(a.grup_id));
+   const course=({1:'1r ESO',2:'2n ESO',3:'3r ESO',4:'4t ESO'})[Number(c?.curs)]||'';
+   const label=String(a.etiqueta||'').trim();
+   const isCustom=label&&paV27Normal(label)!==paV27Normal(c?.nom);
+   const parts=isCustom&&label.includes(' · ')?label.split(' · '):null;
+   result.push({session:a,title:parts?parts.slice(0,-1).join(' · '):(isCustom?label:(c?.nom||'Sessió')),subtitle:parts?parts.at(-1):(g?.nom||course||'Grup no indicat'),paired:false});
+  }
+ }
+ return result;
+}
+// V26 · Inici personalitzat. Consultes de lectura sota els permisos RLS de la sessió.
+let paHomeSequence=0;
+function paHomeButton(text,action){const b=paEl('button',text,'secondary');b.type='button';b.onclick=action;return b;}
+async function paShowHome(){
+ const seq=++paHomeSequence;
+ paScheduleRequest++;
+ currentClass=null;currentView='home';
+ document.querySelectorAll('#jediClassList .class-btn').forEach(b=>b.classList.remove('active'));
+ ['paMySchedule','paGroupSchedule','paSchoolCalendar','paUsefulLinks','paComms','jediAdminButton'].forEach(id=>$(id)?.classList.remove('active'));
+ $('paHome').classList.add('active');
+ for(const id of ['jediGradesTab','jediAttendanceTab','jediIncidentsTab','jediSeatsTab'])$(id).hidden=true;
+ const now=new Date(),hour=now.getHours();
+ const hello=hour<12?'Bon dia':hour<19?'Bona tarda':'Bona nit';
+ const name=String(profile?.nom||'').trim();
+ $('jediTitle').textContent=hello+(name?', '+name:'')+'!';
+ $('jediSubtitle').textContent=new Intl.DateTimeFormat('ca-ES',{weekday:'long',day:'numeric',month:'long',year:'numeric'}).format(now);
+ const root=$('jediContent');root.className='pa-v26-home';root.replaceChildren();
+ const head=paEl('div','','pa-v26-home-top');
+ head.append(paEl('p','El teu dia, d’un cop d’ull.','pa-v26-muted'));
+ const actions=paEl('div','','pa-v26-actions');
+ actions.append(paHomeButton('🗓 El meu horari',()=>paShowSchedule('teacher')),paHomeButton('📅 Calendari',()=>showAgenda()));
+ head.append(actions);root.append(head);
+ const h=paEl('h3','Les teves classes d’avui');root.append(h);
+ const schedule=paEl('div','Carregant el teu horari…','pa-v26-muted');root.append(schedule);
+ const remindersTitle=paEl('h3','Recordatoris importants');root.append(remindersTitle);
+ const reminders=paEl('div','Comprovant els esdeveniments del dia…','pa-v26-muted');root.append(reminders);
+ const date=localToday();const day=(now.getDay()+6)%7+1;
+ let todaySessions=[];let scheduleOK=false;
+ try{
+  if(!profile?.id){schedule.textContent='No hi ha un perfil docent associat a aquesta sessió.';}
+  else{
+   const data=await paGetScheduleData();if(seq!==paHomeSequence||currentView!=='home')return;
+   const own=new Set(data.links.filter(x=>String(x.professor_id)===String(profile.id)).map(x=>String(x.sessio_id)));
+   todaySessions=data.sessions.filter(x=>Number(x.dia)===day&&(String(x.professor_id)===String(profile.id)||own.has(String(x.id))));
+   const slotById=new Map(data.slots.map(x=>[String(x.id),x]));
+   todaySessions.sort((a,b)=>(Number(slotById.get(String(a.franja_id))?.ordre)||0)-(Number(slotById.get(String(b.franja_id))?.ordre)||0));
+   schedule.replaceChildren();schedule.className='pa-v26-list';scheduleOK=true;
+   if(!todaySessions.length)schedule.append(paEl('p',day>5?'Avui és cap de setmana: no tens classes programades.':'No tens classes programades per avui.','pa-v26-muted'));
+   for(const item of paV27Display(todaySessions,data)){
+    const slot=slotById.get(String(item.session.franja_id));
+    const row=paEl('div','','pa-v26-row');
+    row.append(paEl('strong',slot?String(slot.inici).slice(0,5)+' – '+String(slot.fi).slice(0,5):'Hora no disponible','pa-v26-time'));
+    const info=paEl('div');info.append(paEl('strong',item.title));
+    info.append(paEl('small',item.subtitle));
+    row.append(info);schedule.append(row);
+   }
+  }
+ }catch(err){if(seq!==paHomeSequence||currentView!=='home')return;schedule.textContent='No s’ha pogut carregar l’horari: '+err.message;}
+ try{
+  const start=new Date(date+'T00:00:00').toISOString();
+  const end=new Date(new Date(date+'T00:00:00').getTime()+86400000).toISOString();
+  const events=await api('/rest/v1/esdeveniments_calendari?select=*&inici=lt.'+encodeURIComponent(end)+'&final=gte.'+encodeURIComponent(start)+'&order=inici.asc&limit=300');
+  if(seq!==paHomeSequence||currentView!=='home')return;
+  const ids=events.map(e=>e.id).filter(Boolean);
+  let dest=[];
+  if(ids.length){
+   dest=await api('/rest/v1/esdeveniments_destinataris?select=esdeveniment_id,classe_id,grup_id,tot_el_centre&esdeveniment_id=in.('+ids.map(encodeURIComponent).join(',')+')&limit=1000');
+   try{
+    const rpc=await api('/rest/v1/rpc/obtenir_destinataris_calendari',accessToken,{method:'POST',headers:{'Content-Type':'application/json'},body:'{}'});
+    if(Array.isArray(rpc))for(const d of rpc)if(ids.some(id=>String(id)===String(d.esdeveniment_id)))dest.push(d);
+   }catch(err){console.warn('Inici: destinataris acadèmics no disponibles',err);}
+  }
+  if(seq!==paHomeSequence||currentView!=='home')return;
+  const classIds=new Set(allClasses.map(c=>String(c.id)));
+  const groupIds=new Set(todaySessions.map(s=>String(s.grup_id)).filter(x=>x&&x!=='null'));
+  const selected=events.filter(e=>{
+   const targets=dest.filter(d=>String(d.esdeveniment_id)===String(e.id));
+   const academic=['examen','lliurament','activitat_assignatura'].includes(e.tipus);
+   const relevant=targets.some(d=>(d.classe_id&&classIds.has(String(d.classe_id)))||(d.grup_id&&groupIds.has(String(d.grup_id))));
+   // No mostrem avisos generals ni esdeveniments sense destinataris identificables.
+   return relevant && (academic||['sortida','activitat_tutoria','reunio'].includes(e.tipus));
+  });
+  reminders.replaceChildren();reminders.className='pa-v26-list';
+  if(!selected.length)reminders.append(paEl('p','No tens cap recordatori rellevant per avui.','pa-v26-muted'));
+  for(const e of selected){
+   const row=paEl('div','','pa-v26-reminder');
+   row.append(paEl('strong',(e.tipus==='examen'?'📝 ':e.tipus==='sortida'?'🚌 ':e.tipus==='lliurament'?'📌 ':'📅 ')+(e.titol||'Esdeveniment')));
+   row.append(paEl('small',e.tot_el_dia?'Tot el dia':new Date(e.inici).toLocaleTimeString('ca-ES',{hour:'2-digit',minute:'2-digit'})));
+   reminders.append(row);
+  }
+ }catch(err){if(seq!==paHomeSequence||currentView!=='home')return;reminders.textContent='No s’han pogut comprovar els recordatoris: '+err.message;}
+}
+$('paHome').onclick=paShowHome;
 
 // Horaris compartits: les dades i els permisos depenen de Supabase (RLS).
 const paDays=['Dilluns','Dimarts','Dimecres','Dijous','Divendres'];
@@ -724,12 +854,13 @@ async function paShowSchedule(mode){
      const td=paEl('td');td.style.cssText='padding:9px;border:1px solid #dce3ed;text-align:center;vertical-align:middle;min-height:55px;white-space:pre-line';
      if(slot.tipus!=='classe'){td.textContent=slot.tipus==='pati'?'☕ PATI':'🍽 DINAR';td.style.background='#e8f3e9';}
      else{
-      const matching=data.sessions.filter(x=>x.dia===day&&x.franja_id===slot.id&&(mode==='teacher'?(String(x.professor_id)===selector.value||data.links.some(l=>String(l.sessio_id)===String(x.id)&&String(l.professor_id)===selector.value)):String(x.grup_id)===selector.value));
+      const matching=data.sessions.filter(x=>x.dia===day&&x.franja_id===slot.id&&(mode==='teacher'?(String(x.professor_id)===selector.value||data.links.some(l=>String(l.sessio_id)===String(x.id)&&String(l.professor_id)===selector.value)):(String(x.grup_id)===selector.value||(!x.classe_id&&/^Optatives rotatives · /.test(String(x.etiqueta||''))&&Number(String(data.groups.find(g=>String(g.id)===selector.value)?.nom||'').match(/[1-4]/)?.[0])===Number(String(x.etiqueta).match(/[1-4]/)?.[0])))));
       const record=matching[0];
+      const view=mode==='teacher'&&matching.length?paV27Display(matching,data)[0]:null;
       const clazz=data.classes.find(x=>x.id===record?.classe_id);
       const teacherNames=record?data.links.filter(l=>String(l.sessio_id)===String(record.id)).map(l=>data.teachers.find(t=>String(t.id)===String(l.professor_id))?.nom).filter(Boolean):[];
       const group=data.groups.find(x=>x.id===record?.grup_id);
-      const yearName=({1:'1r ESO',2:'2n ESO',3:'3r ESO',4:'4t ESO'})[clazz?.curs]||'';const courseLabel=clazz?(clazz.tipus_assignatura==='acollida'?'Tots els cursos':(clazz.grup_id&&!['optativa','optativa_rotativa','optativa_eleccio'].includes(clazz.tipus_assignatura))?(data.groups.find(g=>String(g.id)===String(clazz.grup_id))?.nom||group?.nom||yearName):yearName):'';td.textContent=record?[(clazz?.nom||record.etiqueta||'Sessió')+(courseLabel?' · '+courseLabel:''),mode==='teacher'?(group?.nom&&group.nom!==courseLabel?group.nom:''):(teacherNames.join(' · ')||'')].filter(Boolean).join('\n'): '—';
+      const yearName=({1:'1r ESO',2:'2n ESO',3:'3r ESO',4:'4t ESO'})[clazz?.curs]||'';const courseLabel=clazz?(clazz.tipus_assignatura==='acollida'?'Tots els cursos':(clazz.grup_id&&!['optativa','optativa_rotativa','optativa_eleccio'].includes(clazz.tipus_assignatura))?(data.groups.find(g=>String(g.id)===String(clazz.grup_id))?.nom||group?.nom||yearName):yearName):'';td.textContent=record?(mode==='teacher'&&view?[view.title+(view.subtitle?' · '+view.subtitle:'')].join(''):[(clazz?.nom||record.etiqueta||'Sessió')+(courseLabel?' · '+courseLabel:''),(!record.classe_id&&/^Optatives rotatives · /.test(String(record.etiqueta||'')))?'':(teacherNames.join(' · ')||'')].filter(Boolean).join('\n')):'—';
       if(record)td.style.background='#e8f1ff';
       if(isAdmin){td.style.cursor='pointer';td.title='Clica per editar aquesta sessió';td.onclick=()=>paEditSession(data,mode,selector.value,day,slot,record,()=>paShowSchedule(mode))}
      }row.append(td)
