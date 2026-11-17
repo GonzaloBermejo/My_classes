@@ -845,6 +845,24 @@ async function paShowSchedule(mode){
   if(isAdmin){const editSlots=paEl('button','⚙ Modificar franges','secondary');editSlots.onclick=()=>paEditSlots(data,()=>paShowSchedule(mode));bar.append(editSlots)}
   root.append(bar);
   const grid=paEl('div');grid.style.cssText='overflow-x:auto;margin:0 20px 24px';root.append(grid);
+  // V28: optatives d'elecció anuals de 4t ESO. Una única sessió real
+  // és visible als dos grups, sense crear files ni conflictes a Supabase.
+  const paV28IsElection=x=>{
+   const c=data.classes.find(c=>String(c.id)===String(x.classe_id));
+   return Number(c?.curs)===4 && c?.tipus_assignatura==='optativa_eleccio';
+  };
+  // V29: una sessió de cada optativa rotativa ja existeix al professorat.
+  // Es projecta com un únic bloc als dos grups A/B del mateix curs.
+  const paV29CourseOfGroup=id=>Number(String(data.groups.find(g=>String(g.id)===String(id))?.nom||'').match(/[1-4]/)?.[0])||0;
+  const paV29RotationCourse=x=>{
+   const c=data.classes.find(c=>String(c.id)===String(x.classe_id));
+   if(c?.tipus_assignatura==='optativa_rotativa')return Number(c.curs)||0;
+   // També admet les optatives creades com a tipus genèric 'optativa'.
+   if(c?.tipus_assignatura==='optativa')return Number(c.curs)||0;
+   if(Number(c?.curs)===1 && ['robòtica i programació','comprensió lectora','english words'].includes(String(c.nom||'').trim().toLocaleLowerCase('ca')))return 1;
+   return 0;
+  };
+  const paV28GroupIsFourth=id=>/^4\s*[tr]?(?:\s*\.?\s*)?(?:eso|d.?eso)/i.test(String(data.groups.find(g=>String(g.id)===String(id))?.nom||'').normalize('NFD').replace(/[\u0300-\u036f]/g,'')) || /^4/.test(String(data.groups.find(g=>String(g.id)===String(id))?.nom||''));
   const draw=()=>{
    grid.replaceChildren();const table=paEl('table');table.style.cssText='border-collapse:collapse;width:100%;min-width:690px;table-layout:fixed';
    const tr=paEl('tr');for(const head of ['Hora',...paDays]){const th=paEl('th',head);th.style.cssText='padding:12px;border:1px solid #dce3ed;background:#eef2f7';tr.append(th)}table.append(tr);
@@ -855,14 +873,29 @@ async function paShowSchedule(mode){
      if(slot.tipus!=='classe'){td.textContent=slot.tipus==='pati'?'☕ PATI':'🍽 DINAR';td.style.background='#e8f3e9';}
      else{
       const matching=data.sessions.filter(x=>x.dia===day&&x.franja_id===slot.id&&(mode==='teacher'?(String(x.professor_id)===selector.value||data.links.some(l=>String(l.sessio_id)===String(x.id)&&String(l.professor_id)===selector.value)):(String(x.grup_id)===selector.value||(!x.classe_id&&/^Optatives rotatives · /.test(String(x.etiqueta||''))&&Number(String(data.groups.find(g=>String(g.id)===selector.value)?.nom||'').match(/[1-4]/)?.[0])===Number(String(x.etiqueta).match(/[1-4]/)?.[0])))));
-      const record=matching[0];
+      // Les optatives de 4t es projecten als dos grups només quan no hi
+      // ha una sessió pròpia del grup. No es dupliquen sessions del docent.
+      const electionBlock=mode==='group'&&paV28GroupIsFourth(selector.value)&&data.sessions.some(x=>Number(x.dia)===day&&String(x.franja_id)===String(slot.id)&&paV28IsElection(x));
+      const rotationCourse=mode==='group'?paV29CourseOfGroup(selector.value):0;
+      const rotationSessions=rotationCourse>=1&&rotationCourse<=3?data.sessions.filter(x=>Number(x.dia)===day&&String(x.franja_id)===String(slot.id)&&paV29RotationCourse(x)===rotationCourse):[];
+      // No ocultar una assignatura ordinària del grup: en aquest cas cal revisar dades.
+      const regularMatch=matching.find(x=>!paV28IsElection(x)&&!paV29RotationCourse(x)&&!(!x.classe_id&&/^Optatives rotatives · /.test(String(x.etiqueta||''))));
+      const showRotationBlock=mode==='group'&&rotationSessions.length>0&&!regularMatch;
+      const record=matching.find(x=>!paV28IsElection(x))||matching[0];
+      const showElectionBlock=electionBlock&&(!record||paV28IsElection(record));
       const view=mode==='teacher'&&matching.length?paV27Display(matching,data)[0]:null;
       const clazz=data.classes.find(x=>x.id===record?.classe_id);
       const teacherNames=record?data.links.filter(l=>String(l.sessio_id)===String(record.id)).map(l=>data.teachers.find(t=>String(t.id)===String(l.professor_id))?.nom).filter(Boolean):[];
       const group=data.groups.find(x=>x.id===record?.grup_id);
       const yearName=({1:'1r ESO',2:'2n ESO',3:'3r ESO',4:'4t ESO'})[clazz?.curs]||'';const courseLabel=clazz?(clazz.tipus_assignatura==='acollida'?'Tots els cursos':(clazz.grup_id&&!['optativa','optativa_rotativa','optativa_eleccio'].includes(clazz.tipus_assignatura))?(data.groups.find(g=>String(g.id)===String(clazz.grup_id))?.nom||group?.nom||yearName):yearName):'';td.textContent=record?(mode==='teacher'&&view?[view.title+(view.subtitle?' · '+view.subtitle:'')].join(''):[(clazz?.nom||record.etiqueta||'Sessió')+(courseLabel?' · '+courseLabel:''),(!record.classe_id&&/^Optatives rotatives · /.test(String(record.etiqueta||'')))?'':(teacherNames.join(' · ')||'')].filter(Boolean).join('\n')):'—';
-      if(record)td.style.background='#e8f1ff';
-      if(isAdmin){td.style.cursor='pointer';td.title='Clica per editar aquesta sessió';td.onclick=()=>paEditSession(data,mode,selector.value,day,slot,record,()=>paShowSchedule(mode))}
+      if(showElectionBlock){td.textContent='Optatives d’elecció\n4t ESO';td.style.background='#f1eaff';}
+      if(showRotationBlock){td.textContent='Optatives rotatives\n'+({1:'1r ESO',2:'2n ESO',3:'3r ESO'})[rotationCourse];td.style.background='#f1eaff';}
+      if(record||showElectionBlock||showRotationBlock)td.style.background=(showElectionBlock||showRotationBlock)?'#f1eaff':'#e8f1ff';
+      if(isAdmin){td.style.cursor='pointer';td.title=(showElectionBlock||showRotationBlock)?'Bloc compartit: edita les assignatures des de l’horari del professorat':'Clica per editar aquesta sessió';td.onclick=()=>{
+       if(showRotationBlock){const modal=paModal('Optatives rotatives · '+({1:'1r ESO',2:'2n ESO',3:'3r ESO'})[rotationCourse]);modal.box.append(paEl('p','Aquest bloc agrupa les optatives impartides simultàniament a alumnat dels grups A i B. Cada assignatura es gestiona des de l’horari del seu professor. No cal crear una sessió addicional.'));modal.box.append(paButton('Tancar',()=>modal.shade.remove()));return;}
+       if(showElectionBlock){const modal=paModal('Optatives d’elecció · 4t ESO');modal.box.append(paEl('p','Aquest bloc és compartit per 4t ESO A i B. Les sessions reals es gestionen des de l’horari de cada professor, sense duplicar-les.'));modal.box.append(paButton('Tancar',()=>modal.shade.remove()));return;}
+       paEditSession(data,mode,selector.value,day,slot,record,()=>paShowSchedule(mode));
+      }}
      }row.append(td)
     }table.append(row)
    }grid.append(table)
