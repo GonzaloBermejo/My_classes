@@ -709,9 +709,10 @@ function paV27Display(sessions,data){
    const g=data.groups.find(x=>String(x.id)===String(a.grup_id));
    const course=({1:'1r ESO',2:'2n ESO',3:'3r ESO',4:'4t ESO'})[Number(c?.curs)]||'';
    const label=String(a.etiqueta||'').trim();
-   const isCustom=label&&paV27Normal(label)!==paV27Normal(c?.nom);
+   const isElectionBand=Number(c?.curs)===4&&c?.tipus_assignatura==='optativa_eleccio'&&/^FRANJA [123]$/i.test(label);
+   const isCustom=!isElectionBand&&label&&paV27Normal(label)!==paV27Normal(c?.nom);
    const parts=isCustom&&label.includes(' · ')?label.split(' · '):null;
-   result.push({session:a,title:parts?parts.slice(0,-1).join(' · '):(isCustom?label:(c?.nom||'Sessió')),subtitle:parts?parts.at(-1):(g?.nom||course||'Grup no indicat'),paired:false});
+   result.push({session:a,title:parts?parts.slice(0,-1).join(' · '):(isCustom?label:(c?.nom||'Sessió')),subtitle:parts?parts.at(-1):(isElectionBand?'4t ESO A+B':(g?.nom||course||'Grup no indicat')),paired:false});
   }
  }
  return result;
@@ -824,7 +825,23 @@ async function paGetScheduleData(){
   api('/rest/v1/classes?select=id,nom,curs,grup_id,tipus_assignatura&limit=1000')
  ]);
  const links=await api('/rest/v1/sessions_horari_professors?select=sessio_id,professor_id&limit=5000');
- return {slots,sessions,teachers,groups,classes,links};
+ let electionTriplets=[];
+ try{
+  const response=await api('/rest/v1/rpc/llegir_triplets_optatives_eleccio_4t',accessToken,{method:'POST',headers:{'Content-Type':'application/json'},body:'{}'});
+  const obj=Array.isArray(response)&&response.length===1?response[0]:response;
+  const bands=Array.isArray(obj)?obj:(obj?.franges||obj?.triplets||obj?.data?.franges);
+  if(Array.isArray(bands)) electionTriplets=bands.map((band,index)=>{
+   const number=Number(band.numero_franja??band.number??band.franja??band.id??index+1);
+   let subjects=band.assignatures??band.subjects;
+   if(!Array.isArray(subjects)){
+    const registrations=band.alumnes??band.students??band.matricules??[];
+    const ids=[...new Set(registrations.map(x=>String(x.classe_id??x.assignatura_id??'')).filter(Boolean))];
+    subjects=ids.map(id=>classes.find(c=>String(c.id)===id)).filter(Boolean);
+   }
+   return {number,subjects:subjects.map(x=>({id:String(x.classe_id??x.id??''),name:String(x.nom??'').trim()})).filter(x=>x.name)};
+  }).filter(x=>[1,2,3].includes(x.number));
+ }catch(error){console.warn('No s’han pogut llegir els triplets d’elecció per a l’horari:',error);}
+ return {slots,sessions,teachers,groups,classes,links,electionTriplets};
 }
 async function paShowSchedule(mode){
  const request=++paScheduleRequest;
@@ -888,12 +905,20 @@ async function paShowSchedule(mode){
       const teacherNames=record?data.links.filter(l=>String(l.sessio_id)===String(record.id)).map(l=>data.teachers.find(t=>String(t.id)===String(l.professor_id))?.nom).filter(Boolean):[];
       const group=data.groups.find(x=>x.id===record?.grup_id);
       const yearName=({1:'1r ESO',2:'2n ESO',3:'3r ESO',4:'4t ESO'})[clazz?.curs]||'';const courseLabel=clazz?(clazz.tipus_assignatura==='acollida'?'Tots els cursos':(clazz.grup_id&&!['optativa','optativa_rotativa','optativa_eleccio'].includes(clazz.tipus_assignatura))?(data.groups.find(g=>String(g.id)===String(clazz.grup_id))?.nom||group?.nom||yearName):yearName):'';td.textContent=record?(mode==='teacher'&&view?[view.title+(view.subtitle?' · '+view.subtitle:'')].join(''):[(clazz?.nom||record.etiqueta||'Sessió')+(courseLabel?' · '+courseLabel:''),(!record.classe_id&&/^Optatives rotatives · /.test(String(record.etiqueta||'')))?'':(teacherNames.join(' · ')||'')].filter(Boolean).join('\n')):'—';
-      if(showElectionBlock){td.textContent='Optatives d’elecció\n4t ESO';td.style.background='#f1eaff';}
+      if(showElectionBlock){
+       const electionSessions=data.sessions.filter(x=>Number(x.dia)===day&&String(x.franja_id)===String(slot.id)&&paV28IsElection(x));
+       const bands=[...new Set(electionSessions.map(x=>String(x.etiqueta||'').match(/\bFRANJA\s*([123])\b/i)?.[1]).filter(Boolean))];
+       const band=bands.length===1?Number(bands[0]):null;
+       const triplet=band?data.electionTriplets.find(t=>t.number===band):null;
+       const names=triplet&&triplet.subjects.length===3?triplet.subjects.map(x=>x.name):[];
+       td.textContent=bands.length>1?'⚠ Franges diferents\nOptatives d’elecció · 4t ESO':band?'OPT '+band+(names.length?'\n('+names.join(', ')+')':'\n(Assignatures no disponibles)'):'Optatives d’elecció\n4t ESO · Franja pendent';
+       td.style.background='#f1eaff';
+      }
       if(showRotationBlock){td.textContent='Optatives rotatives\n'+({1:'1r ESO',2:'2n ESO',3:'3r ESO'})[rotationCourse];td.style.background='#f1eaff';}
       if(record||showElectionBlock||showRotationBlock)td.style.background=(showElectionBlock||showRotationBlock)?'#f1eaff':'#e8f1ff';
       if(isAdmin){td.style.cursor='pointer';td.title=(showElectionBlock||showRotationBlock)?'Bloc compartit: edita les assignatures des de l’horari del professorat':'Clica per editar aquesta sessió';td.onclick=()=>{
        if(showRotationBlock){const modal=paModal('Optatives rotatives · '+({1:'1r ESO',2:'2n ESO',3:'3r ESO'})[rotationCourse]);modal.box.append(paEl('p','Aquest bloc agrupa les optatives impartides simultàniament a alumnat dels grups A i B. Cada assignatura es gestiona des de l’horari del seu professor. No cal crear una sessió addicional.'));modal.box.append(paButton('Tancar',()=>modal.shade.remove()));return;}
-       if(showElectionBlock){const modal=paModal('Optatives d’elecció · 4t ESO');modal.box.append(paEl('p','Aquest bloc és compartit per 4t ESO A i B. Les sessions reals es gestionen des de l’horari de cada professor, sense duplicar-les.'));modal.box.append(paButton('Tancar',()=>modal.shade.remove()));return;}
+       if(showElectionBlock){const modal=paModal('Optatives d’elecció · 4t ESO');modal.box.append(paEl('p','Aquest bloc és compartit per 4t ESO A i B. Per assignar FRANJA 1, 2 o 3, edita la sessió real des de l’horari del professorat. Totes les optatives simultànies han de tenir la mateixa franja. No es dupliquen sessions.'));modal.box.append(paButton('Tancar',()=>modal.shade.remove()));return;}
        paEditSession(data,mode,selector.value,day,slot,record,()=>paShowSchedule(mode));
       }}
      }row.append(td)
@@ -943,7 +968,20 @@ function paEditSession(data,mode,id,day,slot,record,refresh){
  box.append(coWrap);
 
  const name=paField(box,'Etiqueta de la sessió',document.createElement('input'));name.value=record?.etiqueta||'';name.placeholder='Ex.: Tecnologia, Guàrdia, Projecte…';
+ const electionBand=paField(box,'Franja d’optatives d’elecció (4t ESO)',paSelect([['','— Selecciona la franja —'],['1','FRANJA 1'],['2','FRANJA 2'],['3','FRANJA 3']],String(record?.etiqueta||'').match(/^FRANJA ([123])$/i)?.[1]||''));
+ const electionBandWrap=electionBand.parentElement;
+ const syncElectionBand=()=>{
+  const c=data.classes.find(x=>String(x.id)===String(classSelect.value));
+  electionBandWrap.hidden=!(Number(c?.curs)===4&&c?.tipus_assignatura==='optativa_eleccio');
+  if(!electionBandWrap.hidden){
+   const peers=data.sessions.filter(x=>Number(x.dia)===day&&String(x.franja_id)===String(slot.id)&&String(x.id)!==String(record?.id)&&data.classes.some(c=>String(c.id)===String(x.classe_id)&&Number(c.curs)===4&&c.tipus_assignatura==='optativa_eleccio'));
+   const known=[...new Set(peers.map(x=>String(x.etiqueta||'').match(/^FRANJA ([123])$/i)?.[1]).filter(Boolean))];
+   if(known.length===1&&!electionBand.value)electionBand.value=known[0];
+  }
+ };
+ syncElectionBand();
  classSelect.onchange=()=>{
+  syncElectionBand();
   const rotationCourse=rotatingCourses.find(course=>classSelect.value===rotationKey(course));
   if(rotationCourse){name.value=rotationLabel(rotationCourse);return}
   const c=data.classes.find(x=>x.id===classSelect.value);
@@ -959,7 +997,14 @@ function paEditSession(data,mode,id,day,slot,record,refresh){
   // Es manté un docent ja vinculat, si encara és seleccionat, per reduir canvis innecessaris.
   const primary=(record?.professor_id&&chosen.includes(String(record.professor_id)))?String(record.professor_id):(chosen[0]||null);
   const rotationCourse=rotatingCourses.find(course=>classSelect.value===rotationKey(course));
-  const payload={dia:day,franja_id:slot.id,professor_id:primary,grup_id:groupSelect.value||null,classe_id:rotationCourse?null:(classSelect.value||null),etiqueta:rotationCourse?rotationLabel(rotationCourse):(name.value.trim()||'Sessió')};
+  const selectedClass=data.classes.find(c=>String(c.id)===String(classSelect.value));
+  const isElection=Number(selectedClass?.curs)===4&&selectedClass?.tipus_assignatura==='optativa_eleccio';
+  if(isElection&&!electionBand.value){msg.textContent='Selecciona FRANJA 1, 2 o 3 per a aquesta optativa.';return}
+  const payload={dia:day,franja_id:slot.id,professor_id:primary,grup_id:groupSelect.value||null,classe_id:rotationCourse?null:(classSelect.value||null),etiqueta:rotationCourse?rotationLabel(rotationCourse):(isElection?'FRANJA '+electionBand.value:(name.value.trim()||'Sessió'))};
+  if(isElection){
+   const otherBands=[...new Set(data.sessions.filter(x=>String(x.id)!==String(record?.id)&&Number(x.dia)===day&&String(x.franja_id)===String(slot.id)&&data.classes.some(c=>String(c.id)===String(x.classe_id)&&Number(c.curs)===4&&c.tipus_assignatura==='optativa_eleccio')).map(x=>String(x.etiqueta||'').match(/^FRANJA ([123])$/i)?.[1]).filter(Boolean))];
+   if(otherBands.some(b=>b!==electionBand.value)){msg.textContent='Hi ha una altra optativa en aquesta hora assignada a una franja diferent. Revisa les sessions existents.';return}
+  }
   if(rotationCourse){
    const selectedGroup=data.groups.find(g=>String(g.id)===String(payload.grup_id));
    const groupCourse=Number(String(selectedGroup?.nom||'').match(/[1-4]/)?.[0]);
